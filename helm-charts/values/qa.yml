@@ -1,11 +1,11 @@
 ingress:
   enabled: true
   hosts:
-    - recorder.snacker-tracker.dev.k8s.fscker.org
+    - host: recorder.snacker-tracker.qa.k8s.fscker.org
   tls:
-    - secretName: recorder-snacker-tracker-dev-k8s-fscker-org
+    - secretName: recorder-snacker-tracker-qa-k8s-fscker-org
       hosts:
-        - recorder.snacker-tracker.dev.k8s.fscker.org
+        - recorder.snacker-tracker.qa.k8s.fscker.org
 
 postgresql:
   enabled: true
@@ -18,15 +18,15 @@ postgresql:
 
 config:
   env:
-    ENVIRONMENT_NAME: dev
+    ENVIRONMENT_NAME: qa
     USE_SWAGGER_VALIDATION: "true"
     AUTH0_ENABLED: "true"
     AUTH0_ISSUER: ""
     AUTH0_AUDIENCE: ""
-    DATABASE_HOST: undefined
-    DATABASE_NAME: undefined
-    DATABASE_USERNAME: undefined
     AUTH0_CLIENT_ID: undefined
+    DATABASE_HOST: snacker-tracker-reporter-qa-postgresql
+    DATABASE_NAME: snacker-tracker-reporter-qa
+    DATABASE_USERNAME: snacker-tracker-reporter-qa
 
   secrets:
     DATABASE_PASSWORD: "undefined"
