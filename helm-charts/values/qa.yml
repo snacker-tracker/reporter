@@ -1,21 +1,24 @@
 ingress:
   enabled: true
   hosts:
-    - reporter.snacker-tracker.qa.k8s.fscker.org
+    - recorder.snacker-tracker.dev.k8s.fscker.org
   tls:
-    - secretName: reporter-snacker-tracker-qa-k8s-fscker-org-tls
+    - secretName: recorder-snacker-tracker-dev-k8s-fscker-org
       hosts:
-        - reporter.snacker-tracker.qa.k8s.fscker.org
+        - recorder.snacker-tracker.dev.k8s.fscker.org
 
 postgresql:
   enabled: true
-  postgresqlUsername: "undefined"
+  postgresqlUsername: "snacker-tracker-reporter-qa"
   postgresqlPassword: "undefined"
-  postgresqlDatabase: "undefined"    
+  postgresqlDatabase: "snacker-tracker-reporter-qa"
+  extraEnv:
+    - name: POSTGRESQL_POSTGRES_PASSWORD
+      value: "changeme"
 
 config:
   env:
-    ENVIRONMENT_NAME: qa
+    ENVIRONMENT_NAME: dev
     USE_SWAGGER_VALIDATION: "true"
     AUTH0_ENABLED: "true"
     AUTH0_ISSUER: ""

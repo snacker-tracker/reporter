@@ -8,10 +8,10 @@ ingress:
         - reporter.snacker-tracker.prod.k8s.fscker.org
 
 postgresql:
-  enabled: false
-  postgresqlUsername: "undefined"
+  enabled: true
+  postgresqlUsername: "snacker-tracker-reporter-prod"
   postgresqlPassword: "undefined"
-  postgresqlDatabase: "undefined"
+  postgresqlDatabase: "snacker-tracker-reporter-prod"
 
 config:
   env:
