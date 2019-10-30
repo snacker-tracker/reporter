@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -e
+
+./auto/dev-environment ./node_modules/.bin/swagger-cli validate ./src/swagger.yml

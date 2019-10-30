@@ -1,0 +1,252 @@
+format_version: 2
+common:
+  tasks:
+    deploy: &deploy
+      script: |
+        set -e
+
+        helm upgrade --install --wait --timeout 300 \
+          --namespace ${PROJECT}-$K8S_NAMESPACE \
+          ${CHART_NAME}-$K8S_NAMESPACE \
+          ./chart/${CHART_NAME}-*.tgz \
+          --values ./chart/${K8S_NAMESPACE}.yml \
+          --set config.secrets.DATABASE_PASSWORD="${DATABASE_PASSWORD}"
+
+    migrate: &migrate
+      script: |
+        set -e
+
+        docker pull \
+          ${REGISTRY}/${IMAGE}:${GO_PIPELINE_LABEL}
+
+        echo -- done pulling
+
+        docker run \
+          -e DATABASE_HOST=${DATABASE_HOST} \
+          -e DATABASE_NAME=${DATABASE_NAME} \
+          -e DATABASE_USERNAME=${DATABASE_USERNAME} \
+          -e DATABASE_PASSWORD=${DATABASE_PASSWORD} \
+          -e ENVIRONMENT_NAME=${K8S_NAMESPACE} \
+          -e DEBUG="knex:query" \
+          ${REGISTRY}/${IMAGE}:${GO_PIPELINE_LABEL} \
+          yarn knex \
+          --knexfile ./src/database/knexfile.js \
+          migrate:latest
+
+    seed: &seed
+      script: |
+        set -e
+
+        docker pull \
+          ${REGISTRY}/${IMAGE}:${GO_PIPELINE_LABEL}
+
+        echo -- done pulling
+
+        docker run \
+          -e DATABASE_HOST=${DATABASE_HOST} \
+          -e DATABASE_NAME=${DATABASE_NAME} \
+          -e DATABASE_USERNAME=${DATABASE_USERNAME} \
+          -e DATABASE_PASSWORD=${DATABASE_PASSWORD} \
+          -e ENVIRONMENT_NAME=${K8S_NAMESPACE} \
+          -e DEBUG="knex:query" \
+          ${REGISTRY}/${IMAGE}:${GO_PIPELINE_LABEL} \
+          yarn knex \
+          --knexfile ./src/database/knexfile.js \
+          seed:run
+
+pipelines:
+  snacker-tracker-reporter-test:
+    group: snacker-tracker-reporter
+    label_template: "${git[:8]}"
+    lock_behavior: unlockWhenFinished
+    timer:
+      spec: "* * * * * ? */15"
+      only_on_changes: yes
+    materials:
+      git:
+        type: configrepo
+    environment_variables:
+      # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
+      IMAGE: snacker-tracker/reporter
+      CHART_NAME: snacker-tracker-reporter
+      PROJECT: snacker-tracker
+    stages:
+      - tests:
+          jobs:
+            tests:
+              tasks:
+                - script: |
+                    ./auto/clean-up
+
+                    set -e
+
+                    ./auto/test
+
+              artifacts:
+                - test:
+                    source: coverage/
+
+            lint:
+              resources:
+                - dind
+              tasks:
+                - script: |
+                    ./auto/clean-up
+
+                    set -e
+
+                    ./auto/lint
+
+            audit:
+              resources:
+                - dind
+              tasks:
+                - script: |
+                    ##AUDIT_RESULT="$(./auto/yarn audit)"
+                    AUDIT_RESULT="$(docker run -v `pwd`:/app/ -w /app/ node:10 yarn audit)"
+                    set -e
+
+                    echo "$AUDIT_RESULT"
+
+                    if [ "$(echo $AUDIT_RESULT | grep High | wc -l)" -gt 0 ]; then
+                      exit 1
+                    fi
+
+            validate-swagger:
+              resources:
+                - dind
+              tasks:
+                - script: |
+                    set -e
+
+                    ./auto/validate-swagger
+
+  snacker-tracker-reporter-build:
+    group: snacker-tracker-reporter
+    label_template: "0.1.${COUNT}-${upstream}"
+    lock_behavior: unlockWhenFinished
+    materials:
+      upstream:
+        pipeline: snacker-tracker-reporter-test
+        stage: tests
+      git:
+        type: configrepo
+    environment_variables:
+      # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
+      IMAGE: snacker-tracker/reporter
+      CHART_NAME: snacker-tracker-reporter
+      PROJECT: snacker-tracker
+    stages:
+      - package:
+          jobs:
+            build-image:
+              resources:
+                - dind
+              tasks:
+                - script: |
+                    set -e
+
+                    cat package.json | jq ".version=\"$GO_PIPELINE_LABEL\"" > package-2.json
+                    docker build --pull -t ${REGISTRY}/${IMAGE}:${GO_PIPELINE_LABEL} \
+                      --label version=${GO_PIPELINE_LABEL} \
+                      --label git-commit=${GO_REVISION_GIT} \
+                      --label go-pipeline=${GO_PIPELINE_NAME} \
+                      --label go-pipeline-counter=${GO_PIPELINE_COUNTER} \
+                      --label go-pipeline-stage=${GO_STAGE_NAME} \
+                      --label go-pipeline-stage-counter=${GO_STAGE_COUNTER} \
+                      --label go-pipeline-job=${GO_JOB_NAME} \
+                      --build-arg APP_VERSION=${GO_PIPELINE_LABEL} \
+                      .
+
+                    docker tag ${REGISTRY}/${IMAGE}:${GO_PIPELINE_LABEL} ${REGISTRY}/${IMAGE}:latest
+                    docker push ${REGISTRY}/${IMAGE}:${GO_PIPELINE_LABEL}
+                    docker push ${REGISTRY}/${IMAGE}:latest
+
+            package:
+              elastic_profile_id: kubectl-1.12.0
+              tasks:
+                - script: |
+                    set -e
+
+                    helm lint helm-charts/${CHART_NAME}
+
+                    helm package --version "$(echo $GO_PIPELINE_LABEL | awk -F '-' '{print $1}')" --app-version $GO_PIPELINE_LABEL ./helm-charts/${CHART_NAME}
+              artifacts:
+                - build:
+                    source: snacker-tracker-reporter-*.tgz
+                    destination: ./chart/
+                - build:
+                    source: helm-charts/values/*
+                    destination: ./chart/
+
+  snacker-tracker-reporter-deploy-qa:
+    group: snacker-tracker-reporter
+    label_template: "${upstream}"
+    lock_behavior: unlockWhenFinished
+    materials:
+      upstream:
+        pipeline: snacker-tracker-reporter-build
+        stage: package
+    environment_variables:
+      K8S_NAMESPACE: qa
+      CHART_NAME: snacker-tracker-reporter
+      PROJECT: snacker-tracker
+    secure_variables:
+      DATABASE_PASSWORD: "AES:YRf7dHcH/HEiHgW0+Ubwmw==:TNX9W25I4VtcktzqxM85n/3d6EYa/NuOGeT/BQEr4OU="
+    stages:
+      - deploy:
+          jobs:
+            helm-upgrade:
+              tasks:
+                - fetch:
+                    pipeline: snacker-tracker-reporter-build
+                    stage: package
+                    job: package
+                    source: chart/
+                    destination: ./
+                - *deploy
+
+  snacker-tracker-reporter-deploy-qa-seed:
+    group: snacker-tracker-reporter
+    label_template: "${upstream}"
+    lock_behavior: unlockWhenFinished
+    timer:
+      spec: "* * * * * ? */15"
+      only_on_changes: yes
+    materials:
+      git:
+        type: configrepo
+      upstream:
+        pipeline: snacker-tracker-reporter-deploy-qa
+        stage: deploy
+    environment_variables:
+      IMAGE: snacker-tracker-reporter
+      # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
+      CHART_NAME: snacker-tracker-reporter
+      DATABASE_HOST: undefined
+      DATABASE_NAME: undefined
+      DATABASE_USERNAME: undefined
+      K8S_NAMESPACE: qa
+      PROJECT: snacker-tracker
+    secure_variables:
+      DATABASE_PASSWORD: "AES:YRf7dHcH/HEiHgW0+Ubwmw==:TNX9W25I4VtcktzqxM85n/3d6EYa/NuOGeT/BQEr4OU="
+    stages:
+      - migrate:
+          approval:
+            type: manual
+          jobs:
+            migrate:
+              resources:
+                - dind
+              tasks:
+                - *migrate
+
+      - seed:
+          approval:
+            type: manual
+          jobs:
+            seeding:
+              resources:
+                - dind
+              tasks:
+                - *seed

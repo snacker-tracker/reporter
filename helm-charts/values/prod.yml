@@ -1,0 +1,28 @@
+ingress:
+  enabled: true
+  hosts:
+    - reporter.snacker-tracker.prod.k8s.fscker.org
+  tls:
+    - secretName: reporter-snacker-tracker-prod-k8s-fscker-org-tls
+      hosts:
+        - reporter.snacker-tracker.prod.k8s.fscker.org
+
+postgresql:
+  enabled: false
+  postgresqlUsername: "undefined"
+  postgresqlPassword: "undefined"
+  postgresqlDatabase: "undefined"
+
+config:
+  env:
+    ENVIRONMENT_NAME: prod
+    USE_SWAGGER_VALIDATION: "true"
+    AUTH0_ENABLED: "true"
+    AUTH0_ISSUER: undefined
+    AUTH0_AUDIENCE: undefined
+    DATABASE_HOST: undefined
+    DATABASE_NAME: undefined
+    DATABASE_USERNAME: rundefined
+
+  secrets:
+    DATABASE_PASSWORD: "tbd"

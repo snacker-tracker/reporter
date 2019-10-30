@@ -1,0 +1,51 @@
+{
+  "name": "snacker-tracker-reporter",
+  "version": "0.0.1",
+  "description": "Tracks snacks taken from the office",
+  "main": "index.js",
+  "repository": "https://github.com/snacker-tracker/reporter",
+  "author": "Laurence MacGuire",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "dev": "NODE_ENV='development' ./node_modules/.bin/nodemon -e js,yml -w src --exec \"babel-node src\"",
+    "build": "babel src -s -D -d dist",
+    "start": "node dist",
+    "test": "jest --coverage src",
+    "lint": "eslint src",
+    "audit": "yarn audit",
+    "knex": "./node_modules/.bin/babel-node ./node_modules/.bin/knex",
+    "swagger:deref": "./node_modules/.bin/babel-node ./scripts/swagger-dereference.js",
+    "cucumber": "./node_modules/.bin/babel-node ./node_modules/.bin/cucumber-js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.559.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-openapi": "^5.0.0",
+    "express-prom-bundle": "^5.1.5",
+    "express-winston": "^4.0.1",
+    "jest": "^24.9.0",
+    "knex": "^0.20.0",
+    "nodemon": "^1.19.4",
+    "objection": "^1.6.11",
+    "pg": "^7.12.1",
+    "prom-client": "^11.5.3",
+    "winston": "^3.2.1",
+    "yaml": "^1.7.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
+    "@babel/node": "^7.6.3",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/preset-env": "^7.6.3",
+    "babel-eslint": "^10.0.3",
+    "babel-jest": "^24.9.0",
+    "chai": "^4.2.0",
+    "cucumber": "^6.0.3",
+    "eslint": "^6.6.0",
+    "swagger-cli": "^2.3.3"
+  }
+}

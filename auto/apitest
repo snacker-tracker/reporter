@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -e
+
+# function finish {
+#   if [[ -n "${GO_PIPELINE_LABEL+1}" ]]; then
+#     echo "in GOCD. Kill all containers"
+#     ./auto/clean-up || true
+#   fi
+# }
+
+# trap finish EXIT
+
+# docker volume create yarn-cache > /dev/null || true
+
+# docker-compose -f ./integration-tests/docker-compose.yml up \
+#   --abort-on-container-exit \
+#   --exit-code-from apitest
+
+export SERVICE="apitest"
+
+./auto/dev-environment yarn apitest --runInBand --forceExit

@@ -1,0 +1,10 @@
+node_modules
+coverage
+yarn-error.log
+
+.terraform
+.env
+swagger
+
+# Reminder for the remaining products -> Ask Andrian
+postPoc.yml

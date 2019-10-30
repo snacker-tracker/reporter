@@ -1,0 +1,154 @@
+openapi: 3.0.0
+info:
+  version: 0.0.1
+  title: Snacker-Tracker-Reporter
+  description: Tracking the snacks at the office
+
+servers:
+  - url: /v1
+
+tags:
+  - name: scans
+    description: >
+      Scanning barcodes
+#  - name: codes
+#    description: >
+#      Code management
+
+paths:
+  /scans:
+    get:
+      operationId: ListScans
+      tags:
+        - scans
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            format: int64
+            default: 100
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            format: int64
+            default: 0
+      responses:
+        "200":
+          description: |
+            Return a list of participating products
+          headers:
+            X-Swagger-Response-Valid:
+              schema:
+                type: boolean
+            X-Swagger-Response-Error-Count:
+              schema:
+                type: integer
+                format: int64
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScanList"
+
+    post:
+      operationId: CreateScan
+      tags:
+        - scans
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateScanPayload"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/CreateScanPayload"
+
+        required: true
+      responses:
+        "201":
+          description: |
+            Record a scan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Scan"
+
+  /scans/{scanId}:
+    parameters:
+      - name: scanId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: GetScan
+      tags:
+        - scans
+      responses:
+        "200":
+          description: |
+            Scan Details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Scan"
+    delete:
+      operationId: DeleteScan
+      tags:
+        - scans
+      responses:
+        "201":
+          description: |
+            Scan Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScanDeletion"
+
+components:
+  schemas:
+    Pagination:
+      type: object
+      additionalProperties: false
+      properties:
+        size:
+          type: integer
+          format: int64
+        next:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+
+    Scan:
+      type: object
+      required:
+        - id
+        - code
+        - scanned_at
+        - recorded_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        scanned_at:
+          type: string
+          format: date-time
+        recorded_at:
+          type: string
+          format: date-time
+
+    CreateScanPayload:
+      type: object
+      properties:
+        scanned_at:
+          type: string
+          format: date-time
+        code:
+          type: string

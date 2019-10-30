@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+./auto/yarn knex --knexfile ./src/database/knexfile.js ${@}

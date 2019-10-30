@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+export SERVICE="full"
+
+./auto/dev-environment yarn dev

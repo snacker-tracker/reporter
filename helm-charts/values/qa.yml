@@ -1,0 +1,35 @@
+ingress:
+  enabled: true
+  hosts:
+    - reporter.snacker-tracker.qa.k8s.fscker.org
+  tls:
+    - secretName: reporter-snacker-tracker-qa-k8s-fscker-org-tls
+      hosts:
+        - reporter.snacker-tracker.qa.k8s.fscker.org
+
+postgresql:
+  enabled: true
+  postgresqlUsername: "undefined"
+  postgresqlPassword: "undefined"
+  postgresqlDatabase: "undefined"    
+
+config:
+  env:
+    ENVIRONMENT_NAME: qa
+    USE_SWAGGER_VALIDATION: "true"
+    AUTH0_ENABLED: "true"
+    AUTH0_ISSUER: ""
+    AUTH0_AUDIENCE: ""
+    DATABASE_HOST: undefined
+    DATABASE_NAME: undefined
+    DATABASE_USERNAME: undefined
+    AUTH0_CLIENT_ID: undefined
+
+  secrets:
+    DATABASE_PASSWORD: "undefined"
+
+resources:
+  # NON-DEFAULT: We should *always* specify `requests`, but probably not `limits`
+  requests:
+    cpu: 0.01
+    memory: 192Mi
