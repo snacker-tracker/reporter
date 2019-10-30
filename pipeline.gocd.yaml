@@ -219,7 +219,7 @@ pipelines:
       # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
       IMAGE: snacker-tracker/reporter
       CHART_NAME: snacker-tracker-reporter
-      DATABASE_HOST: "snacker-tracker-reporter-qa-postgresql.snacker-tracker.svc.cluster.local"
+      DATABASE_HOST: "snacker-tracker-reporter-qa-postgresql.snacker-tracker-qa.svc.cluster.local"
       DATABASE_NAME: snacker-tracker-reporter-qa
       DATABASE_USERNAME: snacker-tracker-reporter-qa
       K8S_NAMESPACE: qa
