@@ -219,9 +219,9 @@ pipelines:
       # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
       IMAGE: snacker-tracker/reporter
       CHART_NAME: snacker-tracker-reporter
-      DATABASE_HOST: undefined
-      DATABASE_NAME: undefined
-      DATABASE_USERNAME: undefined
+      DATABASE_HOST: "snacker-tracker-reporter-qa-postgresql"
+      DATABASE_NAME: snacker-tracker-reporter-qa
+      DATABASE_USERNAME: snacker-tracker-reporter-qa
       K8S_NAMESPACE: qa
       PROJECT: snacker-tracker
     secure_variables:
