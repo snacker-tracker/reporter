@@ -21,7 +21,7 @@
     "navigator": true,
     "window": true
   },
-  "extends": ["eslint:recommended", "prettier"],
+  "extends": ["eslint:recommended"],
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaVersion": 8,
@@ -31,7 +31,7 @@
     "es6": true,
     "node": true
   },
-  "plugins": ["prettier"],
+  "plugins": [],
   "rules": {
     "no-unsafe-finally": 0,
     "max-len": [
