@@ -163,7 +163,6 @@ pipelines:
                     docker push ${REGISTRY}/${IMAGE}:latest
 
             package:
-              elastic_profile_id: kubectl-1.12.0
               tasks:
                 - script: |
                     set -e
