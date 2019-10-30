@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: registry.k8s.fscker.org/snacker-tracker/recorder
+  repository: registry.k8s.fscker.org/snacker-tracker/reporter
   # tag: stable
   pullPolicy: IfNotPresent
 
