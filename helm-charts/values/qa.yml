@@ -4,11 +4,16 @@ ingress:
     - host: recorder.snacker-tracker.qa.k8s.fscker.org
       paths:
         - /
+    - host: reporter.snacker-tracker.qa.k8s.fscker.org
+      paths:
+        - /
   tls:
     - secretName: recorder-snacker-tracker-qa-k8s-fscker-org
       hosts:
         - recorder.snacker-tracker.qa.k8s.fscker.org
-
+    - secretName: reporter-snacker-tracker-qa-k8s-fscker-org
+      hosts:
+        - reporter.snacker-tracker.qa.k8s.fscker.org
 postgresql:
   enabled: true
   postgresqlUsername: "snacker-tracker-reporter-qa"
