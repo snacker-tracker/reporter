@@ -216,8 +216,8 @@ pipelines:
         pipeline: snacker-tracker-reporter-deploy-qa
         stage: deploy
     environment_variables:
-      IMAGE: snacker-tracker-reporter
       # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
+      IMAGE: snacker-tracker/reporter
       CHART_NAME: snacker-tracker-reporter
       DATABASE_HOST: undefined
       DATABASE_NAME: undefined
