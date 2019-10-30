@@ -87,8 +87,6 @@ pipelines:
                     source: coverage/
 
             lint:
-              resources:
-                - dind
               tasks:
                 - script: |
                     ./auto/clean-up
@@ -98,8 +96,6 @@ pipelines:
                     ./auto/lint
 
             audit:
-              resources:
-                - dind
               tasks:
                 - script: |
                     ##AUDIT_RESULT="$(./auto/yarn audit)"
@@ -113,8 +109,6 @@ pipelines:
                     fi
 
             validate-swagger:
-              resources:
-                - dind
               tasks:
                 - script: |
                     set -e
@@ -140,8 +134,6 @@ pipelines:
       - package:
           jobs:
             build-image:
-              resources:
-                - dind
               tasks:
                 - script: |
                     set -e
@@ -235,8 +227,6 @@ pipelines:
             type: manual
           jobs:
             migrate:
-              resources:
-                - dind
               tasks:
                 - *migrate
 
@@ -245,7 +235,5 @@ pipelines:
             type: manual
           jobs:
             seeding:
-              resources:
-                - dind
               tasks:
                 - *seed
