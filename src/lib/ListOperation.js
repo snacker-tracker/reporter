@@ -16,14 +16,14 @@ export default class ListOperation extends Operation {
         let q = this.constructor.model.query()
 
         q.options({ 'operationId': this.constructor.name })
-        if (!this.args.include_deleted) {
+        if (this.constructor.model.hasDeletion && !this.args.include_deleted) {
           q.where({ '_deleted_at': null })
         }
 
         q.skipUndefined()
         q.offset(this.args.offset)
         q.limit(this.args.limit)
-        q.orderBy('_created_at', 'asc')
+        q.orderBy('recorded_at', 'asc')
 
         return q
       })()
