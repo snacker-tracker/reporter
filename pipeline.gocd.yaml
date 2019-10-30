@@ -191,7 +191,7 @@ pipelines:
       CHART_NAME: snacker-tracker-reporter
       PROJECT: snacker-tracker
     secure_variables:
-      DATABASE_PASSWORD: "AES:YRf7dHcH/HEiHgW0+Ubwmw==:TNX9W25I4VtcktzqxM85n/3d6EYa/NuOGeT/BQEr4OU="
+      DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
     stages:
       - deploy:
           jobs:
@@ -228,7 +228,7 @@ pipelines:
       K8S_NAMESPACE: qa
       PROJECT: snacker-tracker
     secure_variables:
-      DATABASE_PASSWORD: "AES:YRf7dHcH/HEiHgW0+Ubwmw==:TNX9W25I4VtcktzqxM85n/3d6EYa/NuOGeT/BQEr4OU="
+      DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
     stages:
       - migrate:
           approval:
