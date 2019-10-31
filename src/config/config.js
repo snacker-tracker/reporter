@@ -1,10 +1,9 @@
 const baseConfig = env => ({
   ENVIRONMENT_NAME: env.ENVIRONMENT_NAME,
-  port: process.env.PORT || 5000,
+  port: env.PORT || 5000,
   bodyLimit: '100kb',
   corsHeaders: ['Link'],
-  // we're defaulting to no, for now
-  useSwaggerValidation: !env.USE_SWAGGER_VALIDATION == 'false',
+  useSwaggerValidation: true,
   database: {
     host: env.DATABASE_HOST,
     database: env.DATABASE_NAME,
@@ -14,8 +13,8 @@ const baseConfig = env => ({
   kinesis: {
     enabled: true,
     region: 'local',
-    endpoint: 'http://kinesis:4567',
-    stream_name: 'snacker-tracker',
+    endpoint: env.KINESIS_ENDPOINT || 'http://kinesis:4567',
+    stream_name: env.KINESIS_STREAM || 'snacker-tracker',
     accessKeyId: 'daasd',
     secretAccessKey: 'daasd',
   },

@@ -43,6 +43,8 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD-super-secure}
       AWS_ACCESS_KEY: empty
       AWS_SECRET_ACCESS_KEY: empty
+      KINESIS_ENDPOINT: http://kinesis:4567/
+      KINESIS_STREAM: snack-stream
 
   full:
     <<: *bare

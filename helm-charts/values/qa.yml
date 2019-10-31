@@ -29,9 +29,12 @@ config:
     DATABASE_HOST: snacker-tracker-reporter-qa-postgresql.snacker-tracker-qa.svc.cluster.local
     DATABASE_NAME: snacker-tracker-reporter-qa
     DATABASE_USERNAME: snacker-tracker-reporter-qa
+    KINESIS_ENDPOINT: "http://kinesalite.aws.svc.cluster.local"
+    AWS_ACCESS_KEY_ID: "undefined"
 
   secrets:
     DATABASE_PASSWORD: "undefined"
+    AWS_SECRET_ACCESS_KEY: "undefined"
 
 resources:
   # NON-DEFAULT: We should *always* specify `requests`, but probably not `limits`
