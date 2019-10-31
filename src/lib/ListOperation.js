@@ -23,7 +23,7 @@ export default class ListOperation extends Operation {
         q.skipUndefined()
         q.offset(this.args.offset)
         q.limit(this.args.limit)
-        q.orderBy('recorded_at', 'asc')
+        //q.orderBy('recorded_at', 'asc')
 
         return q
       })()

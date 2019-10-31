@@ -17,6 +17,40 @@ tags:
 
 paths:
   /codes:
+    get:
+      operationId: ListCodes
+      tags:
+        - scans
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            format: int64
+            default: 100
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            format: int64
+            default: 0
+      responses:
+        "200":
+          description: |
+            Return a list of participating products
+          headers:
+            X-Swagger-Response-Valid:
+              schema:
+                type: boolean
+            X-Swagger-Response-Error-Count:
+              schema:
+                type: integer
+                format: int64
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CodeList"
+
     post:
       operationId: CreateCode
       tags:
@@ -195,6 +229,16 @@ components:
         code:
           type: string
 
+    ScanList:
+      type: object
+      properties:
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Scan"
+
     Code:
       type: object
       required:
@@ -224,3 +268,13 @@ components:
           type: string
         name:
           type: string
+
+    CodeList:
+      type: object
+      properties:
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Code"
