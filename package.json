@@ -9,8 +9,10 @@
   "private": false,
   "scripts": {
     "dev": "NODE_ENV='development' ./node_modules/.bin/nodemon -e js,yml -w src --exec \"babel-node src\"",
+    "stream-processor": "NODE_ENV='development' ./node_modules/.bin/nodemon -e js,yml -w src --exec \"babel-node src/stream.js\"",
     "build": "babel src -s -D -d dist",
     "start": "node dist",
+    "start-stream": "node dist/stream.js",
     "test": "jest --coverage src",
     "lint": "eslint src",
     "audit": "yarn audit",
