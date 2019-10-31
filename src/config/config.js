@@ -4,6 +4,7 @@ const baseConfig = env => ({
   bodyLimit: '100kb',
   corsHeaders: ['Link'],
   useSwaggerValidation: true,
+  reporter_base_url: env.REPORTER_BASE_URL || 'http://full:5000/v1',
   database: {
     host: env.DATABASE_HOST,
     database: env.DATABASE_NAME,

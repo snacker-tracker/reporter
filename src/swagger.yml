@@ -16,6 +16,48 @@ tags:
 #      Code management
 
 paths:
+  /codes:
+    post:
+      operationId: CreateCode
+      tags:
+        - codes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCodePayload"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/CreateCodePayload"
+
+        required: true
+      responses:
+        "201":
+          description: |
+            Create a barcode
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Code"
+  /codes/{code}:
+    get:
+      operationId: GetCode
+      tags:
+        - codes
+      parameters:
+        - in: path
+          name: code
+          schema:
+            type: string
+      responses:
+        "202":
+          description: |
+            Get a barcode
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Code"
+
   /scans:
     get:
       operationId: ListScans
@@ -151,4 +193,34 @@ components:
           type: string
           format: date-time
         code:
+          type: string
+
+    Code:
+      type: object
+      required:
+        - code
+        - name
+        - created_at
+        - updated_at
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateCodePayload:
+      type: object
+      required:
+        - code
+        - name
+      properties:
+        code:
+          type: string
+        name:
           type: string

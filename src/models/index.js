@@ -1,3 +1,4 @@
 import Scan from './Scan'
+import Code from './Code'
 
-export { Scan }
+export { Scan, Code }

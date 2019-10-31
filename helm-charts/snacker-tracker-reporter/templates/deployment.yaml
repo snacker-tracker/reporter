@@ -93,14 +93,14 @@ spec:
             - name: http
               containerPort: {{ .Values.service.internal_port }}
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /health?probe=liveness
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /health?probe=readiness
-              port: http
+#          livenessProbe:
+#            httpGet:
+ #             path: /health?probe=liveness
+ #             port: http
+ #         readinessProbe:
+#            httpGet:
+#              path: /health?probe=readiness
+#              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           envFrom:
