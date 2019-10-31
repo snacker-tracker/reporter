@@ -60,10 +60,9 @@ class KinesisConsumer {
 
 class MyConsumer extends KinesisConsumer {
   async process(record) {
+    console.log(record.event, record.version, JSON.stringify(record.payload))
     switch(record.event) {
-      default:
-        console.log(record.event, record.version, JSON.stringify(record.payload))
-
+      case 'ScanCreated':
         try {
           const local_code = await axios.get(
             config.reporter_base_url + '/codes/' + record.payload.code
@@ -75,10 +74,8 @@ class MyConsumer extends KinesisConsumer {
           console.log(JSON.stringify(local_code.data, null, 2))
 
         } catch(error) {
-          console.log(error)
           if(error.response.status === 404) {
             console.log("Query the internet")
-
             const upc_search_result = await axios.get(
               'https://api.upcitemdb.com/prod/trial/lookup',
               {
@@ -89,8 +86,6 @@ class MyConsumer extends KinesisConsumer {
             )
 
             if(upc_search_result.status == 200) {
-              console.log(upc_search_result.data.items)
-
               const write_response = await axios.post(
                 config.reporter_base_url + '/codes/',
                 {
@@ -99,8 +94,10 @@ class MyConsumer extends KinesisConsumer {
                 }
               )
 
-              console.log(write_response)
+              console.log(write_response.data)
             }
+          } else {
+            console.log(error)
           }
         }
 
@@ -114,6 +111,9 @@ class MyConsumer extends KinesisConsumer {
         })
         console.log(JSON.stringify(upc_search_result.data, null, 2))
         break
+
+      default:
+        console.log('doing nothing with this')
     }
   }
 }
