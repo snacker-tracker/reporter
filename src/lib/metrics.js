@@ -40,24 +40,6 @@ const auth0_time_spent = new prom.Histogram({
   buckets: [0.1, 0.25, 0.5, 1, 2]
 })
 
-const auth0_rate_limiting_limit = new prom.Gauge({
-  name: 'auth0_rate_limiting_limit',
-  help: 'the current limit of requests to auth0',
-  labelNames: ['tenant', 'action'],
-})
-
-const auth0_rate_limiting_remaining = new prom.Gauge({
-  name: 'auth0_rate_limiting_remaining',
-  help: 'number of requests remaining before we hit the limit',
-  labelNames: ['tenant', 'action'],
-})
-
-const auth0_rate_limiting_reset = new prom.Gauge({
-  name: 'auth0_rate_limiting_reset',
-  help: 'Timestamp at which the limit resets',
-  labelNames: ['tenant', 'action']
-})
-
 const knex_query_response_time = new prom.Histogram({
   name: 'knex_query_response_time_seconds',
   help: 'duration of queries in seconds',
@@ -71,12 +53,12 @@ const knex_query_affected_rows = new prom.Histogram({
   buckets: [0, 1, 5, 10, 25, 100]
 })
 
-const aws_api_time_spent = new prom.Histogram({
-  name: 'aws_api_time_spent',
-  help: 'time spent in operations',
-  labelNames: ['service', 'action', 'successful'],
-  buckets: [0.01, 0.05, 0.1, 0.5, 1, 2.5]
+const upc_queries = new prom.Counter({
+  name: 'upc_queries',
+  help: 'number of rows affected by a query',
+  labelNames: ['provider', 'successful']
 })
+
 
 const Metrics = {
   send_email_time_spent,
@@ -84,13 +66,8 @@ const Metrics = {
   swagger_operation_time_spent,
   swagger_invalid_responses,
   swagger_response_errors,
-  auth0_time_spent,
-  auth0_rate_limiting_limit,
-  auth0_rate_limiting_remaining,
-  auth0_rate_limiting_reset,
   knex_query_response_time,
-  knex_query_affected_rows,
-  aws_api_time_spent
+  knex_query_affected_rows
 }
 
 export default Metrics
