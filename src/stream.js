@@ -89,6 +89,9 @@ class MyConsumer extends KinesisConsumer {
                   }
                 }
               )
+
+              console.log(JSON.stringify(upc_search_result.headers, null, 2))
+              console.log(JSON.stringify(upc_search_result.data, null, 2))
             } catch(error) {
               console.log("Failed to query the UPC database")
               return
@@ -96,6 +99,16 @@ class MyConsumer extends KinesisConsumer {
 
             if(upc_search_result.status != 200) {
               console.log("UPC returned non 200 (" + upc_search_result.status.toString() + ")")
+              return
+            }
+
+            if(upc_search_result.data.items == undefined) {
+              console.log("Empty search results -- bailing")
+              return
+            }
+
+            if(upc_search_result.data.items.length < 1) {
+              console.log("Empty search results -- bailing")
               return
             }
 
