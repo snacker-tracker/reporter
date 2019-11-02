@@ -20,7 +20,7 @@ paths:
     get:
       operationId: ListCodes
       tags:
-        - scans
+        - codes
       parameters:
         - in: query
           name: limit
