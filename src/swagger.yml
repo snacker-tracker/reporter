@@ -81,10 +81,11 @@ paths:
       parameters:
         - in: path
           name: code
+          required: true
           schema:
             type: string
       responses:
-        "202":
+        "200":
           description: |
             Get a barcode
           content:
@@ -241,6 +242,7 @@ components:
 
     Code:
       type: object
+      additionalProperties: false
       required:
         - code
         - name
@@ -251,6 +253,8 @@ components:
           type: string
         name:
           type: string
+        url:
+          type: string
         created_at:
           type: string
           format: date-time
@@ -260,6 +264,7 @@ components:
 
     CreateCodePayload:
       type: object
+      additionalProperties: false
       required:
         - code
         - name
@@ -267,6 +272,8 @@ components:
         code:
           type: string
         name:
+          type: string
+        url:
           type: string
 
     CodeList:
