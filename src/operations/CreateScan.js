@@ -16,7 +16,7 @@ class CreateScan extends CreateOperation {
         ...req.body,
         id: uuid(),
         scanned_at: req.body.scanned_at || d,
-        recorded_at: d
+        created_at: d
       }
     }
   }

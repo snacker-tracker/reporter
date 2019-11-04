@@ -207,7 +207,7 @@ components:
         - id
         - code
         - scanned_at
-        - recorded_at
+        - created_at
       properties:
         id:
           type: string
@@ -217,7 +217,7 @@ components:
         scanned_at:
           type: string
           format: date-time
-        recorded_at:
+        created_at:
           type: string
           format: date-time
 
