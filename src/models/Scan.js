@@ -1,6 +1,8 @@
 import { Model } from 'objection'
 import connection from '../database/knex'
 
+import Code from './Code'
+
 import uuid from 'uuid'
 
 Model.knex(connection)
@@ -15,6 +17,20 @@ export default class Scan extends Model {
       return this.query().insert(scan)
     } else {
       return this.query().insertAndFetch(scan)
+    }
+  }
+
+  static get relationMappings() {
+    // Importing models here is a one way to avoid require loops.
+    return {
+      product: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Code,
+        join: {
+          from: 'scans.code',
+          to: 'codes.code'
+        }
+      }
     }
   }
 }

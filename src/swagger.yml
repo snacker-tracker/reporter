@@ -16,6 +16,29 @@ tags:
 #      Code management
 
 paths:
+  /stats/top-scans:
+    get:
+      operationId: GetTopScans
+      tags:
+        - stats
+      responses:
+        "200":
+          description: |
+            Return the list of most scanned items
+          headers:
+            X-Swagger-Response-Valid:
+              schema:
+                type: boolean
+            X-Swagger-Response-Error-Count:
+              schema:
+                type: integer
+                format: int64
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopScanList"
+
+
   /codes:
     get:
       operationId: ListCodes
@@ -285,3 +308,20 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Code"
+
+    TopScanList:
+      type: object
+      properties:
+        count:
+          type: number
+          format: int64
+        last_scan:
+          type: string
+          format: date-time
+        first_scan:
+          type: string
+          format: date-time
+        code:
+          type: string
+        product:
+          $ref: "#/components/schemas/Code"
