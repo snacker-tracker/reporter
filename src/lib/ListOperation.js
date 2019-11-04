@@ -6,7 +6,8 @@ export default class ListOperation extends Operation {
       include_deleted: req.query.include_deleted,
       include_meta: req.query.include_meta,
       limit: req.query.limit,
-      offset: req.query.offset
+      offset: req.query.offset,
+      order: this.constructor.model.order || ['created_at', 'desc']
     }
   }
 
@@ -23,7 +24,7 @@ export default class ListOperation extends Operation {
         q.skipUndefined()
         q.offset(this.args.offset)
         q.limit(this.args.limit)
-        //q.orderBy('recorded_at', 'asc')
+        q.orderBy(this.args.order[0], this.args.order[1])
 
         return q
       })()
