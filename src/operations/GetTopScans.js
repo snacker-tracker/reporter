@@ -1,4 +1,4 @@
-import ListOperation from '../lib/GetOperation'
+import ListOperation from '../lib/ListOperation'
 import { Scan } from '../models'
 
 class GetTopScans extends ListOperation {
@@ -8,25 +8,21 @@ class GetTopScans extends ListOperation {
     return item
   }
 
-  async resources() {
-    let q = this.constructor.model.query()
-    q.options({operationId: this.constructor.name})
-
-    q.select('code')
-    q.min('scanned_at as first_scan')
-    q.max('scanned_at as last_scan')
-    q.count('code').groupBy('code')
-    q.eager('product')
-    q.orderBy('count', 'desc')
-
+  resources(req) {
     return {
-      resource: q
-    }
-  }
+      resources: (() => {
+        let q = this.constructor.model.query()
+        q.options({operationId: this.constructor.name})
 
-  async extract_params(req) {
-    this.args = {
-      id: req.params.productId
+        q.select('code')
+        q.min('scanned_at as first_scan')
+        q.max('scanned_at as last_scan')
+        q.count('code').groupBy('code')
+        q.eager('product')
+        q.orderBy('count', 'desc')
+
+        return q
+      })()
     }
   }
 }
