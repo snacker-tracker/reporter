@@ -250,6 +250,11 @@ class MyConsumer extends KinesisConsumer {
           return
         }
 
+        if(!code.match(/^[0-9]+$/)) {
+          console.log("Doesnt look like a UPC")
+          return
+        }
+
         let bigc = await this.read_bigc(record.payload.code)
         console.log('bigc result', bigc)
 
