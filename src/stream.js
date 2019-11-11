@@ -250,12 +250,12 @@ class MyConsumer extends KinesisConsumer {
           return
         }
 
-        if(!code.match(/^[0-9]+$/)) {
+        if(!record.payload.code.match(/^[0-9]+$/)) {
           console.log("Doesnt look like a UPC")
           return
         }
 
-        if(code.length < 5 && code.length > 16) {
+        if(record.payload.code.length < 5 && record.payload.code.length > 16) {
           console.log("Doesnt look like a UPC")
           return
         }
