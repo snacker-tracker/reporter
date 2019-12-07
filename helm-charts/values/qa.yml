@@ -30,7 +30,7 @@ config:
     DATABASE_NAME: snacker-tracker-reporter-qa
     DATABASE_USERNAME: snacker-tracker-reporter-qa
     KINESIS_ENDPOINT: "http://kinesalite.aws.svc.cluster.local"
-    AWS_ACCESS_KEY_ID: "undefined"
+    AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE"
     REPORTER_BASE_URL: "http://snacker-tracker-reporter-qa.snacker-tracker-qa.svc.cluster.local/v1"
 
   secrets:

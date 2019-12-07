@@ -11,7 +11,8 @@ common:
           ./chart/${CHART_NAME}-*.tgz \
           --values ./chart/${K8S_NAMESPACE}.yml \
           --set postgresql.postgresqlPassword.DATABASE_PASSWORD="${DATABASE_PASSWORD}" \
-          --set config.secrets.DATABASE_PASSWORD="${DATABASE_PASSWORD}"
+          --set config.secrets.DATABASE_PASSWORD="${DATABASE_PASSWORD}" \
+          --set config.secrets.AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
 
     migrate: &migrate
       script: |
@@ -238,6 +239,7 @@ pipelines:
       PROJECT: snacker-tracker
     secure_variables:
       DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
+      AWS_SECRET_ACCESS_KEY: "AES:sD7ZqSU5xDUGEz6lwCBCOQ==:ujFaho4OGe60fY7+2OfOjeY/u5m3E2aYmlgS24PSP2GDWBEBvSug6D9NA/i+7qGl"
     stages:
       - deploy:
           jobs:
