@@ -34,6 +34,28 @@ common:
           --knexfile ./src/database/knexfile.js \
           migrate:latest
 
+    restore: &restore
+      script: |
+        set -e
+
+        function finish {
+          echo "in GOCD. Kill all containers"
+          ## Change ownership so that GoCD can clean up after itself
+          docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
+          ./auto/clean-up || true
+        }
+
+
+        trap finish EXIT
+
+        find ./
+
+#        docker run \
+#        -e PGPASSWORD="$DATABASE_PASSWORD" \
+#        -v `pwd`/backup:/mnt/backup/ \
+#        -w /mnt/backup/ \
+#         postgres:11 pg_dump --host=$DATABASE_HOST --username=$DATABASE_USERNAME --dbname=$DATABASE_NAME -f /mnt/backup/backup.sql
+
     seed: &seed
       script: |
         set -e
@@ -54,6 +76,26 @@ common:
           yarn knex \
           --knexfile ./src/database/knexfile.js \
           seed:run
+
+    backup: &backup
+      script: |
+
+        function finish {
+          echo "in GOCD. Kill all containers"
+          ## Change ownership so that GoCD can clean up after itself
+          docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
+          ./auto/clean-up || true
+        }
+
+
+        trap finish EXIT
+
+        docker run \
+        -e PGPASSWORD="$DATABASE_PASSWORD" \
+        -v `pwd`/backup:/mnt/backup/ \
+        -w /mnt/backup/ \
+         postgres:11 pg_dump --host=$DATABASE_HOST --username=$DATABASE_USERNAME --dbname=$DATABASE_NAME -f /mnt/backup/backup.sql
+
 
 pipelines:
   snacker-tracker-reporter-test:
@@ -227,22 +269,20 @@ pipelines:
     secure_variables:
       DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
     stages:
+      - load-prod-data:
+          jobs:
+            backup:
+              tasks:
+                - *backup
+#            restore:
+#              tasks:
+#                - *restore
+
       - migrate:
-          approval:
-            type: manual
           jobs:
             migrate:
               tasks:
                 - *migrate
-
-      - seed:
-          approval:
-            type: manual
-          jobs:
-            seeding:
-              tasks:
-                - *seed
-
 
   snacker-tracker-reporter-deploy-prod:
     group: snacker-tracker-reporter
