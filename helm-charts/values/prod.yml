@@ -15,14 +15,25 @@ postgresql:
 
 config:
   env:
+    PORT: "5000"
     ENVIRONMENT_NAME: prod
     USE_SWAGGER_VALIDATION: "true"
     AUTH0_ENABLED: "true"
     AUTH0_ISSUER: undefined
     AUTH0_AUDIENCE: undefined
-    DATABASE_HOST: undefined
-    DATABASE_NAME: undefined
-    DATABASE_USERNAME: rundefined
+    DATABASE_HOST: snacker-tracker-reporter-prod-postgresql.snacker-tracker-prod.svc.cluster.local
+    DATABASE_NAME: snacker-tracker-reporter-prod
+    DATABASE_USERNAME: snacker-tracker-reporter-prod
+    KINESIS_ENDPOINT: "http://kinesalite.aws.svc.cluster.local"
+    AWS_ACCESS_KEY_ID: "undefined"
+    REPORTER_BASE_URL: "http://snacker-tracker-reporter-prod.snacker-tracker-prod.svc.cluster.local/v1"
 
   secrets:
-    DATABASE_PASSWORD: "tbd"
+    DATABASE_PASSWORD: "undefined"
+    AWS_SECRET_ACCESS_KEY: "undefined"
+
+resources:
+  # NON-DEFAULT: We should *always* specify `requests`, but probably not `limits`
+  requests:
+    cpu: 0.01
+    memory: 192Mi

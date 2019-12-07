@@ -242,3 +242,71 @@ pipelines:
             seeding:
               tasks:
                 - *seed
+
+
+  snacker-tracker-reporter-deploy-prod:
+    group: snacker-tracker-reporter
+    label_template: "${upstream}"
+    lock_behavior: unlockWhenFinished
+    materials:
+      upstream:
+        pipeline: snacker-tracker-reporter-deploy-qa
+        stage: deploy
+    environment_variables:
+      K8S_NAMESPACE: prod
+      CHART_NAME: snacker-tracker-reporter
+      PROJECT: snacker-tracker
+    secure_variables:
+      DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
+    stages:
+      - deploy:
+          approval:
+            type: manual
+          jobs:
+            helm-upgrade:
+              tasks:
+                - fetch:
+                    pipeline: snacker-tracker-reporter-build/snacker-tracker-reporter-deploy-qa
+                    stage: package
+                    job: package
+                    source: chart/
+                    destination: ./
+                - *deploy
+
+  snacker-tracker-reporter-deploy-prod-seed:
+    group: snacker-tracker-reporter
+    label_template: "${upstream}"
+    lock_behavior: unlockWhenFinished
+    materials:
+      git:
+        type: configrepo
+      upstream:
+        pipeline: snacker-tracker-reporter-deploy-prod
+        stage: deploy
+    environment_variables:
+      REGISTRY: "registry.k8s.fscker.org"
+      IMAGE: snacker-tracker/reporter
+      CHART_NAME: snacker-tracker-reporter
+      DATABASE_HOST: "snacker-tracker-reporter-prod-postgresql.snacker-tracker-prod.svc.cluster.local"
+      DATABASE_NAME: snacker-tracker-reporter-prod
+      DATABASE_USERNAME: snacker-tracker-reporter-prod
+      K8S_NAMESPACE: prod
+      PROJECT: snacker-tracker
+    secure_variables:
+      DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
+    stages:
+      - migrate:
+          approval:
+            type: manual
+          jobs:
+            migrate:
+              tasks:
+                - *migrate
+
+      - seed:
+          approval:
+            type: manual
+          jobs:
+            seeding:
+              tasks:
+                - *seed
