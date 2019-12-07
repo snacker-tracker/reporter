@@ -22,9 +22,9 @@ const baseConfig = env => ({
     enabled: true,
     region: 'local',
     endpoint: env.KINESIS_ENDPOINT || 'http://kinesis:4567',
-    stream_name: env.KINESIS_STREAM || 'snacker-tracker',
-    accessKeyId: 'daasd',
-    secretAccessKey: 'daasd',
+    stream_name: env.KINESIS_STREAM || 'snacker-tracker-' + env.ENVIRONMENT_NAME,
+    accessKeyId: env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: env.AWS_SECRET_ACCESS_KEY
   },
 })
 
