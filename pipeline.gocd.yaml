@@ -53,7 +53,7 @@ common:
         -e PGPASSWORD="$DATABASE_PASSWORD" \
         -v `pwd`/prod-backup:/mnt/ \
         -w /mnt/backup/ \
-         postgres:11 psql --host=$DATABASE_HOST --username=$DATABASE_USERNAME -c "DROP DATABASE \"$DATABASE_NAME\""
+         postgres:11 psql --host=$DATABASE_HOST --username=postgres -c "DROP DATABASE \"$DATABASE_NAME\""
 
 
         docker run \
