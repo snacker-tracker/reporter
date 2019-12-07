@@ -53,7 +53,7 @@ common:
         -e PGPASSWORD="$DATABASE_PASSWORD" \
         -v `pwd`/prod-backup:/mnt/ \
         -w /mnt/backup/ \
-         postgres:11 psql --host=$DATABASE_HOST --dbname=$DATABASE_NAME --username=postgres -c "DROP TABLE \"codes\"; DROP TABLE \"scans\"; DROP TABLE \"knex_migrations\"; DROP TABLE \"knex_migrations_lock\""
+         postgres:11 psql --host=$DATABASE_HOST --dbname=$DATABASE_NAME --username=$DATABASE_USERNAME -c "DROP TABLE \"codes\"; DROP TABLE \"scans\"; DROP TABLE \"knex_migrations\"; DROP TABLE \"knex_migrations_lock\""
 
     seed: &seed
       script: |
