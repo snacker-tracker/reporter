@@ -38,6 +38,18 @@ class ImageRepository {
 
     return this.client.listObjects(params).promise()
   }
+
+  presign(key) {
+    const args = {
+      Bucket: this.bucket,
+      Key: key,
+      Expires: 300
+    }
+
+    return this.client.getSignedUrl('getObject', {
+      ...args
+    })
+  }
 }
 
 const IR = new ImageRepository(s3_client, s3_bucket)
