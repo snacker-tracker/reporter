@@ -38,7 +38,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/TopScanList"
 
-
   /codes:
     get:
       operationId: ListCodes
@@ -115,6 +114,95 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Code"
+
+    patch:
+      operationId: PatchCode
+      tags:
+        - codes
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchCodePayload"
+      responses:
+        "201":
+          description: |
+            Update a barcode
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Code"
+
+  /codes/{code}/pictures:
+    get:
+      operationId: ListCodePictures
+      tags:
+        - codes
+      parameters:
+        - in: path
+          required: true
+          name: code
+          schema:
+            type: string
+      responses:
+        "200":
+          description: |
+            Return a list of pictures for a code
+          headers:
+            X-Swagger-Response-Valid:
+              schema:
+                type: boolean
+            X-Swagger-Response-Error-Count:
+              schema:
+                type: integer
+                format: int64
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CodePictureList"
+
+    post:
+      operationId: CreateCodePicture
+      tags:
+        - codes
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: |
+            Picture uploaded
+          headers:
+            X-Swagger-Response-Valid:
+              schema:
+                type: boolean
+            X-Swagger-Response-Error-Count:
+              schema:
+                type: integer
+                format: int64
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CodePicture"
+
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                picture:
+                  type: string
+                  format: binary
 
   /scans:
     get:
@@ -244,8 +332,11 @@ components:
           type: string
           format: date-time
 
+
     CreateScanPayload:
       type: object
+      required:
+        - code
       properties:
         scanned_at:
           type: string
@@ -255,6 +346,9 @@ components:
 
     ScanList:
       type: object
+      required:
+        - pagination
+        - items
       properties:
         pagination:
           $ref: "#/components/schemas/Pagination"
@@ -275,6 +369,8 @@ components:
         code:
           type: string
         name:
+          type: string
+        brand:
           type: string
         url:
           type: string
@@ -299,6 +395,19 @@ components:
         url:
           type: string
 
+    PatchCodePayload:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+      properties:
+        brand:
+          type: string
+        name:
+          type: string
+        url:
+          type: string
+
     CodeList:
       type: object
       properties:
@@ -308,6 +417,37 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Code"
+
+    CodePictureList:
+      type: object
+      properties:
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CodePicture"
+
+    CodePicture:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - url
+        - last_modified
+        - size
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+        last_modified:
+          type: string
+          format: datetime
+        size:
+          type: number
+          format: int64
+
 
     TopScanList:
       type: object

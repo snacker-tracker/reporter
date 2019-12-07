@@ -16,12 +16,26 @@ services:
     volumes:
       - ./backup/:/mnt/backups/
 
-  pgtest:
-    image: postgres:11
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    ports:
+      - 8080:8080
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: snacker-tracker-reporter
-      POSTGRES_PASSWORD: super-secure
+      URL: http://localhost:5000/api-doc
+
+  s3:
+    image: minio/minio
+    volumes:
+      - minio-data:/mnt/data
+    command:
+      - minio
+      - server
+      - /mnt/data
+    ports:
+      - 9000
+    environment:
+      MINIO_ACCESS_KEY: 1234567890
+      MINIO_SECRET_KEY: 1234567890
 
   bare: &bare
     image: node:10
@@ -41,10 +55,11 @@ services:
       DATABASE_NAME: ${DATABASE_NAME-snacker-tracker-reporter-default}
       DATABASE_USERNAME: ${DATABASE_USERNAME-snacker-tracker-reporter}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD-super-secure}
-      AWS_ACCESS_KEY: empty
-      AWS_SECRET_ACCESS_KEY: empty
+      AWS_ACCESS_KEY_ID: 1234567890
+      AWS_SECRET_ACCESS_KEY: 1234567890
       KINESIS_ENDPOINT: http://kinesis:4567/
       KINESIS_STREAM: snack-stream
+      S3_ENDPOINT: http://s3:9000
 
   full:
     <<: *bare
@@ -53,9 +68,12 @@ services:
     depends_on:
       - pg
       - kinesis
+      - swagger-ui
+      - s3
 
 volumes:
   node_modules: {}
+  minio-data: {}
   yarn-cache: {
     external: true
   }

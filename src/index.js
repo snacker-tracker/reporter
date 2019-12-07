@@ -5,6 +5,7 @@ import bodyParser from 'body-parser'
 import express from 'express'
 import http from 'http'
 import path from 'path'
+import multer from 'multer'
 
 import request_id from './middlewares/request_id'
 
@@ -62,11 +63,31 @@ initialize({
   consumesMiddleware: {
     'application/json': bodyParser.json(),
     'application/x-www-form-urlencoded': bodyParser.urlencoded(),
-  },
+    'multipart/form-data': function(req, res, next) {
+        multer().any()(req, res, function(err) {
+          if (err) return next(err);
+          req.files.forEach(function(f) {
+            req.body[f.fieldname] = ''; // Set to empty string to satisfy OpenAPI spec validation
+          });
+          return next();
+        });
+      },
+    'application/octet-stream': function(req, res, next) {
+        multer().any()(req, res, function(err) {
+          //if (err) return next(err);
+          //req.files.forEach(function(f) {
+          //  req.body[f.fieldname] = ''; // Set to empty string to satisfy OpenAPI spec validation
+          //});
+          return next();
+        });
+      }
+
+  }
 })
 
 
 app.use((err, req, res, next) => {
+  console.log(err)
   res.status(err.status).json(err)
   next()
 })

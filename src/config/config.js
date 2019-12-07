@@ -5,6 +5,13 @@ const baseConfig = env => ({
   corsHeaders: ['Link'],
   useSwaggerValidation: true,
   reporter_base_url: env.REPORTER_BASE_URL || 'http://full:5000/v1',
+  s3: {
+    endpoint: env.S3_ENDPOINT || 'http://s3/',
+    bucket: env.S3_BUCKET || 'snacker-tracker-' + env.ENVIRONMENT_NAME,
+    accessKeyId: env.AWS_ACCESS_KEY_ID || 'none',
+    secretAccessKey: env.AWS_SECRET_ACCESS_KEY || 'none',
+    s3ForcePathStyle: true
+  },
   database: {
     host: env.DATABASE_HOST,
     database: env.DATABASE_NAME,

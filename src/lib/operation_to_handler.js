@@ -6,6 +6,42 @@ import AWS from 'aws-sdk'
 let kinesis_client
 let stream_name
 
+let s3_client
+let s3_bucket
+console.log(Config.s3)
+if(Config.s3) {
+  s3_client = new AWS.S3(Config.s3)
+  s3_bucket = Config.s3.bucket
+}
+
+class ImageRepository {
+  constructor(s3client, bucket) {
+    this.client = s3client
+    this.bucket = bucket
+  }
+
+  async put(key, readable) {
+    const args = {
+      Bucket: this.bucket,
+      Key: key,
+      Body: readable
+    }
+
+    return this.client.upload(args).promise()
+  }
+
+  async list(prefix) {
+    const params = {
+      Bucket: this.bucket,
+      Prefix: prefix
+    }
+
+    return this.client.listObjects(params).promise()
+  }
+}
+
+const IR = new ImageRepository(s3_client, s3_bucket)
+
 
 if (Config.kinesis.enabled) {
   kinesis_client = new AWS.Kinesis(Config.kinesis)
@@ -22,12 +58,12 @@ if (Config.kinesis.enabled) {
   stream_name = 'doesnt-exist'
 }
 
-const EP = new EventPublisher(kinesis_client, stream_name)
 
 const operation_to_handler = (operationId, operation) => {
   return [async (req, res) => {
 
     const l = new logger.constructor(logger.instance)
+const EP = new EventPublisher(kinesis_client, stream_name, {logger: l})
     if (req.correlation_id) {
       l.setContext('correlation_id', req.correlation_id)
     }
@@ -35,7 +71,8 @@ const operation_to_handler = (operationId, operation) => {
 
     const cmd = new operation({
       logger: l,
-      event_publisher: EP
+      event_publisher: EP,
+      image_repository: IR
     })
 
     let response
