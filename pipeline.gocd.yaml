@@ -55,13 +55,6 @@ common:
         -w /mnt/backup/ \
          postgres:11 psql --host=$DATABASE_HOST --username=postgres -c "DROP DATABASE \"$DATABASE_NAME\""
 
-
-        docker run \
-        -e PGPASSWORD="$DATABASE_PASSWORD" \
-        -v `pwd`/prod-backup:/mnt/backup/ \
-        -w /mnt/backup/ \
-         postgres:11 pg_dump --no-owner --no-acl --host=$DATABASE_HOST --username=$DATABASE_USERNAME --dbname=$DATABASE_NAME -f /mnt/backup/backup.sql
-
     seed: &seed
       script: |
         set -e
@@ -100,7 +93,7 @@ common:
         -e PGPASSWORD="$DATABASE_PASSWORD" \
         -v `pwd`/backup:/mnt/backup/ \
         -w /mnt/backup/ \
-         postgres:11 pg_dump --host=$DATABASE_HOST --username=$DATABASE_USERNAME --dbname=$DATABASE_NAME -f /mnt/backup/backup.sql
+         postgres:11 pg_dump --no-owner --no-acl --host=$DATABASE_HOST --username=$DATABASE_USERNAME --dbname=$DATABASE_NAME -f /mnt/backup/backup.sql
 
          find ./
 
