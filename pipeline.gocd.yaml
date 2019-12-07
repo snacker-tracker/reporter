@@ -98,6 +98,8 @@ common:
         -w /mnt/backup/ \
          postgres:11 pg_dump --host=$DATABASE_HOST --username=$DATABASE_USERNAME --dbname=$DATABASE_NAME -f /mnt/backup/backup.sql
 
+         find ./
+
 
 pipelines:
   snacker-tracker-reporter-test:
@@ -250,9 +252,6 @@ pipelines:
     group: snacker-tracker-reporter
     label_template: "${upstream}"
     lock_behavior: unlockWhenFinished
-    timer:
-      spec: "* * * * * ? */15"
-      only_on_changes: yes
     materials:
       git:
         type: configrepo
@@ -271,7 +270,7 @@ pipelines:
     secure_variables:
       DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
     stages:
-      - load-prod-data:
+      - backup-prod-data:
           jobs:
             backup:
               environment_variables:
@@ -283,8 +282,21 @@ pipelines:
                 DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
               tasks:
                 - *backup
+              artifacts:
+                - build:
+                    source: backup
+                    destination: ./prod-backup/
+
+      - restore-prod-data:
+          jobs:
             restore:
               tasks:
+                - fetch:
+                    pipeline: snacker-tracker-reporter-deploy-qa-seed
+                    stage: backup-prod-data
+                    job: backup
+                    source: prod-backup/
+                    destination: ./
                 - *restore
 
       - migrate:
