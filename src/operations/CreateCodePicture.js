@@ -48,7 +48,10 @@ class CreateCodePicture extends Operation {
 
     this.services.event_publisher.publish(
       ['CodePicture', 'Created'].join(''),
-      picture
+      {
+        ...picture,
+        code: this.args.body.code
+      }
     )
 
 
