@@ -52,7 +52,8 @@ class CreateCodePicture extends Operation {
       {
         ...picture,
         code: this.args.body.code
-      }
+      },
+      this.user
     )
 
 
