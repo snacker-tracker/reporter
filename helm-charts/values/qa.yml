@@ -33,10 +33,14 @@ config:
     S3_ENDPOINT: "https://s3.aws.k8s.fscker.org"
     AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE"
     REPORTER_BASE_URL: "http://snacker-tracker-reporter-qa.snacker-tracker-qa.svc.cluster.local/v1"
+    OAUTH_CLIENT_ID: NF6taWwXJ2Yj96ABQWUEx1dJPHXZyXqt
+    OAUTH_ISSUER: https://fscker-public-qa.eu.fscker.org
+    OAUTH_ENABLED: "true"
 
   secrets:
     DATABASE_PASSWORD: "undefined"
     AWS_SECRET_ACCESS_KEY: "undefined"
+    OAUTH_CLIENT_SECRET: "undefined"
 
 resources:
   # NON-DEFAULT: We should *always* specify `requests`, but probably not `limits`

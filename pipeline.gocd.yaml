@@ -12,6 +12,7 @@ common:
           --values ./chart/${K8S_NAMESPACE}.yml \
           --set postgresql.postgresqlPassword.DATABASE_PASSWORD="${DATABASE_PASSWORD}" \
           --set config.secrets.DATABASE_PASSWORD="${DATABASE_PASSWORD}" \
+          --set config.secrets.OAUTH_CLIENT_SECRET="${OAUTH_CLIENT_SECRET}" \
           --set config.secrets.AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
 
     migrate: &migrate
@@ -240,6 +241,7 @@ pipelines:
     secure_variables:
       DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
       AWS_SECRET_ACCESS_KEY: "AES:sD7ZqSU5xDUGEz6lwCBCOQ==:ujFaho4OGe60fY7+2OfOjeY/u5m3E2aYmlgS24PSP2GDWBEBvSug6D9NA/i+7qGl"
+      OAUTH_CLIENT_SECRET: "AES:2KEgFgvsaHh+AAVMqiiVmw==:D0/G7yDH8uLiSuP9EKYQE5wB2MqeSYdn+eVMS9LWx1E5frpbJ6sYYlpWB7YFzsa/tc03vf2LAGs+mRsYUL3XMeU4iZx78ZPBZ3iCLs9dJYM="
     stages:
       - deploy:
           jobs:
