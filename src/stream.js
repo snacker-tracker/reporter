@@ -14,7 +14,7 @@ server.get('/metrics', (req, res) => {
   res.end(register.metrics());
 });
 
-server.listen(3000);
+server.listen(config.port);
 
 
 //import metrics from './lib/metrics'
@@ -39,14 +39,7 @@ const handlers_time_spent = new prom.Histogram({
 })
 
 
-//AWS.config.logger = console
 
-
-config.kinesis = {
-  ...config.kinesis,
-  endpoint: 'https://kinesis.aws.k8s.fscker.org'
-}
-console.log(config.kinesis)
 let kinesis = new AWS.Kinesis(config.kinesis)
 
 class EventHandlerOne {
@@ -76,22 +69,16 @@ class KinesisConsumer {
     this.streamName = streamName
     this.refreshRate = refreshRate
     this._getRecords = this._getRecords.bind(this)
-
-    console.log(streamName)
   }
 
   _getRecords = async function () {
-    console.log('get records')
     const newRecords = await this.client.getRecords({
       ShardIterator: this.iterator,
       Limit: 100
     }).promise()
 
-    console.log('got records', newRecords)
-
     if(newRecords.Records.length > 0) {
       newRecords.Records.forEach(async (r) => {
-        //console.log(r.Data.toString())
         await this.process(JSON.parse(r.Data.toString()))
       })
     }
@@ -100,20 +87,15 @@ class KinesisConsumer {
   }
 
   async start() {
-    console.log('starting 1')
     let shards = await this.client.listShards({
       StreamName: this.streamName
     }).promise()
-
-    console.log('starting 2')
 
     let iterator = await this.client.getShardIterator({
       ShardId: shards.Shards[0].ShardId,
       ShardIteratorType: 'TRIM_HORIZON',
       StreamName: this.streamName
     }).promise()
-
-    console.log('got shard iterator', iterator)
 
     this.iterator = iterator.ShardIterator
 
