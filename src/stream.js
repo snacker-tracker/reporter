@@ -381,6 +381,5 @@ class MyConsumer extends KinesisConsumer {
   }
 }
 
-let C = new MyConsumer(kinesis, 'snacker-tracker')
-//let C = new MyConsumer(kinesis, config.kinesis.stream_name)
+let C = new MyConsumer(kinesis, config.kinesis.stream_name)
 C.start()
