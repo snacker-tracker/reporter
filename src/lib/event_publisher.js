@@ -9,12 +9,26 @@ class EventPublisher {
   }
 
   publish(event, payload, actor = null) {
+    let act
+    if(actor) {
+      act = {
+        iss: actor.iss || false,
+        sub: actor.sub || false,
+      }
+    } else {
+      act = {
+        sub: 'ANONYMOUS'
+      }
+    }
+
+
+
     let data = {
       id: uuid(),
       timestamp: new Date().toISOString(),
       version: process.env.APP_VERSION,
       event: event,
-      actor: actor,
+      actor: act,
       payload: payload
     }
 
