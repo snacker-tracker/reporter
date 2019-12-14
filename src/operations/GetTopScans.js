@@ -3,6 +3,8 @@ import { Scan } from '../models'
 
 class GetTopScans extends ListOperation {
   static model = Scan
+  static canBeCalledAnonymously = true
+
   toHttpRepresentation(item) {
     item.count = parseInt(item.count)
     return item

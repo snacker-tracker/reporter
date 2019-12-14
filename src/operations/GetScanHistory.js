@@ -4,6 +4,13 @@ import { Scan } from '../models'
 class ListScans extends ListOperation {
   static model = Scan
   static hasDeletion = false
+  static canBeCalledAnonymously = true
+
+  static intervals = [
+    'daily',
+    'hourly',
+    'weekly'
+  ]
 
   extract_params(req, res) {
     this.args = {

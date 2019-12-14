@@ -5,6 +5,11 @@ const baseConfig = env => ({
   corsHeaders: ['Link'],
   useSwaggerValidation: true,
   reporter_base_url: env.REPORTER_BASE_URL || 'http://full:5000/v1',
+  oauth: {
+    enabled: env.OAUTH_ENABLED || true,
+    issuer: env.OAUTH_ISSUER || 'fscker-public-qa.eu.auth0.com',
+    audience: env.OAUTH_AUDIENCE || 'snacker-tracker-reporter'
+  },
   s3: {
     endpoint: env.S3_ENDPOINT || 'http://s3/',
     bucket: env.S3_BUCKET || 'snacker-tracker-' + env.ENVIRONMENT_NAME,

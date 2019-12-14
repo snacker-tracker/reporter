@@ -13,60 +13,15 @@ class Operation {
     this.services = services
   }
 
-  async getUserInfo(req) {
-    const authorization = req.headers.authorization
-    if (!this.userInfo) {
-      return await this.services.auth0.getUserInfo(authorization)
-    } else {
-      return this.userInfo
-    }
-  }
+  static canBeCalledAnonymously = true
 
   async extract_params(req) {
     this.args = {}
   }
 
   toHttpRepresentation(item) {
-    if (item.deleted == false) {
-      delete item.deleted
-    }
-
-    if (!this.args.include_meta) {
-      //item = this.reformatMetadata(item)
-      delete item.meta
-    }
-
     return item
   }
-
-  reformatMetadata(item) {
-    item.meta = {}
-    if (item._created_at) {
-      item.meta.created = {
-        at: item._created_at.toISOString(),
-        by: item._created_by || 'unknown'
-      }
-    }
-
-    if (item._updated_at) {
-      item.meta.updated = {
-        at: item._updated_at.toISOString(),
-        by: item._updated_by || 'unknown'
-      }
-    }
-
-    if (item._deleted_at) {
-      item.meta.deleted = {
-        at: item._deleted_at.toISOString(),
-        by: item._deleted_by || 'unknown'
-      }
-    }
-
-
-    return item
-
-  }
-
 
   async execute(req, res) {
     return new HTTPResponse({
@@ -82,7 +37,19 @@ class Operation {
   }
 
   async run(req, res) {
+    if(!req.user && !this.constructor.canBeCalledAnonymously) {
+      return new HTTPResponse({
+        status: 401,
+        body: {
+          message: "Unauthorized"
+        }
+      })
+    }
+
+    this.user = req.user
+
     await this.extract_params(req)
+
     try {
       await this.fetch(this.resources(req))
     } catch (error) {

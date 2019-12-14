@@ -2,6 +2,7 @@ import Config from '../config'
 import fs from 'fs'
 import yaml from 'yaml'
 
+
 const readSwagger = (path) => {
   return yaml.parse(fs.readFileSync(path).toString('utf-8'))
 }
@@ -115,22 +116,13 @@ const setVersion = (swagger) => {
 }
 
 const setSecuritySettings = (swagger) => {
-  /*
-  if(Config.auth0.isEnabled) {
+  if(Config.oauth.enabled) {
     const bearerConfig = {
       type: 'oauth2',
       flows: {
-        implicit: {
-          authorizationUrl: `https://${Config.auth0.issuer}/authorize?audience=${Config.auth0.audience}`,
-          scopes: {
-            openid: 'openid',
-            profile: 'your basic profile information',
-            phone: 'your phone number',
-          }
-        },
         authorizationCode: {
-          authorizationUrl: `https://${Config.auth0.issuer}/authorize?audience=${Config.auth0.audience}`,
-          tokenUrl: `https://${Config.auth0.issuer}/oauth/token`,
+          authorizationUrl: `https://${Config.oauth.issuer}/authorize?audience=${Config.oauth.audience}`,
+          tokenUrl: `https://${Config.oauth.issuer}/oauth/token`,
           scopes: {
             openid: 'openid',
             profile: 'your basic profile information',
@@ -145,7 +137,18 @@ const setSecuritySettings = (swagger) => {
       Bearer: bearerConfig
     }
   }
-  */
+
+        /*
+        implicit: {
+          authorizationUrl: `https://${Config.oauth.issuer}/authorize?audience=${Config.oauth.audience}`,
+          scopes: {
+            openid: 'openid',
+            profile: 'your basic profile information',
+            phone: 'your phone number',
+          }
+        },
+        */
+
 
   return swagger
 }

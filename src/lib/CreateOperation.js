@@ -27,7 +27,8 @@ export default class CreateOperation extends Operation {
 
     this.services.event_publisher.publish(
       [this.constructor.model.name, 'Created'].join(''),
-      inserted
+      inserted,
+      this.user
     )
 
     return new HTTPResponse({

@@ -3,6 +3,8 @@ import { Product } from '../models'
 
 class GetScan extends GetOperation {
   static model = Product
+  static canBeCalledAnonymously = true
+
   toHttpRepresentation(item) {
     if (item.deleted == false) {
       delete item.deleted

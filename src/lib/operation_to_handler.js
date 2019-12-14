@@ -75,10 +75,12 @@ const operation_to_handler = (operationId, operation) => {
   return [async (req, res) => {
 
     const l = new logger.constructor(logger.instance)
-const EP = new EventPublisher(kinesis_client, stream_name, {logger: l})
+    const EP = new EventPublisher(kinesis_client, stream_name, {logger: l})
+
     if (req.correlation_id) {
       l.setContext('correlation_id', req.correlation_id)
     }
+
     l.setContext('request_id', req.request_id)
 
     const cmd = new operation({
@@ -93,7 +95,7 @@ const EP = new EventPublisher(kinesis_client, stream_name, {logger: l})
     } catch (error) {
       console.log(error)
       response = {
-        status: 500,
+        status: error.status || 500,
         body: error,
         headers: {}
       }

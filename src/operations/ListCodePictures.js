@@ -6,6 +6,7 @@ import { URL } from 'url'
 
 class ListCodePictures extends ListOperation {
   static model = Code
+  static canBeCalledAnonymously = true
 
   async extract_params(req) {
     this.args = {

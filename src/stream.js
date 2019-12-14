@@ -41,8 +41,12 @@ const handlers_time_spent = new prom.Histogram({
 
 //AWS.config.logger = console
 
-console.log(config.kinesis)
 
+config.kinesis = {
+  ...config.kinesis,
+  endpoint: 'https://kinesis.aws.k8s.fscker.org'
+}
+console.log(config.kinesis)
 let kinesis = new AWS.Kinesis(config.kinesis)
 
 class EventHandlerOne {
@@ -72,13 +76,18 @@ class KinesisConsumer {
     this.streamName = streamName
     this.refreshRate = refreshRate
     this._getRecords = this._getRecords.bind(this)
+
+    console.log(streamName)
   }
 
   _getRecords = async function () {
+    console.log('get records')
     const newRecords = await this.client.getRecords({
       ShardIterator: this.iterator,
       Limit: 100
     }).promise()
+
+    console.log('got records', newRecords)
 
     if(newRecords.Records.length > 0) {
       newRecords.Records.forEach(async (r) => {
@@ -91,15 +100,20 @@ class KinesisConsumer {
   }
 
   async start() {
+    console.log('starting 1')
     let shards = await this.client.listShards({
       StreamName: this.streamName
     }).promise()
 
+    console.log('starting 2')
+
     let iterator = await this.client.getShardIterator({
       ShardId: shards.Shards[0].ShardId,
-      ShardIteratorType: 'LATEST',
+      ShardIteratorType: 'TRIM_HORIZON',
       StreamName: this.streamName
     }).promise()
+
+    console.log('got shard iterator', iterator)
 
     this.iterator = iterator.ShardIterator
 
@@ -238,6 +252,8 @@ class MyConsumer extends KinesisConsumer {
 
   async process(record) {
     console.log(record.event, record.version, JSON.stringify(record.payload))
+    // https://world.openfoodfacts.org/api/v0/product/8850999220000.json
+    return
 
     events_seen.labels(record.event).inc()
 
@@ -259,6 +275,8 @@ class MyConsumer extends KinesisConsumer {
           console.log("Doesnt look like a UPC")
           return
         }
+
+        return
 
         let bigc = await this.read_bigc(record.payload.code)
         console.log('bigc result', bigc)
@@ -363,5 +381,6 @@ class MyConsumer extends KinesisConsumer {
   }
 }
 
-let C = new MyConsumer(kinesis, config.kinesis.stream_name)
+let C = new MyConsumer(kinesis, 'snacker-tracker')
+//let C = new MyConsumer(kinesis, config.kinesis.stream_name)
 C.start()

@@ -22,6 +22,7 @@ services:
       - 8080:8080
     environment:
       URL: http://localhost:5000/api-doc
+      OAUTH_CLIENT_ID: 5hU4SKGr5BIuTp7ysYix7FAGBAkR9nii
 
   s3:
     image: minio/minio

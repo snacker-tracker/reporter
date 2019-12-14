@@ -8,12 +8,13 @@ class EventPublisher {
     this.services = services
   }
 
-  publish(event, payload) {
+  publish(event, payload, actor = null) {
     let data = {
       id: uuid(),
       timestamp: new Date().toISOString(),
       version: process.env.APP_VERSION,
       event: event,
+      actor: actor,
       payload: payload
     }
 

@@ -9,6 +9,7 @@ import uuid from 'uuid'
 
 class CreateCodePicture extends Operation {
   static model = Code
+  static canBeCalledAnonymously = false
 
   async extract_params(req) {
     const d = new Date().toISOString()

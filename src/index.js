@@ -23,6 +23,8 @@ import logger from './lib/logger'
 
 import { initialize } from 'express-openapi'
 
+import checkJwt from './lib/auth'
+
 const swaggerDoc = getSwaggerDocument(
   path.join(__dirname, 'swagger.yml')
 )
@@ -56,7 +58,8 @@ initialize({
     ...swaggerDoc,
     'x-express-openapi-additional-middleware': [
       validate_response,
-      request_id
+      request_id,
+      checkJwt
     ]
   },
   operations: handlers,

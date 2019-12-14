@@ -7,6 +7,7 @@ import uuid from 'uuid'
 
 class CreateCode extends CreateOperation {
   static model = Code
+  static canBeCalledAnonymously = true
 
   async extract_params(req) {
     const d = new Date().toISOString()

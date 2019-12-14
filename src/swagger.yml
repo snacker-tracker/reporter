@@ -16,6 +16,10 @@ tags:
 #      Code management
 
 paths:
+#  /stats/scan-history/{code}:
+#    get:
+#      operationId: GetCodeScanHistory
+
   /stats/top-scans:
     get:
       operationId: GetTopScans
@@ -37,6 +41,43 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TopScanList"
+
+# continuous
+# - hour
+# - day
+# - week
+
+# aggregated
+# - hour
+# - weekday
+
+# TZ
+
+
+# /stats/scan-counts:
+#     operationId: GetScanCounts
+#     tags:
+#       - stats
+#     parameters:
+#       - name: interval
+#         required: false
+#         type: string
+#     responses:
+#       "200":
+#         description: |
+#           Return the list of most scanned items
+#         headers:
+#           X-Swagger-Response-Valid:
+#             schema:
+#               type: boolean
+#           X-Swagger-Response-Error-Count:
+#             schema:
+#               type: integer
+#               format: int64
+#         content:
+#           application/json:
+#             schema:
+#               $ref: "#/components/schemas/TopScanList"
 
   /codes:
     get:
@@ -465,3 +506,35 @@ components:
           type: string
         product:
           $ref: "#/components/schemas/Code"
+
+    TasteProfile:
+      type: object
+      properties:
+        sweet:
+          type: number
+        salty:
+          type: number
+        bitter:
+          type: number
+        sour:
+          type: number
+        umami:
+          type: number
+
+    TextureProfile:
+      type: object
+      properties:
+        soft:
+          type: number
+        crunchy:
+          type: number
+
+    FlavorProfile:
+      type: object
+      properties:
+        fragrant:
+          type: number
+        pungeant:
+          type: number
+        spicy:
+          type: number

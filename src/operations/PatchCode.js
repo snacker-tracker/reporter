@@ -3,6 +3,7 @@ import { Code } from '../models'
 
 class PatchCode extends PatchOperation {
   static model = Code
+  static canBeCalledAnonymously = true
 
   getId() {
     return this.args.id
