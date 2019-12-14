@@ -233,7 +233,7 @@ class MyConsumer extends KinesisConsumer {
   }
 
   async process(record) {
-    console.log(record.event, record.version, JSON.stringify(record.payload))
+    console.log(record.event, record.version, record.actor, JSON.stringify(record.payload))
     // https://world.openfoodfacts.org/api/v0/product/8850999220000.json
     return
 
