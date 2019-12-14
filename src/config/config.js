@@ -10,7 +10,7 @@ const baseConfig = env => ({
     issuer: env.OAUTH_ISSUER || 'fscker-public-qa.eu.auth0.com',
     audience: env.OAUTH_AUDIENCE || 'snacker-tracker-reporter',
     client_id: env.OAUTH_CLIENT_ID || null,
-    client_id: env.OAUTH_CLIENT_SECRET || null,
+    client_secret: env.OAUTH_CLIENT_SECRET || null,
   },
   s3: {
     endpoint: env.S3_ENDPOINT || 'http://s3/',
