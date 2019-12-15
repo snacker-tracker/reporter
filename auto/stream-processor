@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-export SERVICE="bare"
+export SERVICE="full"
 
 ./auto/dev-environment yarn stream-processor

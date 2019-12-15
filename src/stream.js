@@ -3,6 +3,8 @@ import uuid from 'uuid'
 import config from './config/'
 import axios from 'axios'
 
+import logger from './lib/logger'
+
 import express from 'express'
 const server = express()
 
@@ -39,28 +41,45 @@ const handlers_time_spent = new prom.Histogram({
 })
 
 
+config.kinesis.endpoint = "https://kinesis.aws.k8s.fscker.org"
+config.kinesis.stream_name = "snacker-tracker-qa"
 
 let kinesis = new AWS.Kinesis(config.kinesis)
 
-class EventHandlerOne {
-  async run(record) {
-    console.log(this.constructor.name, record)
+class EventHandler {
+  constructor(services) {
+    this.services = services
+  }
+
+  run(event) {
+    throw new Error("NotImplemented")
+  }
+}
+
+class CodePictureCreatedHandler extends EventHandler{
+  async run({id, event, timestamp, payload, version, actor}) {
+    this.services.logger.info({event_handler: this.constructor.name, event, event_id: id, timestamp, version, payload, actor})
 
     return "one"
   }
 }
 
-class EventHandlerTwo {
-  async run(record) {
-    console.log(this.constructor.name, record)
 
-    throw new Error("asdad")
-    return "two"
+class EventHandlerOne extends EventHandler{
+  async run({id, event, timestamp, payload, version, actor}) {
+    this.services.logger.info({event_handler: this.constructor.name, event, event_id: id, timestamp, version, payload, actor })
+
+    return "one"
   }
 }
 
 const eventHandlerMapping = {
-  ScanCreated: [EventHandlerOne, EventHandlerTwo],
+  ScanCreated: [
+    EventHandlerOne
+  ],
+  CodePictureCreated: [
+    CodePictureCreatedHandler
+  ]
 }
 
 class KinesisConsumer {
@@ -69,6 +88,7 @@ class KinesisConsumer {
     this.streamName = streamName
     this.refreshRate = refreshRate
     this._getRecords = this._getRecords.bind(this)
+    this.handlers = {}
   }
 
   _getRecords = async function () {
@@ -86,6 +106,10 @@ class KinesisConsumer {
     this.iterator = newRecords.NextShardIterator
   }
 
+  setHandlers(handlers) {
+    this.handlers = handlers
+  }
+
   async start() {
     let shards = await this.client.listShards({
       StreamName: this.streamName
@@ -93,7 +117,7 @@ class KinesisConsumer {
 
     let iterator = await this.client.getShardIterator({
       ShardId: shards.Shards[0].ShardId,
-      ShardIteratorType: 'TRIM_HORIZON',
+      ShardIteratorType: 'LATEST',
       StreamName: this.streamName
     }).promise()
 
@@ -106,16 +130,56 @@ class KinesisConsumer {
     return this.records.shift(recordCount)
   }
 
-  async process(record) {
-    return
+  async process(event) {
+    events_seen.labels(event.event).inc()
+
+    const l = new logger.constructor(logger.instance)
+
+    l.setContext('event', event.event)
+    l.setContext('event_id', event.id)
+
+    if(!this.handlers[event.event]) {
+      l.info("event has no handler")
+      return
+    }
+
+    const instances = this.handlers[event.event].map( handler => {
+      return new handler({logger: l})
+    })
+
+    let results = await Promise.all(
+      instances.map( async (handler) => {
+        const response = {}
+        const start = new Date()
+
+        response[handler.constructor.name] = await handler.run(event)
+
+        handlers_triggered
+          .labels(event.event, handler.constructor.name, true)
+          .inc()
+
+        handlers_time_spent
+          .labels(event.event, handler.constructor.name, true)
+          .observe((new Date() - start) / 1000)
+
+        return response
+      })
+    )
+
+    results = results.reduce((a, c) => {
+      a[Object.entries(c)[0][0]] = Object.entries(c)[0][1]
+    }, {})
+
+    l.info(results)
+
+    return true
   }
 }
 
 
 // curl -v "https://www.bigc.co.th/sb.php?q=${UPC}&storeid=1&currencycode=THB" -H 'X-Requested-With: XMLHttpRequest'  | jq .response
 
-
-class MyConsumer extends KinesisConsumer {
+class MyConsumerBloated extends KinesisConsumer {
 
   async check_local(code) {
     let local_code
@@ -363,5 +427,6 @@ class MyConsumer extends KinesisConsumer {
   }
 }
 
-let C = new MyConsumer(kinesis, config.kinesis.stream_name)
+let C = new KinesisConsumer(kinesis, config.kinesis.stream_name)
+C.setHandlers(eventHandlerMapping)
 C.start()
