@@ -326,6 +326,7 @@ pipelines:
       PROJECT: snacker-tracker
     secure_variables:
       DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
+      AWS_SECRET_ACCESS_KEY: "AES:sD7ZqSU5xDUGEz6lwCBCOQ==:ujFaho4OGe60fY7+2OfOjeY/u5m3E2aYmlgS24PSP2GDWBEBvSug6D9NA/i+7qGl"
       OAUTH_CLIENT_SECRET: "AES:hpy0VQN7CbWpqLHeYSp3gg==:NWJ8+UVYpQxFoe2knRxqdLMXHOMHmo8fELcvQTT+T0xqn6yHgI2b+3TCtSLRlN4QhO6NELivcBrjVxJL47evz8No2hFke7y4eBQJGTp9LiM="
     stages:
       - deploy:
