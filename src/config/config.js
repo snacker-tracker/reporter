@@ -6,7 +6,7 @@ const baseConfig = env => ({
   useSwaggerValidation: true,
   reporter_base_url: env.REPORTER_BASE_URL || 'http://full:5000/v1',
   oauth: {
-    enabled: !(env.OAUTH_ENABLED === "false"),
+    enabled: !(env.OAUTH_ENABLED === 'false'),
     issuer: env.OAUTH_ISSUER || 'fscker-public-qa.eu.auth0.com',
     audience: env.OAUTH_AUDIENCE || 'snacker-tracker-reporter',
     client_id: env.OAUTH_CLIENT_ID || null,

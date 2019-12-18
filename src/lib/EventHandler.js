@@ -4,7 +4,7 @@ class EventHandler {
   }
 
   run(event) {
-    throw new Error("NotImplemented")
+    throw new Error('NotImplemented')
   }
 }
 

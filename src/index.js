@@ -67,23 +67,23 @@ initialize({
     'application/json': bodyParser.json(),
     'application/x-www-form-urlencoded': bodyParser.urlencoded(),
     'multipart/form-data': function(req, res, next) {
-        multer().any()(req, res, function(err) {
-          if (err) return next(err);
-          req.files.forEach(function(f) {
-            req.body[f.fieldname] = ''; // Set to empty string to satisfy OpenAPI spec validation
-          });
-          return next();
-        });
-      },
+      multer().any()(req, res, function(err) {
+        if (err) return next(err)
+        req.files.forEach(function(f) {
+          req.body[f.fieldname] = '' // Set to empty string to satisfy OpenAPI spec validation
+        })
+        return next()
+      })
+    },
     'application/octet-stream': function(req, res, next) {
-        multer().any()(req, res, function(err) {
-          //if (err) return next(err);
-          //req.files.forEach(function(f) {
-          //  req.body[f.fieldname] = ''; // Set to empty string to satisfy OpenAPI spec validation
-          //});
-          return next();
-        });
-      }
+      multer().any()(req, res, function(err) {
+        //if (err) return next(err);
+        //req.files.forEach(function(f) {
+        //  req.body[f.fieldname] = ''; // Set to empty string to satisfy OpenAPI spec validation
+        //});
+        return next()
+      })
+    }
 
   }
 })

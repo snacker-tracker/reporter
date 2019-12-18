@@ -37,7 +37,7 @@ class EventPublisher {
     }
 
     this.services.logger.info({
-      message: "wrote to the stream",
+      message: 'wrote to the stream',
       event: data
     })
 

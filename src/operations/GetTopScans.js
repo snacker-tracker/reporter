@@ -10,20 +10,20 @@ class GetTopScans extends ListOperation {
     return item
   }
 
-  resources(req) {
+  resources() {
     return {
       resources: (() => {
-        let q = this.constructor.model.query()
-        q.options({operationId: this.constructor.name})
+        let query = this.constructor.model.query()
+        query.options({ operationId: this.constructor.name })
 
-        q.select('code')
-        q.min('scanned_at as first_scan')
-        q.max('scanned_at as last_scan')
-        q.count('code').groupBy('code')
-        q.eager('product')
-        q.orderBy('count', 'desc')
+        query.select('code')
+        query.min('scanned_at as first_scan')
+        query.max('scanned_at as last_scan')
+        query.count('code').groupBy('code')
+        query.eager('product')
+        query.orderBy('count', 'desc')
 
-        return q
+        return query
       })()
     }
   }

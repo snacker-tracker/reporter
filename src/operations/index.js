@@ -4,9 +4,9 @@ const files = glob.sync('*.js', {
 })
 
 const operations = files
-  .filter(f => f != 'index.js')
-  .map(f => {
-    return require('./' + f)
+  .filter(file => file != 'index.js')
+  .map(file => {
+    return require('./' + file)
   })
   .reduce((accumulator, current) => {
     Object.entries(current).forEach(([name, klass]) => {

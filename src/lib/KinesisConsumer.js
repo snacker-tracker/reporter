@@ -89,7 +89,7 @@ class KinesisConsumer {
     l.setContext('event_id', event.id)
 
     if(!this.handlers[event.event]) {
-      l.info("event has no handler")
+      l.info('event has no handler')
       return
     }
 

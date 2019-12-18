@@ -41,7 +41,7 @@ class Operation {
       return new HTTPResponse({
         status: 401,
         body: {
-          message: "Unauthorized"
+          message: 'Unauthorized'
         }
       })
     }

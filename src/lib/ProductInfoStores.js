@@ -19,7 +19,7 @@ class SnackerTrackerInfoStore {
 
   async post(code_and_info) {
     const response = await axios.post(
-      [this.base_url, "codes"].join("/"),
+      [this.base_url, 'codes'].join('/'),
       code_and_info
     )
 
@@ -30,11 +30,11 @@ class SnackerTrackerInfoStore {
     const form = new FormData()
     form.append('picture', buffer, {
       filename: 'picture',
-      contentType: "image/jpeg"
+      contentType: 'image/jpeg'
     })
 
     const response = await axios.post(
-      [this.base_url, "codes", code, "pictures"].join("/"),
+      [this.base_url, 'codes', code, 'pictures'].join('/'),
       form,
       {
         headers: form.getHeaders()
@@ -51,7 +51,7 @@ class OpenFoodFactsInfoStore {
     // https://world.openfoodfacts.org/api/v0/product/8850999220000.json
     try {
       const response = await axios.get(
-        "https://world.openfoodfacts.org/api/v0/product/" + code + ".json"
+        'https://world.openfoodfacts.org/api/v0/product/' + code + '.json'
       )
 
       if(response.data.status === 0) {
@@ -73,18 +73,18 @@ class UPCItemDBInfoStore {
         'https://api.upcitemdb.com/prod/trial/lookup',
         {
           params: {
-            upc: record.payload.code
+            upc: code
           }
         }
       )
 
-      console.log(JSON.stringify(upc_search_result.headers, null, 2))
-      console.log(JSON.stringify(upc_search_result.data, null, 2))
+      console.log(JSON.stringify(response.headers, null, 2))
+      console.log(JSON.stringify(response.data, null, 2))
 
       return response.data
 
     } catch(error) {
-      console.log("Failed to query the UPC database")
+      console.log('Failed to query the UPC database')
       return false
     }
 

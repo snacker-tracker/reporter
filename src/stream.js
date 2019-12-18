@@ -15,18 +15,16 @@ import PopulateProductDataFromInternet from './eventHandlers/PopulateProductData
 
 const register = prom.register
 server.get('/metrics', (req, res) => {
-  res.set('Content-Type', register.contentType);
-  res.end(register.metrics());
-});
+  res.set('Content-Type', register.contentType)
+  res.end(register.metrics())
+})
 
-server.listen(config.port);
-
-
+server.listen(config.port)
 
 /*
-config.kinesis.endpoint = "https://kinesis.aws.k8s.fscker.org"
-config.kinesis.stream_name = "snacker-tracker-qa"
-config.reporter_base_url = "https://reporter.snacker-tracker.qa.k8s.fscker.org/v1"
+config.kinesis.endpoint = 'https://kinesis.aws.k8s.fscker.org'
+config.kinesis.stream_name = 'snacker-tracker-qa'
+config.reporter_base_url = 'https://reporter.snacker-tracker.qa.k8s.fscker.org/v1'
 */
 
 let kinesis = new AWS.Kinesis(config.kinesis)
@@ -39,14 +37,14 @@ const eventHandlerMapping = {
 }
 
 const dependencies = (event, handler) => {
-  const l = new logger.constructor(logger.instance)
+  const log = new logger.constructor(logger.instance)
 
-  l.setContext('event', event.event)
-  l.setContext('event_id', event.id)
-  l.setContext('handler', handler.name)
+  log.setContext('event', event.event)
+  log.setContext('event_id', event.id)
+  log.setContext('handler', handler.name)
 
   return {
-    logger: l,
+    logger: log,
     productInfoStores: {
       bigc: new InfoStores.BigCInfoStore(),
       upcdb: new InfoStores.UPCItemDBInfoStore(),
@@ -57,11 +55,11 @@ const dependencies = (event, handler) => {
 }
 
 
-let C = new KinesisConsumer(kinesis, config.kinesis.stream_name, {
+let consumer = new KinesisConsumer(kinesis, config.kinesis.stream_name, {
   logger: new logger.constructor(logger.instance),
   refreshRate: 1000
 })
 
-C.setHandlers(eventHandlerMapping)
-C.setHandlerDependencies(dependencies)
-C.start()
+consumer.setHandlers(eventHandlerMapping)
+consumer.setHandlerDependencies(dependencies)
+consumer.start()

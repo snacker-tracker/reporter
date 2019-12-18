@@ -138,7 +138,7 @@ const setSecuritySettings = (swagger) => {
     }
   }
 
-        /*
+  /*
         implicit: {
           authorizationUrl: `https://${Config.oauth.issuer}/authorize?audience=${Config.oauth.audience}`,
           scopes: {

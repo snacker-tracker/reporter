@@ -11,7 +11,7 @@ export default class Code extends Model {
   }
 
   static get idColumn() {
-    return 'code';
+    return 'code'
   }
 
   static insert(code, andFetch = false) {

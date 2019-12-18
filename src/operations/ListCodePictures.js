@@ -2,8 +2,6 @@ import ListOperation from '../lib/GetOperation'
 import { HTTPResponse } from '../lib/operation'
 import { Code } from '../models'
 
-import { URL } from 'url'
-
 class ListCodePictures extends ListOperation {
   static model = Code
   static canBeCalledAnonymously = true
