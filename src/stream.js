@@ -41,8 +41,11 @@ const handlers_time_spent = new prom.Histogram({
 })
 
 
+/*
 config.kinesis.endpoint = "https://kinesis.aws.k8s.fscker.org"
-config.kinesis.stream_name = "snacker-tracker-qa"
+config.kinesis.stream_name = "snacker-tracker-prod"
+config.reporter_base_url = "https://reporter.snacker-tracker.prod.k8s.fscker.org/v1"
+*/
 
 let kinesis = new AWS.Kinesis(config.kinesis)
 
@@ -65,9 +68,73 @@ class CodePictureCreatedHandler extends EventHandler{
 }
 
 
-class EventHandlerOne extends EventHandler{
+class ScanCreatedHandler extends EventHandler{
+  async getCode(code) {
+    try {
+      const response = await axios.get(
+        config.reporter_base_url + '/codes/' + code
+      )
+
+      return response.data
+    } catch( error ) {
+      return false
+    }
+  }
+
+  async getFromOpenFoodFacts(code) {
+    // https://world.openfoodfacts.org/api/v0/product/8850999220000.json
+    try {
+      const response = await axios.get(
+        "https://world.openfoodfacts.org/api/v0/product/" + code + ".json"
+      )
+
+      return response.data
+    } catch( error ) {
+      return false
+    }
+
+  }
+
+  async getFromUPCDB(code) {
+    try {
+      const response = await axios.get(
+        'https://api.upcitemdb.com/prod/trial/lookup',
+        {
+          params: {
+            upc: code
+          }
+        }
+      )
+
+      return response.data
+    } catch(error) {
+      return false
+    }
+
+  }
+
+
   async run({id, event, timestamp, payload, version, actor}) {
     this.services.logger.info({event_handler: this.constructor.name, event, event_id: id, timestamp, version, payload, actor })
+
+    //const code_data = await this.getCode(payload.code)
+    //this.services.logger.info({"msg":"code data", code_data})
+
+    // $.product.image_front_url
+    const off_data = await this.getFromOpenFoodFacts(payload.code)
+    console.log(JSON.stringify(off_data, null, 2))
+    //this.services.logger.info({"msg":"off data", off_data})
+    if(off_data) {
+      if(off_data.product) {
+        if(off_data.product.image_url) {
+          console.log(off_data.product.image_url)
+        }
+      }
+    }
+
+    //const upcdb_data = await this.getFromUPCDB(payload.code)
+
+
 
     return "one"
   }
@@ -75,7 +142,7 @@ class EventHandlerOne extends EventHandler{
 
 const eventHandlerMapping = {
   ScanCreated: [
-    EventHandlerOne
+    ScanCreatedHandler
   ],
   CodePictureCreated: [
     CodePictureCreatedHandler
@@ -124,6 +191,7 @@ class KinesisConsumer {
     this.iterator = iterator.ShardIterator
 
     setInterval(this._getRecords, this.refreshRate)
+    console.log('started streaming')
   }
 
   records(recordCount = 100) {
