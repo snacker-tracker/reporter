@@ -3,12 +3,14 @@ import logger from './logger'
 import EventPublisher from './event_publisher'
 import AWS from 'aws-sdk'
 
+import ImageRepository from './ImageRepository'
+
 let kinesis_client
 let stream_name
 
 let s3_client
 let s3_bucket
-console.log(Config.s3)
+
 if(Config.s3) {
   s3_client = new AWS.S3(Config.s3)
   s3_bucket = Config.s3.bucket
