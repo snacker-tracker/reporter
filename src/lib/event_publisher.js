@@ -21,8 +21,6 @@ class EventPublisher {
       }
     }
 
-
-
     let data = {
       id: uuid(),
       timestamp: new Date().toISOString(),
