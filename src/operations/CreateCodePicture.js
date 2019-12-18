@@ -36,7 +36,7 @@ class CreateCodePicture extends Operation {
     try {
       await this.services.image_repository.put([this.args.body.code, hash].join('/') + "." + this.args.picture.mimetype.split('/')[1], this.args.picture.buffer)
     } catch(error) {
-      console.log(error)
+      this.services.logger.warn({"msg":"Failed to upload picture", error})
     }
 
     const picture = {

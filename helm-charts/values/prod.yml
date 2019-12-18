@@ -25,6 +25,7 @@ config:
     DATABASE_NAME: snacker-tracker-reporter-prod
     DATABASE_USERNAME: snacker-tracker-reporter-prod
     KINESIS_ENDPOINT: "http://kinesalite.aws.svc.cluster.local"
+    S3_ENDPOINT: "https://s3.aws.k8s.fscker.org"
     AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE"
     REPORTER_BASE_URL: "http://snacker-tracker-reporter-prod.snacker-tracker-prod.svc.cluster.local/v1"
     OAUTH_CLIENT_ID: r4tEPwCFO148rAz0WYu2UEOvJxzOVsYM

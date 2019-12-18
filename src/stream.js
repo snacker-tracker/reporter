@@ -106,8 +106,6 @@ class ScanCreatedHandler extends EventHandler{
         //console.log(error)
       }
 
-      console.log(p.image_url)
-
       if(p.image_url) {
         const img_response = await axios.get(p.image_url, {responseType: 'arraybuffer'})
         logger.info({headers: img_response.headers})
@@ -120,7 +118,7 @@ class ScanCreatedHandler extends EventHandler{
           await this.services.productInfoStores.snacker.post_picture(payload.code, img_response.data)
           this.services.logger.info("Image uploaded")
         } catch(error) {
-          console.log(error)
+          this.services.logger.info({"msg":"Failed to upload image", error})
         }
 
       }
