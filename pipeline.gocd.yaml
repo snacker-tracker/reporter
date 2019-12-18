@@ -150,7 +150,6 @@ pipelines:
             audit:
               tasks:
                 - script: |
-                    exit 0
                     ##AUDIT_RESULT="$(./auto/yarn audit)"
                     AUDIT_RESULT="$(docker run -v `pwd`:/app/ -w /app/ node:10 yarn audit)"
                     set -e
@@ -362,6 +361,7 @@ pipelines:
       PROJECT: snacker-tracker
     secure_variables:
       DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
+
     stages:
       - migrate:
           approval:

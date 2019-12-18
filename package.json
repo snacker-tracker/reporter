@@ -20,7 +20,9 @@
     "swagger:deref": "./node_modules/.bin/babel-node ./scripts/swagger-dereference.js",
     "cucumber": "./node_modules/.bin/babel-node ./node_modules/.bin/cucumber-js"
   },
-  "eslintIgnore": ["src/database/migrations/**/**"],
+  "eslintIgnore": [
+    "src/database/migrations/**/**"
+  ],
   "dependencies": {
     "aws-sdk": "^2.559.0",
     "axios": "^0.19.0",
@@ -31,7 +33,6 @@
     "express-openapi": "^5.0.0",
     "express-prom-bundle": "^5.1.5",
     "express-winston": "^4.0.1",
-    "jest": "^24.9.0",
     "jwks-rsa": "^1.6.0",
     "knex": "^0.20.0",
     "multer": "^1.4.2",
@@ -54,6 +55,7 @@
     "chai": "^4.2.0",
     "cucumber": "^6.0.3",
     "eslint": "^6.6.0",
+    "jest": "^24.9.0",
     "swagger-cli": "^2.3.3"
   }
 }
