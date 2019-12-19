@@ -271,8 +271,10 @@ pipelines:
       DATABASE_USERNAME: snacker-tracker-reporter-qa
       K8S_NAMESPACE: qa
       PROJECT: snacker-tracker
+      AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE"
     secure_variables:
       DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
+      AWS_SECRET_ACCESS_KEY: "AES:sD7ZqSU5xDUGEz6lwCBCOQ==:ujFaho4OGe60fY7+2OfOjeY/u5m3E2aYmlgS24PSP2GDWBEBvSug6D9NA/i+7qGl"
     stages:
       - backup-prod-data:
           jobs:
@@ -308,6 +310,16 @@ pipelines:
             migrate:
               tasks:
                 - *migrate
+
+      - sync-pictures:
+          jobs:
+            sync:
+              tasks:
+                - script: |
+                    set -e
+
+                    aws --endpoint https://s3.aws.k8s.fscker.org s3 sync s3://snacker-tracker-prod/ s3://snacker-tracker-qa/
+
 
   snacker-tracker-reporter-deploy-prod:
     group: snacker-tracker-reporter
