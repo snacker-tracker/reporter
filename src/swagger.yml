@@ -21,6 +21,19 @@ paths:
       operationId: GetTopScans
       tags:
         - stats
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            format: int64
+            default: 100
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            format: int64
+            default: 0
       responses:
         "200":
           description: |
