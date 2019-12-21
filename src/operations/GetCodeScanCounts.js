@@ -19,8 +19,6 @@ class GetCodeScanCounts extends ListOperation {
       offset: req.query.offset,
       limit: req.query.limit,
     }
-
-    console.log(this.args)
   }
 
   resources() {

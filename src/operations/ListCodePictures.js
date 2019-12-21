@@ -42,7 +42,6 @@ class ListCodePictures extends ListOperation {
   }
 
   toHttpRepresentation(image) {
-    console.log(this.services.image_repository)
     return {
       id: image.Key.split('/')[1].split('.')[0],
       //url: this.args.base_url + '/' + image.Key.split('/')[1],
