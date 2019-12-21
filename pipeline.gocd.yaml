@@ -164,7 +164,6 @@ pipelines:
               tasks:
                 - script: |
                     set -e
-                    exit 0
 
                     ./auto/validate-swagger
 
