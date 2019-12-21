@@ -10,7 +10,7 @@ common:
           ${CHART_NAME}-$K8S_NAMESPACE \
           ./chart/${CHART_NAME}-*.tgz \
           --values ./chart/${K8S_NAMESPACE}.yml \
-          --set postgresql.postgresqlPassword.DATABASE_PASSWORD="${DATABASE_PASSWORD}" \
+          --set postgresql.postgresqlPassword="${DATABASE_PASSWORD}" \
           --set config.secrets.DATABASE_PASSWORD="${DATABASE_PASSWORD}" \
           --set config.secrets.OAUTH_CLIENT_SECRET="${OAUTH_CLIENT_SECRET}" \
           --set config.secrets.AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
