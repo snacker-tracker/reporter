@@ -16,6 +16,44 @@ tags:
       Code management
 
 paths:
+  /stats/scan-counts/{code}:
+    get:
+      operationId: GetCodeScanCounts
+      tags:
+        - stats
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: period
+          required: false
+          schema:
+            type: string
+            enum:
+              - daily
+              - weekdaily
+              - hourly
+
+      responses:
+        "200":
+          description: |
+            Return the list of scan counts by period
+          headers:
+            X-Swagger-Response-Valid:
+              schema:
+                type: boolean
+            X-Swagger-Response-Error-Count:
+              schema:
+                type: integer
+                format: int64
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CodeScanCounts"
+
   /stats/top-scans:
     get:
       operationId: GetTopScans
@@ -458,6 +496,57 @@ components:
           type: number
           format: int64
 
+    CodeScanCounts:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/DailyCodeScanCounts"
+              - $ref: "#/components/schemas/WeekdailyCodeScanCounts"
+              - $ref: "#/components/schemas/HourlyCodeScanCounts"
+
+    DailyCodeScanCounts:
+      type: object
+      required:
+        - count
+        - date
+      properties:
+        count:
+          type: number
+          format: int64
+        date:
+          type: string
+          format: date
+
+    HourlyCodeScanCounts:
+      type: object
+      required:
+        - count
+        - hour
+      properties:
+        count:
+          type: number
+          format: int64
+        hour:
+          type: number
+          format: int64
+
+    WeekdailyCodeScanCounts:
+      type: object
+      required:
+        - count
+        - weekday
+      properties:
+        count:
+          type: number
+          format: int64
+        weekday:
+          type: number
+          format: int64
 
     TopScanList:
       type: object
