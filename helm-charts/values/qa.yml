@@ -22,10 +22,6 @@ config:
     PORT: "5000"
     ENVIRONMENT_NAME: qa
     USE_SWAGGER_VALIDATION: "true"
-    AUTH0_ENABLED: "true"
-    AUTH0_ISSUER: ""
-    AUTH0_AUDIENCE: ""
-    AUTH0_CLIENT_ID: undefined
     DATABASE_HOST: snacker-tracker-reporter-qa-postgresql.snacker-tracker-qa.svc.cluster.local
     DATABASE_NAME: snacker-tracker-reporter-qa
     DATABASE_USERNAME: snacker-tracker-reporter-qa
@@ -33,9 +29,10 @@ config:
     S3_ENDPOINT: "https://s3.aws.k8s.fscker.org"
     AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE"
     REPORTER_BASE_URL: "http://snacker-tracker-reporter-qa.snacker-tracker-qa.svc.cluster.local/v1"
-    OAUTH_CLIENT_ID: NF6taWwXJ2Yj96ABQWUEx1dJPHXZyXqt
     OAUTH_ISSUER: fscker-public-qa.eu.auth0.com
     OAUTH_ENABLED: "true"
+    OAUTH_CLIENT_ID: NF6taWwXJ2Yj96ABQWUEx1dJPHXZyXqt
+    AUTH0_AUDIENCE: snacker-tracker-reporter
 
   secrets:
     DATABASE_PASSWORD: "undefined"
