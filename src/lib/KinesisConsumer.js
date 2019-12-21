@@ -24,6 +24,7 @@ class KinesisConsumer {
   constructor(client, streamName, options = {}) {
     options = {
       refreshRate: 1000,
+      iteratorType: 'LATEST',
       ...options
     }
 
@@ -32,6 +33,7 @@ class KinesisConsumer {
     this.refreshRate = options.refreshRate
     this._getRecords = this._getRecords.bind(this)
     this.logger = options.logger
+    this.iteratorType = options.iteratorType
     this.handlers = {}
   }
 
@@ -66,7 +68,7 @@ class KinesisConsumer {
 
     let iterator = await this.client.getShardIterator({
       ShardId: shards.Shards[0].ShardId,
-      ShardIteratorType: 'TRIM_HORIZON',
+      ShardIteratorType: this.iteratorType,
       StreamName: this.streamName
     }).promise()
 
