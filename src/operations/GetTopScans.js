@@ -23,6 +23,10 @@ class GetTopScans extends ListOperation {
         //query.eager('product')
         query.orderBy('count', 'desc')
 
+        q.offset(this.args.offset)
+        q.limit(this.args.limit)
+
+
         return query
       })()
     }
