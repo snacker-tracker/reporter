@@ -20,7 +20,7 @@ class GetTopScans extends ListOperation {
         query.min('scanned_at as first_scan')
         query.max('scanned_at as last_scan')
         query.count('code').groupBy('code')
-        query.eager('product')
+        //query.eager('product')
         query.orderBy('count', 'desc')
 
         return query

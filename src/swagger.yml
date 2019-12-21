@@ -504,8 +504,6 @@ components:
           format: date-time
         code:
           type: string
-        product:
-          $ref: "#/components/schemas/Code"
 
     TasteProfile:
       type: object
