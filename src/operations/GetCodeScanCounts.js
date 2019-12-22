@@ -23,7 +23,7 @@ class GetCodeScanCounts extends ListOperation {
 
   resources() {
     return {
-      resources: (() => {
+      resources: (async () => {
         let query = this.constructor.model.query()
         query.options({ operationId: this.constructor.name })
 
@@ -35,6 +35,48 @@ class GetCodeScanCounts extends ListOperation {
         let select
         let groupBy
         let period
+
+        const fillers = {
+          daily(start, end) {
+            start = new Date(start)
+            end = new Date(end)
+
+            const fill = []
+
+            for( let s = start; s <= end; s.setTime( s.getTime() + 1 * 86400000 ) ) {
+              fill.push(new Date(s))
+            }
+
+            return fill
+              .map( date => date.toISOString().split('T')[0])
+              .reduce( ( accumulator, current ) => {
+                accumulator[current] = 0
+                return accumulator
+              }, {})
+          },
+
+          hourly(start, end) {
+            const fill = {}
+
+            for( let h = 0; h < 24; h++) {
+              fill[h] = 0
+            }
+
+            return fill
+          },
+
+          weekdaily(start, end) {
+            return {
+              0: 0,
+              1: 0,
+              2: 0,
+              3: 0,
+              4: 0,
+              5: 0,
+              6: 0
+            }
+          }
+        }
 
         switch(this.args.period) {
           case 'hourly':
@@ -59,7 +101,45 @@ class GetCodeScanCounts extends ListOperation {
         query.groupByRaw(groupBy)
         query.orderBy(period, 'asc')
 
-        return query
+        const results = await query
+
+        const asHash = results.reduce( (accumulator, current) => {
+          accumulator[current[period]] = current['count']
+
+          return accumulator
+        }, {} )
+
+        const times = results.map(row => row[period])
+
+        const bounds = [
+          times[0],
+          times[times.length - 1]
+        ]
+
+        const fill = fillers[this.args.period](bounds[0], bounds[1])
+
+        const zip = (timeseries, fill) => {
+          for( const e of timeseries ) {
+            fill[e[period]] = e.count
+          }
+
+          return Object.entries(fill).map( e => {
+            const point = {
+              count: e[1]
+            }
+
+            if(['hour', 'weekday'].includes(period)) {
+              point[period] = parseInt(e[0])
+            } else {
+              point[period] = e[0]
+            }
+
+            return point
+          })
+        }
+
+
+        return zip(results, fill)
       })()
     }
   }
