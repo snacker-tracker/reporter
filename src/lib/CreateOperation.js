@@ -21,9 +21,25 @@ export default class CreateOperation extends Operation {
   async execute() {
     this.services.logger.info(this.args)
 
-    const inserted = await this.constructor.model.insert({
-      ...this.args.body,
-    }, true).options({ operationId: this.constructor.name })
+    let inserted
+    try {
+      inserted = await this.constructor.model.insert({
+        ...this.args.body,
+      }, true).options({ operationId: this.constructor.name })
+    } catch (error) {
+      switch(error.code) {
+        case '23505':
+          return new HTTPResponse({
+            status: 409,
+            body: {
+              'message': 'Entity already exists or fails a uniqueness constraint'
+            }
+          })
+
+        default:
+          throw error
+      }
+    }
 
     this.services.event_publisher.publish(
       [this.constructor.model.name, 'Created'].join(''),
