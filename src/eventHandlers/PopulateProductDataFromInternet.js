@@ -19,6 +19,7 @@ class PopulateProductDataFromInternet extends EventHandler {
     }
 
 
+
     if(off) {
       //console.log(JSON.stringify(Object.keys(off.product), null, 2))
       let p = off.product
@@ -28,13 +29,17 @@ class PopulateProductDataFromInternet extends EventHandler {
         name: firstOf(['product_name_en', 'generic_name_en', 'product_name', 'generic_name', 'product_name_th', 'generic_name_th'], off.product)
       }
 
-      try {
-        true
-        //const postResponse = await this.services.productInfoStores.snacker.post(data)
-        //console.log(postResponse)
-      } catch (error) {
-        //console.log(error)
+      if(!local) {
+        try {
+          this.services.logger.info({ msg: 'local?', local, code: payload.code })
+          const postResponse = await this.services.productInfoStores.snacker.post(data)
+          this.services.logger.info({ 'CreateCodeResponse': postResponse })
+        } catch (error) {
+          console.log(error.config)
+          throw error
+        }
       }
+
 
       if(p.image_url) {
         const img_response = await axios.get(p.image_url, { responseType: 'arraybuffer' })

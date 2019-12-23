@@ -8,11 +8,19 @@ class SnackerTrackerInfoStore {
   async get(code) {
     try {
       const response = await axios.get(
-        this.base_url + '/codes/' + code
+        this.base_url + '/codes/' + code,
+        {
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        }
       )
+
+      console.log(code, response.data)
 
       return response.data
     } catch( error ) {
+      console.log(code, error.config)
       return false
     }
   }
@@ -51,7 +59,12 @@ class OpenFoodFactsInfoStore {
     // https://world.openfoodfacts.org/api/v0/product/8850999220000.json
     try {
       const response = await axios.get(
-        'https://world.openfoodfacts.org/api/v0/product/' + code + '.json'
+        'https://world.openfoodfacts.org/api/v0/product/' + code + '.json',
+        {
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        }
       )
 
       if(response.data.status === 0) {
