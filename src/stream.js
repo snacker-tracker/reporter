@@ -21,11 +21,9 @@ server.get('/metrics', (req, res) => {
 
 server.listen(config.port)
 
-/*
 config.kinesis.endpoint = 'https://kinesis.aws.k8s.fscker.org'
-config.kinesis.stream_name = 'snacker-tracker-qa'
+config.kinesis.stream_name = 'snacker-tracker-prod'
 config.reporter_base_url = 'https://reporter.snacker-tracker.qa.k8s.fscker.org/v1'
-*/
 
 let kinesis = new AWS.Kinesis(config.kinesis)
 

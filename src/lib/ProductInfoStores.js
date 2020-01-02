@@ -87,6 +87,15 @@ class SnackerTrackerInfoStore {
     return response.data
   }
 
+  async patch(code, payload) {
+    const response = await axios.patch(
+      [this.base_url, 'codes', code].join('/'),
+      payload
+    )
+
+    return response.data
+  }
+
   async post_picture(code, buffer) {
     const form = new FormData()
     form.append('picture', buffer, {
@@ -150,7 +159,9 @@ class OpenFoodFactsInfoStore {
       }
 
       if(response.data.product.categories_hierarchy && response.data.product.categories_hierarchy.length > 0) {
-        resp.categories = response.data.product.categories_hierarchy
+        resp.categories = response.data.product.categories_hierarchy.map( (e) => {
+          return e.split(':')[1].replace('-', '_')
+        })
       } else {
         response.categories = []
       }

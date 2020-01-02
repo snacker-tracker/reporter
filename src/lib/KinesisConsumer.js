@@ -19,6 +19,12 @@ const handlers_time_spent = new prom.Histogram({
   labelNames: ['event', 'handler', 'result']
 })
 
+const sleep = async (delay) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => { resolve(true); }, delay)
+  })
+}
+
 
 class KinesisConsumer {
   constructor(client, streamName, options = {}) {

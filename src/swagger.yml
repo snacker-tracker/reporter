@@ -122,6 +122,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Code"
+      callbacks:
+        # the name `onData` is a convenience locator
+        CodeCreated:
+          # when data is sent, it will be sent to the `callbackUrl` provided
+          # when making the subscription PLUS the suffix `/data`
+          'kinesis':
+            post:
+              requestBody:
+                description: subscription payload
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/CodeCreatedEvent"
+              responses: {}
+
   /codes/{code}:
     get:
       operationId: GetCode
@@ -166,6 +181,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Code"
+      callbacks:
+        # the name `onData` is a convenience locator
+        CodePatched:
+          # when data is sent, it will be sent to the `callbackUrl` provided
+          # when making the subscription PLUS the suffix `/data`
+          'kinesis':
+            post:
+              requestBody:
+                description: subscription payload
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/CodePatchedEvent"
+              responses: {}
 
   /codes/{code}/pictures:
     get:
@@ -215,6 +244,20 @@ paths:
                 picture:
                   type: string
                   format: binary
+      callbacks:
+        # the name `onData` is a convenience locator
+        CodePictureCreated:
+          # when data is sent, it will be sent to the `callbackUrl` provided
+          # when making the subscription PLUS the suffix `/data`
+          'kinesis':
+            post:
+              requestBody:
+                description: subscription payload
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/CodePictureCreatedEvent"
+              responses: {}
 
   /scans:
     get:
@@ -265,6 +308,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Scan"
+      callbacks:
+        # the name `onData` is a convenience locator
+        ScanCreated:
+          # when data is sent, it will be sent to the `callbackUrl` provided
+          # when making the subscription PLUS the suffix `/data`
+          'kinesis':
+            post:
+              requestBody:
+                description: subscription payload
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/ScanCreatedEvent"
+              responses: {}
 
   /scans/{scanId}:
     parameters:

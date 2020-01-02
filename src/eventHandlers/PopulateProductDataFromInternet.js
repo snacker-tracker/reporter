@@ -3,46 +3,93 @@ import EventHandler from '../lib/EventHandler'
 import logger from '../lib/logger'
 import axios from 'axios'
 
+const sleep = async (delay) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => { resolve(true); }, delay)
+  })
+}
+
 class PopulateProductDataFromInternet extends EventHandler {
   async run({ id, event, timestamp, payload, version, actor }) {
-    this.services.logger.info({ event_handler: this.constructor.name, event, event_id: id, timestamp, version, payload, actor })
+    this.services.logger.setContext('code', payload.code)
+    this.services.logger.info({msg: "Start processing"})
 
     const local = await this.services.productInfoStores.snacker.get(payload.code)
-    const off = await this.services.productInfoStores.off.get(payload.code)
+    this.services.logger.info({
+      "msg":" Got local",
+      local
+    })
 
-    const firstOf = (options, hash) => {
-      for(const option of options) {
-        if(hash[option] != undefined && hash[option] != '' && hash[options] != 'unknown') {
-          return hash[option]
+    const off = await this.services.productInfoStores.off.get(payload.code)
+    this.services.logger.info({
+      "msg":" Got off",
+      off
+    })
+
+    const tops = await this.services.productInfoStores.tops.get(payload.code)
+    this.services.logger.info({
+      "msg":" Got tops",
+      tops
+    })
+
+    let images = []
+
+    if(tops) {
+      images = images.concat(tops.images)
+    }
+
+    if(off) {
+      images = images.concat(off.images)
+    }
+
+    if(local === false ) {
+      let createPayload = false
+      if(off) {
+        createPayload = {
+          code: payload.code,
+          name: off.name,
+          categories: off.categories
         }
+        this.services.logger.info({msg: 'Creating using OpenFoodFacts', data: createPayload})
+      } else if(tops) {
+        createPayload = {
+          code: payload.code,
+          name: tops.name
+        }
+        this.services.logger.info({msg: 'Creating using OpenFoodFacts', data: createPayload})
+      } else {
+        this.services.logger.info({msg: 'Did not find in TOPS or OFF'})
+      }
+
+      if(createPayload) {
+        try {
+          const postResponse = await this.services.productInfoStores.snacker.post(createPayload)
+          this.services.logger.info({ 'CreateCodeResponse': postResponse })
+        } catch( error ) {
+          this.services.logger.warn({
+            code: payload.code,
+            status: error.response.status,
+            body: error.response.data
+          })
+        }
+      }
+    } else {
+      if(!local.categories || local.categories.length === 0) {
+        const patchResponse = await this.services.productInfoStores.snacker.patch(payload.code, {
+          categories: off.categories
+        })
+
       }
     }
 
+    if(images.length > 0) {
+      this.services.logger.info({
+        "msg": "Got images",
+        images
+      })
 
-
-    if(off) {
-      //console.log(JSON.stringify(Object.keys(off.product), null, 2))
-      let p = off.product
-
-      const data = {
-        code: payload.code,
-        name: firstOf(['product_name_en', 'generic_name_en', 'product_name', 'generic_name', 'product_name_th', 'generic_name_th'], off.product)
-      }
-
-      if(!local) {
-        try {
-          this.services.logger.info({ msg: 'local?', local, code: payload.code })
-          const postResponse = await this.services.productInfoStores.snacker.post(data)
-          this.services.logger.info({ 'CreateCodeResponse': postResponse })
-        } catch (error) {
-          console.log(error.config)
-          throw error
-        }
-      }
-
-
-      if(p.image_url) {
-        const img_response = await axios.get(p.image_url, { responseType: 'arraybuffer' })
+      for(const image of images) {
+        const img_response = await axios.get(image, { responseType: 'arraybuffer' })
         const extension = img_response.headers['content-type'].split('/')[1]
 
         try {
@@ -51,7 +98,6 @@ class PopulateProductDataFromInternet extends EventHandler {
         } catch(error) {
           this.services.logger.info({ 'msg': 'Failed to upload image', error })
         }
-
       }
     }
 
