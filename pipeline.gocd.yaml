@@ -267,7 +267,7 @@ pipelines:
       CHART_NAME: snacker-tracker-reporter
       DATABASE_HOST: "snacker-tracker-reporter-qa-postgresql.snacker-tracker-qa.svc.cluster.local"
       DATABASE_NAME: snacker-tracker-reporter-qa
-      DATABASE_USERNAME: snacker-tracker-reporter-qa
+      DATABASE_USERNAME: postgres
       K8S_NAMESPACE: qa
       PROJECT: snacker-tracker
       AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE"
