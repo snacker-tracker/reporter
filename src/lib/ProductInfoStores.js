@@ -160,7 +160,7 @@ class OpenFoodFactsInfoStore {
 
       if(response.data.product.categories_hierarchy && response.data.product.categories_hierarchy.length > 0) {
         resp.categories = response.data.product.categories_hierarchy.map( (e) => {
-          return e.split(':')[1].replace('-', '_')
+          return e.split(':')[1].replace(/-/g, "_")
         })
       } else {
         response.categories = []
