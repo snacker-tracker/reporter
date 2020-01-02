@@ -5,30 +5,30 @@ import axios from 'axios'
 
 const sleep = async (delay) => {
   return new Promise((resolve, reject) => {
-    setTimeout(() => { resolve(true); }, delay)
+    setTimeout(() => { resolve(true) }, delay)
   })
 }
 
 class PopulateProductDataFromInternet extends EventHandler {
   async run({ id, event, timestamp, payload, version, actor }) {
     this.services.logger.setContext('code', payload.code)
-    this.services.logger.info({msg: "Start processing"})
+    this.services.logger.info({ msg: 'Start processing' })
 
     const local = await this.services.productInfoStores.snacker.get(payload.code)
     this.services.logger.info({
-      "msg":" Got local",
+      'msg': ' Got local',
       local
     })
 
     const off = await this.services.productInfoStores.off.get(payload.code)
     this.services.logger.info({
-      "msg":" Got off",
+      'msg': ' Got off',
       off
     })
 
     const tops = await this.services.productInfoStores.tops.get(payload.code)
     this.services.logger.info({
-      "msg":" Got tops",
+      'msg': ' Got tops',
       tops
     })
 
@@ -50,15 +50,15 @@ class PopulateProductDataFromInternet extends EventHandler {
           name: off.name,
           categories: off.categories
         }
-        this.services.logger.info({msg: 'Creating using OpenFoodFacts', data: createPayload})
+        this.services.logger.info({ msg: 'Creating using OpenFoodFacts', data: createPayload })
       } else if(tops) {
         createPayload = {
           code: payload.code,
           name: tops.name
         }
-        this.services.logger.info({msg: 'Creating using OpenFoodFacts', data: createPayload})
+        this.services.logger.info({ msg: 'Creating using OpenFoodFacts', data: createPayload })
       } else {
-        this.services.logger.info({msg: 'Did not find in TOPS or OFF'})
+        this.services.logger.info({ msg: 'Did not find in TOPS or OFF' })
       }
 
       if(createPayload) {
@@ -84,7 +84,7 @@ class PopulateProductDataFromInternet extends EventHandler {
 
     if(images.length > 0) {
       this.services.logger.info({
-        "msg": "Got images",
+        'msg': 'Got images',
         images
       })
 

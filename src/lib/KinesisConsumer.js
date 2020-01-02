@@ -21,7 +21,7 @@ const handlers_time_spent = new prom.Histogram({
 
 const sleep = async (delay) => {
   return new Promise((resolve, reject) => {
-    setTimeout(() => { resolve(true); }, delay)
+    setTimeout(() => { resolve(true) }, delay)
   })
 }
 
