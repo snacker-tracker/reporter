@@ -1,5 +1,5 @@
 exports.up = function(knex) {
-  return knex.schema.raw('create extension ltree').table('codes', function(table) {
+  return knex.schema.raw('CREATE EXTENSION IF NOT EXISTS ltree').table('codes', function(table) {
     table.specificType('categories', 'ltree')
   })
 }
