@@ -119,7 +119,7 @@ consumer.setRecords([
   {
     'event': 'ScanCreated',
     'payload': {
-      'code': '8850999220000'
+      'code': '8850999113005'
     }
   }
 ])
