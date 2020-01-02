@@ -52,9 +52,11 @@ class KinesisConsumer {
     }).promise()
 
     if(newRecords.Records.length > 0) {
-      newRecords.Records.forEach(async (r) => {
+      //newRecords.Records.forEach(async (r) => {
+      for( const r of newRecords.Records ) {
         await this.process(JSON.parse(r.Data.toString()))
-      })
+        //await sleep(5)
+      }
     }
 
     this.iterator = newRecords.NextShardIterator

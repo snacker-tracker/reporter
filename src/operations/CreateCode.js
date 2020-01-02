@@ -9,6 +9,12 @@ class CreateCode extends CreateOperation {
   static model = Code
   static canBeCalledAnonymously = true
 
+  toHttpRepresentation(item) {
+    item.categories = item.categories.split('.')
+
+    return item
+  }
+
   async extract_params(req) {
     const d = new Date().toISOString()
 
@@ -16,7 +22,8 @@ class CreateCode extends CreateOperation {
       body: {
         ...req.body,
         created_at: d,
-        updated_at: d
+        updated_at: d,
+        categories: (req.body.categories || []).join('.')
       }
     }
   }

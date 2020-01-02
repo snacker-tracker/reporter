@@ -26,7 +26,7 @@ paths:
           name: code
           required: true
           schema:
-            type: string
+            $ref: "#/components/schemas/UPCCode"
         - in: query
           name: period
           required: false
@@ -41,14 +41,6 @@ paths:
         "200":
           description: |
             Return the list of scan counts by period
-          headers:
-            X-Swagger-Response-Valid:
-              schema:
-                type: boolean
-            X-Swagger-Response-Error-Count:
-              schema:
-                type: integer
-                format: int64
           content:
             application/json:
               schema:
@@ -76,14 +68,6 @@ paths:
         "200":
           description: |
             Return the list of most scanned items
-          headers:
-            X-Swagger-Response-Valid:
-              schema:
-                type: boolean
-            X-Swagger-Response-Error-Count:
-              schema:
-                type: integer
-                format: int64
           content:
             application/json:
               schema:
@@ -111,14 +95,6 @@ paths:
         "200":
           description: |
             Return a list of participating products
-          headers:
-            X-Swagger-Response-Valid:
-              schema:
-                type: boolean
-            X-Swagger-Response-Error-Count:
-              schema:
-                type: integer
-                format: int64
           content:
             application/json:
               schema:
@@ -156,7 +132,8 @@ paths:
           name: code
           required: true
           schema:
-            type: string
+            $ref: "#/components/schemas/UPCCode"
+
       responses:
         "200":
           description: |
@@ -175,7 +152,7 @@ paths:
           name: code
           required: true
           schema:
-            type: string
+            $ref: "#/components/schemas/UPCCode"
       requestBody:
         content:
           application/json:
@@ -200,19 +177,11 @@ paths:
           required: true
           name: code
           schema:
-            type: string
+            $ref: "#/components/schemas/UPCCode"
       responses:
         "200":
           description: |
             Return a list of pictures for a code
-          headers:
-            X-Swagger-Response-Valid:
-              schema:
-                type: boolean
-            X-Swagger-Response-Error-Count:
-              schema:
-                type: integer
-                format: int64
           content:
             application/json:
               schema:
@@ -227,24 +196,16 @@ paths:
           name: code
           required: true
           schema:
-            type: string
+            $ref: "#/components/schemas/UPCCode"
+
       responses:
         "201":
           description: |
             Picture uploaded
-          headers:
-            X-Swagger-Response-Valid:
-              schema:
-                type: boolean
-            X-Swagger-Response-Error-Count:
-              schema:
-                type: integer
-                format: int64
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/CodePicture"
-
       requestBody:
         content:
           multipart/form-data:
@@ -277,14 +238,6 @@ paths:
         "200":
           description: |
             Return a list of participating products
-          headers:
-            X-Swagger-Response-Valid:
-              schema:
-                type: boolean
-            X-Swagger-Response-Error-Count:
-              schema:
-                type: integer
-                format: int64
           content:
             application/json:
               schema:
@@ -352,10 +305,16 @@ components:
       additionalProperties: false
       properties:
         size:
-          type: integer
-          format: int64
+          $ref: "#/components/schemas/PaginationSize"
         next:
-          type: string
+          $ref: "#/components/schemas/PaginationNext"
+
+    PaginationSize:
+      type: number
+      format: int64
+
+    PaginationNext:
+      type: string
 
     ErrorResponse:
       type: object
@@ -376,7 +335,7 @@ components:
           type: string
           format: uuid
         code:
-          type: string
+          $ref: "#/components/schemas/UPCCode"
         scanned_at:
           type: string
           format: date-time
@@ -395,7 +354,7 @@ components:
           type: string
           format: date-time
         code:
-          type: string
+          $ref: "#/components/schemas/UPCCode"
 
     ScanList:
       type: object
@@ -421,7 +380,7 @@ components:
         - updated_at
       properties:
         code:
-          type: string
+          $ref: "#/components/schemas/UPCCode"
         name:
           type: string
         url:
@@ -432,6 +391,16 @@ components:
         updated_at:
           type: string
           format: date-time
+        categories:
+          $ref: "#/components/schemas/CategoryList"
+
+    CategoryList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Category"
+
+    Category:
+      type: string
 
     CreateCodePayload:
       type: object
@@ -441,11 +410,13 @@ components:
         - name
       properties:
         code:
-          type: string
+          $ref: "#/components/schemas/UPCCode"
         name:
           type: string
         url:
           type: string
+        categories:
+          $ref: "#/components/schemas/CategoryList"
 
     PatchCodePayload:
       type: object
@@ -453,6 +424,8 @@ components:
       properties:
         name:
           type: string
+        categories:
+          $ref: "#/components/schemas/CategoryList"
 
     CodeList:
       type: object
@@ -486,15 +459,29 @@ components:
         - size
       properties:
         id:
-          type: string
+          $ref: "#/components/schemas/CodePictureId"
         url:
-          type: string
+          $ref: "#/components/schemas/CodePictureUrl"
         last_modified:
-          type: string
-          format: datetime
+          $ref: "#/components/schemas/CodePictureLastModified"
         size:
-          type: number
-          format: int64
+          $ref: "#/components/schemas/CodePictureSize"
+
+    CodePictureId:
+      type: string
+      format: sha1
+
+    CodePictureLastModified:
+      type: string
+      format: date-time
+
+    CodePictureUrl:
+      type: string
+      format: url
+
+    CodePictureSize:
+      type: number
+      format: int32
 
     CodeScanCounts:
       type: object
@@ -566,4 +553,113 @@ components:
           type: string
           format: date-time
         code:
+          $ref: "#/components/schemas/UPCCode"
+
+    EventWrapper:
+      type: object
+      required:
+        - id
+        - timestamp
+        - version
+        - event
+        - actor
+      properties:
+        id:
+          $ref: "#/components/schemas/EventId"
+        timestamp:
+          $ref: "#/components/schemas/EventTimestamp"
+        version:
+          $ref: "#/components/schemas/EventVersion"
+        event:
+          $ref: "#/components/schemas/EventEvent"
+        actor:
+          $ref: "#/components/schemas/EventActor"
+
+    EventId:
+      type: string
+      format: uuid
+
+    EventTimestamp:
+      type: string
+      format: date-time
+
+    EventVersion:
+      type: string
+      format: semver
+      description: |
+        A valid sem-ver string (eg, version of the backend)
+
+    EventEvent:
+      type: string
+
+    EventActor:
+      type: object
+      required:
+        - sub
+      properties:
+        sub:
           type: string
+        issuer:
+          type: string
+          format: uri
+
+    ScanCreatedEvent:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/EventWrapper"
+      required:
+        - payload
+      properties:
+        payload:
+          $ref: "#/components/schemas/Scan"
+        event:
+          type: string
+          enum:
+            - ScanCreated
+
+    CodeCreatedEvent:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/EventWrapper"
+      required:
+        - payload
+      properties:
+        payload:
+          $ref: "#/components/schemas/Code"
+        event:
+          type: string
+          enum:
+            - CodeCreated
+
+    CodePatchedEvent:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/EventWrapper"
+      required:
+        - payload
+      properties:
+        payload:
+          $ref: "#/components/schemas/Code"
+        event:
+          type: string
+          enum:
+            - CodePatched
+
+    CodePictureCreatedEvent:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/EventWrapper"
+      required:
+        - payload
+      properties:
+        payload:
+          $ref: "#/components/schemas/CodePicture"
+        event:
+          type: string
+          enum:
+            - CodeCreated
+
+
+    UPCCode:
+      type: string
+      format: upc

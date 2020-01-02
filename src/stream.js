@@ -49,7 +49,8 @@ const dependencies = (event, handler) => {
       bigc: new InfoStores.BigCInfoStore(),
       upcdb: new InfoStores.UPCItemDBInfoStore(),
       off: new InfoStores.OpenFoodFactsInfoStore(),
-      snacker: new InfoStores.SnackerTrackerInfoStore(config.reporter_base_url)
+      snacker: new InfoStores.SnackerTrackerInfoStore(config.reporter_base_url),
+      tops: new InfoStores.TopsCoThInfoStore()
     }
   }
 }
@@ -57,7 +58,8 @@ const dependencies = (event, handler) => {
 
 let consumer = new KinesisConsumer(kinesis, config.kinesis.stream_name, {
   logger: new logger.constructor(logger.instance),
-  refreshRate: 1000
+  refreshRate: 1000,
+  iteratorType: 'TRIM_HORIZON'
 })
 
 consumer.setHandlers(eventHandlerMapping)

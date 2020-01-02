@@ -13,10 +13,19 @@ class PatchCode extends PatchOperation {
     return this.args.body
   }
 
+  toHttpRepresentation(item) {
+    item.categories = item.categories.split('.')
+
+    return item
+  }
+
   async extract_params(req) {
     this.args = {
       id: req.params.code,
-      body: req.body
+      body: {
+        ...req.body,
+        categories: (req.body.categories || []).join('.')
+      }
     }
   }
 }

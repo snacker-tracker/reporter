@@ -1,6 +1,61 @@
 import axios from 'axios'
 import FormData from 'form-data'
 
+// https://www.tops.co.th/api/search/suggestions?query=8858259003134
+// curl 'https://www.tops.co.th/api/search/suggestions?query=8858259003134' -H 'x-store-code: tops_sa_432_th'
+
+class TopsCoThInfoStore {
+  /*
+    [{
+      "type": "product",
+      "sku": "8858259003134",
+      "title": "ซานมิกไลท์เบียร์ขวด 330ซีซี",
+      "image": "/8/8/8858259003134_11-09-19.jpg",
+      "url": "san-miguel-light-beer-bottle-330cc-8858259003134",
+      "price": "41.0000",
+      "final_price": "41.0000",
+      "price_html": "<span class=\"price\">฿41.0000</span>",
+      "count": 27,
+      "breadcrumb": [
+        "เครื่องดื่มแอลกอฮอล์",
+        "เบียร์",
+        "เบียร์ลาเกอร์"
+      ]
+    }, {}]
+  */
+  async get(code) {
+    try {
+      const response = await axios.get(
+        ['https://www.tops.co.th/api/search/suggestions?query=', code].join(''),
+        {
+          headers: {
+            'x-store-code': 'tops_sa_432_th'
+          }
+        }
+      )
+
+      let result = response.data.filter( result => {
+        return result.sku == code
+      })[0]
+
+      result = {
+        name: result.title
+      }
+
+      if(result.image) {
+        result.images = ['https://backend.tops.co.th/media/catalog/product/' + result.image]
+      } else {
+        result.images = []
+      }
+
+      return result
+    } catch( error ) {
+      //console.log(code, error.config)
+      return false
+    }
+  }
+}
+
 class SnackerTrackerInfoStore {
   constructor(base_url, options = {}) {
     this.base_url = base_url
@@ -16,11 +71,9 @@ class SnackerTrackerInfoStore {
         }
       )
 
-      console.log(code, response.data)
-
       return response.data
     } catch( error ) {
-      console.log(code, error.config)
+      //console.log(code, error.config)
       return false
     }
   }
@@ -56,6 +109,14 @@ class SnackerTrackerInfoStore {
 
 class OpenFoodFactsInfoStore {
   async get(code) {
+    const firstOf = (options, hash) => {
+      for(const option of options) {
+        if(hash[option] != undefined && hash[option] != '' && hash[options] != 'unknown') {
+          return hash[option]
+        }
+      }
+    }
+
     // https://world.openfoodfacts.org/api/v0/product/8850999220000.json
     try {
       const response = await axios.get(
@@ -71,9 +132,32 @@ class OpenFoodFactsInfoStore {
         return false
       }
 
-      return response.data
+      let resp = {
+        name: firstOf([
+          'product_name_en',
+          'generic_name_en',
+          'product_name',
+          'generic_name',
+          'product_name_th',
+          'generic_name_th'
+        ], response.data.product)
+      }
+
+      if(response.data.product.image_url) {
+        resp.images = [ response.data.product.image_url ]
+      } else {
+        resp.images = []
+      }
+
+      if(response.data.product.categories_hierarchy && response.data.product.categories_hierarchy.length > 0) {
+        resp.categories = response.data.product.categories_hierarchy
+      } else {
+        response.categories = []
+      }
+
+      return resp
     } catch( error ) {
-      console.log(error)
+      //console.log(error)
       return false
     }
   }
@@ -148,5 +232,6 @@ export default {
   BigCInfoStore,
   OpenFoodFactsInfoStore,
   UPCItemDBInfoStore,
-  SnackerTrackerInfoStore
+  SnackerTrackerInfoStore,
+  TopsCoThInfoStore
 }
