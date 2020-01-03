@@ -55,7 +55,7 @@ common:
         -e PGPASSWORD="$DATABASE_PASSWORD" \
         -v `pwd`/prod-backup:/mnt/ \
         -w /mnt/backup/ \
-         postgres:11 psql --host=$DATABASE_HOST --dbname=$DATABASE_NAME --username=$DATABASE_USERNAME -c "DROP TABLE \"codes\"; DROP TABLE \"scans\"; DROP TABLE \"knex_migrations\"; DROP TABLE \"knex_migrations_lock\""
+         postgres:11 psql --host=$DATABASE_HOST --dbname=$DATABASE_NAME --username=$DATABASE_USERNAME -c "DROP TABLE IF EXISTS \"codes\"; DROP TABLE IF EXISTS \"scans\"; DROP TABLE IF EXISTS \"knex_migrations\"; DROP TABLE IF EXISTS \"knex_migrations_lock\""
 
         docker run \
         -e PGPASSWORD="$DATABASE_PASSWORD" \
