@@ -97,13 +97,15 @@ common:
 
         trap finish EXIT
 
+        set -e
+
         docker run \
         -e PGPASSWORD="$DATABASE_PASSWORD" \
         -v `pwd`/backup:/mnt/backup/ \
         -w /mnt/backup/ \
          postgres:11 pg_dump --no-owner --no-acl --host=$DATABASE_HOST --username=$DATABASE_USERNAME --dbname=$DATABASE_NAME -f /mnt/backup/backup.sql
 
-         find ./
+         ls -lh backup/
 
 
 pipelines:
