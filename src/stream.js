@@ -56,8 +56,7 @@ const dependencies = (event, handler) => {
 
 let consumer = new KinesisConsumer(kinesis, config.kinesis.stream_name, {
   logger: new logger.constructor(logger.instance),
-  refreshRate: 1000,
-  iteratorType: 'TRIM_HORIZON'
+  refreshRate: 1000
 })
 
 consumer.setHandlers(eventHandlerMapping)
