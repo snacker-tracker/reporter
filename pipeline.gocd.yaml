@@ -281,7 +281,7 @@ pipelines:
               environment_variables:
                 DATABASE_HOST: "snacker-tracker-reporter-prod-postgresql.snacker-tracker-prod.svc.cluster.local"
                 DATABASE_NAME: snacker-tracker-reporter-prod
-                DATABASE_USERNAME: snacker-tracker-reporter-prod
+                DATABASE_USERNAME: postgres
                 K8S_NAMESPACE: prod
               secure_variables:
                 DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
