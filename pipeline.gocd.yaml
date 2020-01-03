@@ -367,7 +367,7 @@ pipelines:
       CHART_NAME: snacker-tracker-reporter
       DATABASE_HOST: "snacker-tracker-reporter-prod-postgresql.snacker-tracker-prod.svc.cluster.local"
       DATABASE_NAME: snacker-tracker-reporter-prod
-      DATABASE_USERNAME: snacker-tracker-reporter-prod
+      DATABASE_USERNAME: postgres
       K8S_NAMESPACE: prod
       PROJECT: snacker-tracker
     secure_variables:
