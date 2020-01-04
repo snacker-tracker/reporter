@@ -1,32 +1,30 @@
 import { Code } from '../models'
 import ListOperation from '../lib/ListOperation'
 
-class ListCodes extends ListOperation {
+class ListCategories extends ListOperation {
   static model = Code
   static canBeCalledAnonymously = true
 
   async extract_params(req) {
     this.args = {
-      include_deleted: req.query.include_deleted,
       include_meta: req.query.include_meta,
       limit: req.query.limit,
       offset: req.query.offset,
-      order: this.constructor.model.order || ['created_at', 'desc'],
-      categories: req.query.categories
+      parent: req.query.parent || false,
+      contains: req.query.contains || false,
     }
   }
 
 
   toHttpRepresentation(item) {
+    item.path = item.categories
     if(item.categories && item.categories.length > 0) {
       item.categories = item.categories.split('.')
     } else {
       item.categories = []
     }
 
-    if(!item.url) {
-      delete item.url
-    }
+    item.count = parseInt(item.count)
 
     return item
   }
@@ -36,19 +34,26 @@ class ListCodes extends ListOperation {
       resources: (() => {
         let q = this.constructor.model.query()
 
+        q.select('categories')
+        q.count('categories')
+        q.groupBy('categories')
+
         q.options({ 'operationId': this.constructor.name })
-        if (this.constructor.model.hasDeletion && !this.args.include_deleted) {
-          q.where({ '_deleted_at': null })
+        q.whereNotNull('categories')
+        q.whereNot('categories', '')
+
+        if(this.args.parent) {
+          q.whereRaw('categories <@ \'' + this.args.parent + '\'')
         }
 
-        if(this.args.categories) {
-          q.whereRaw('categories ~ \'*.' + this.args.categories + '.*\'')
+        if(this.args.contains){ 
+          q.whereRaw('categories ~ \'*.' + this.args.contains + '.*\'')
         }
 
         q.skipUndefined()
         q.offset(this.args.offset)
         q.limit(this.args.limit)
-        q.orderBy(this.args.order[0], this.args.order[1])
+//        q.orderBy(this.args.order[0], this.args.order[1])
 
         return q
       })()
@@ -59,5 +64,5 @@ class ListCodes extends ListOperation {
 }
 
 export {
-  ListCodes
+  ListCategories
 }

@@ -91,6 +91,12 @@ paths:
             type: integer
             format: int64
             default: 0
+        - in: query
+          name: categories
+          required: false
+          schema:
+            $ref: "#/components/schemas/Category"
+
       responses:
         "200":
           description: |
@@ -355,6 +361,42 @@ paths:
               schema:
                 $ref: "#/components/schemas/Scan"
 
+  /categories:
+    get:
+      operationId: ListCategories
+      tags:
+        - categories
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            format: int64
+            default: 100
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            format: int64
+            default: 0
+        - in: query
+          name: parent
+          schema:
+            type: string
+        - in: query
+          name: contains
+          schema:
+            type: string
+      responses:
+        200:
+          description: |
+            List of categories
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoriesList"
+
+
 components:
   schemas:
     Pagination:
@@ -378,6 +420,34 @@ components:
       properties:
         message:
           type: string
+
+
+    CategoriesList:
+      type: object
+      additionalProperties: false
+      properties:
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryObject"
+
+    CategoryObject:
+      type: object
+      additionalProperties: false
+      required:
+        - path
+        - categories
+        - count
+      properties:
+        path:
+          type: string
+        categories:
+          $ref: "#/components/schemas/CategoryList"
+        count:
+          type: number
+          format: int64
 
     Scan:
       type: object
