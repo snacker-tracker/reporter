@@ -53,7 +53,7 @@ class ListCategories extends ListOperation {
         q.skipUndefined()
         q.offset(this.args.offset)
         q.limit(this.args.limit)
-//        q.orderBy(this.args.order[0], this.args.order[1])
+        //        q.orderBy(this.args.order[0], this.args.order[1])
 
         return q
       })()

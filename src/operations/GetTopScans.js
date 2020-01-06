@@ -10,6 +10,15 @@ class GetTopScans extends ListOperation {
     return item
   }
 
+  extract_params(req, res) {
+    this.args = {
+      from_date: req.query.from_date || false,
+      to_date: req.query.to_date || false,
+      offset: req.query.offset,
+      limit: req.query.limit,
+    }
+  }
+
   resources() {
     return {
       resources: (() => {
@@ -20,8 +29,15 @@ class GetTopScans extends ListOperation {
         query.min('scanned_at as first_scan')
         query.max('scanned_at as last_scan')
         query.count('code').groupBy('code')
-        //query.eager('product')
         query.orderBy('count', 'desc')
+
+        if(this.args.from_date) {
+          query.where('scanned_at', '>=', this.args.from_date)
+        }
+
+        if(this.args.to_date) {
+          query.where('scanned_at', '<=', this.args.from_date)
+        }
 
         query.offset(this.args.offset)
         query.limit(this.args.limit)
