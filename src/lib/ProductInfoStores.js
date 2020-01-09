@@ -112,7 +112,18 @@ class SnackerTrackerInfoStore {
     )
 
     return response.data
+  }
 
+  async get_pictures(code) {
+    try {
+      const response = await axios.get(
+        [this.base_url, 'codes', code, 'pictures'].join('/')
+      )
+
+      return response.data.items
+    } catch( error ) {
+      return false
+    }
   }
 }
 
@@ -164,11 +175,11 @@ class OpenFoodFactsInfoStore {
           if(split[0] == 'th') {
             return 'untranslated'
           } else {
-            return split[1].replace(/-/g, '_')
+            return split[1].replace(/-/g, '_').replace(/ /g, '_')
           }
         })
       } else {
-        response.categories = []
+        resp.categories = []
       }
 
       return resp
@@ -191,16 +202,24 @@ class UPCItemDBInfoStore {
         }
       )
 
-      console.log(JSON.stringify(response.headers, null, 2))
-      console.log(JSON.stringify(response.data, null, 2))
+      const data = response.data
 
-      return response.data
+      if(data.code === 'OK') {
+        if(data.items.length > 0) {
+          const item = data.items[0]
+          return {
+            name: item.title,
+            brand: item.brand,
+            images: item.images
+          }
+        }
+      }
 
+      return false
     } catch(error) {
       console.log('Failed to query the UPC database')
       return false
     }
-
   }
 }
 
