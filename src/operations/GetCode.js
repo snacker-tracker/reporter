@@ -12,10 +12,6 @@ class GetCode extends GetOperation {
       item.categories = []
     }
 
-    if(!item.url) {
-      delete item.url
-    }
-
     return item
   }
 
