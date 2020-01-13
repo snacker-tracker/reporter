@@ -16,6 +16,33 @@ tags:
       Code management
 
 paths:
+  /stats/scan-counts:
+    get:
+      operationId: GetGlobalScanCounts
+      tags:
+        - stats
+      parameters:
+        - in: query
+          name: period
+          required: false
+          schema:
+            type: string
+            default: daily
+            enum:
+              - daily
+              - weekdaily
+              - weekly
+              - hourly
+
+      responses:
+        "200":
+          description: |
+            Return the list of scan counts by period
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlobalScanCounts"
+
   /stats/scan-counts/{code}:
     get:
       operationId: GetCodeScanCounts
@@ -621,6 +648,26 @@ components:
       type: number
       format: int32
 
+    GlobalScanCounts:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          oneOf:
+            - type: array
+              items:
+                $ref: "#/components/schemas/DailyCodeScanCounts"
+            - type: array
+              items:
+                $ref: "#/components/schemas/WeeklyCodeScanCounts"
+            - type: array
+              items:
+                $ref: "#/components/schemas/WeekdailyCodeScanCounts"
+            - type: array
+              items:
+                $ref: "#/components/schemas/HourlyCodeScanCounts"
+
     CodeScanCounts:
       type: object
       required:
@@ -672,6 +719,18 @@ components:
         weekday:
           type: number
           format: int64
+
+    WeeklyCodeScanCounts:
+      type: object
+      required:
+        - count
+        - week
+      properties:
+        count:
+          type: number
+          format: int64
+        week:
+          type: string
 
     TopScanList:
       type: object
@@ -796,7 +855,6 @@ components:
           type: string
           enum:
             - CodeCreated
-
 
     UPCCode:
       type: string
