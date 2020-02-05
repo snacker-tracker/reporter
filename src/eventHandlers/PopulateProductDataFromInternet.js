@@ -27,8 +27,6 @@ class PopulateProductDataFromInternet extends EventHandler {
     this.services.logger.setContext('code', payload.code)
     this.services.logger.info({ msg: 'Start and end processing' })
 
-    return true
-
     let local = false
     try {
       await this.services.productInfoStores.snacker.get(payload.code)
@@ -150,7 +148,7 @@ class PopulateProductDataFromInternet extends EventHandler {
     const local_pictures = this.services.productInfoStores.snacker.get_pictures(payload.code)
 
     const shouldUploadPictures = local_pictures.length === 0 && images.length > 0
-    if(true) {
+    if(shouldUploadPictures) {
       for(const image of images) {
         this.services.logger.info({ msg: 'Downloading picture', url: image })
 

@@ -124,7 +124,7 @@ class KinesisConsumer {
       try {
         data = JSON.parse(record.Data.toString())
       } catch( error ) {
-        this.logger.error({'msg': 'failed to parse JSON', 'data': record.Data.toString()})
+        this.logger.error({ 'msg': 'failed to parse JSON', 'data': record.Data.toString() })
         continue
       }
 

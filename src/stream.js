@@ -49,7 +49,7 @@ const dependencies = (event, handler) => {
   }
 }
 
-let consumer = new KinesisConsumer(iterator, {logger: logger})
+let consumer = new KinesisConsumer(iterator, { logger: logger })
 
 consumer.setHandlers(eventHandlerMapping)
 consumer.setHandlerDependencies(dependencies)
