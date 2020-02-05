@@ -128,7 +128,7 @@ class KinesisConsumer {
         continue
       }
 
-      this.process(data)
+      await this.process(data)
     }
   }
 
