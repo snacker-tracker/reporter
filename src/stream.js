@@ -22,7 +22,7 @@ server.listen(config.port)
 
 let kinesis = new AWS.Kinesis(config.kinesis)
 
-let iterator = new KinesisIterator(kinesis, config.kinesis.stream_name, 'LATEST', config.kinesis)
+let iterator = new KinesisIterator(kinesis, config.kinesis.stream_name, 'TRIM_HORIZON', config.kinesis)
 
 const eventHandlerMapping = {
   ScanCreated: [
