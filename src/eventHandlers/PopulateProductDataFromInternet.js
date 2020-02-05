@@ -29,7 +29,7 @@ class PopulateProductDataFromInternet extends EventHandler {
 
     let local = false
     try {
-      await this.services.productInfoStores.snacker.get(payload.code)
+      local = await this.services.productInfoStores.snacker.get(payload.code)
       this.services.logger.info({
         'msg': 'Got local',
         local
@@ -42,7 +42,7 @@ class PopulateProductDataFromInternet extends EventHandler {
 
     let off = false
     try {
-      await this.services.productInfoStores.off.get(payload.code)
+      off = await this.services.productInfoStores.off.get(payload.code)
       this.services.logger.info({
         'msg': 'Got off',
         off
@@ -55,7 +55,7 @@ class PopulateProductDataFromInternet extends EventHandler {
 
     let tops = false
     try {
-      await this.services.productInfoStores.tops.get(payload.code)
+      tops = await this.services.productInfoStores.tops.get(payload.code)
       this.services.logger.info({
         'msg': 'Got tops',
         tops
@@ -70,7 +70,7 @@ class PopulateProductDataFromInternet extends EventHandler {
 
     let upcdb = false
     try {
-      await this.services.productInfoStores.upcdb.get(payload.code)
+      upcdb = await this.services.productInfoStores.upcdb.get(payload.code)
       this.services.logger.info({
         'msg': 'Got upcdb',
         upcdb
@@ -83,7 +83,7 @@ class PopulateProductDataFromInternet extends EventHandler {
 
     let bigc = false
     try {
-      await this.services.productInfoStores.bigc.get(payload.code)
+      bigc = await this.services.productInfoStores.bigc.get(payload.code)
       this.services.logger.info({
         'msg': 'Got bigc',
         bigc
