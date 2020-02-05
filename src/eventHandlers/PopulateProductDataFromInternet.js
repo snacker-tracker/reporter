@@ -25,37 +25,76 @@ const firstOf = (options) => {
 class PopulateProductDataFromInternet extends EventHandler {
   async run({ id, event, timestamp, payload, version, actor }) {
     this.services.logger.setContext('code', payload.code)
-    this.services.logger.info({ msg: 'Start processing' })
+    this.services.logger.info({ msg: 'Start and end processing' })
 
-    let local = await this.services.productInfoStores.snacker.get(payload.code)
-    this.services.logger.info({
-      'msg': 'Got local',
-      local
-    })
+    return true
 
-    const off = await this.services.productInfoStores.off.get(payload.code)
-    this.services.logger.info({
-      'msg': 'Got off',
-      off
-    })
+    let local = false
+    try {
+      await this.services.productInfoStores.snacker.get(payload.code)
+      this.services.logger.info({
+        'msg': 'Got local',
+        local
+      })
+    } catch(error) {
+      this.services.logger.warn({
+        'msg': 'Failed to get local'
+      })
+    }
 
-    const tops = await this.services.productInfoStores.tops.get(payload.code)
-    this.services.logger.info({
-      'msg': 'Got tops',
-      tops
-    })
+    let off = false
+    try {
+      await this.services.productInfoStores.off.get(payload.code)
+      this.services.logger.info({
+        'msg': 'Got off',
+        off
+      })
+    } catch(error) {
+      this.services.logger.warn({
+        'msg': 'Failed to get off'
+      })
+    }
 
-    const upcdb = await this.services.productInfoStores.upcdb.get(payload.code)
-    this.services.logger.info({
-      msg: 'Got UPCDB',
-      upcdb
-    })
+    let tops = false
+    try {
+      await this.services.productInfoStores.tops.get(payload.code)
+      this.services.logger.info({
+        'msg': 'Got tops',
+        tops
+      })
+    } catch(error) {
+      this.services.logger.warn({
+        'msg': 'Failed to get tops'
+      })
+    }
 
-    const bigc = await this.services.productInfoStores.bigc.get(payload.code)
-    this.services.logger.info({
-      msg: 'Got BigC',
-      bigc
-    })
+
+
+    let upcdb = false
+    try {
+      await this.services.productInfoStores.upcdb.get(payload.code)
+      this.services.logger.info({
+        'msg': 'Got upcdb',
+        upcdb
+      })
+    } catch(error) {
+      this.services.logger.warn({
+        'msg': 'Failed to get upcdb'
+      })
+    }
+
+    let bigc = false
+    try {
+      await this.services.productInfoStores.bigc.get(payload.code)
+      this.services.logger.info({
+        'msg': 'Got bigc',
+        bigc
+      })
+    } catch(error) {
+      this.services.logger.warn({
+        'msg': 'Failed to get bigc'
+      })
+    }
 
     let images = []
 
@@ -65,6 +104,10 @@ class PopulateProductDataFromInternet extends EventHandler {
 
     if(off) {
       images = images.concat(off.images)
+    }
+
+    if(bigc) {
+      images = images.concat(bigc.images)
     }
 
     const shouldCreate = local === false
@@ -107,12 +150,18 @@ class PopulateProductDataFromInternet extends EventHandler {
     const local_pictures = this.services.productInfoStores.snacker.get_pictures(payload.code)
 
     const shouldUploadPictures = local_pictures.length === 0 && images.length > 0
-    if(shouldUploadPictures) {
+    if(true) {
       for(const image of images) {
         this.services.logger.info({ msg: 'Downloading picture', url: image })
 
-        const img_response = await axios.get(image, { responseType: 'arraybuffer' })
-        const extension = img_response.headers['content-type'].split('/')[1]
+        let img_response, extension
+        try {
+          img_response = await axios.get(image, { responseType: 'arraybuffer' })
+          extension = img_response.headers['content-type'].split('/')[1]
+        } catch( error ) {
+          this.services.logger.info({ 'msg': 'Failed to download image', error })
+          continue
+        }
 
         try {
           const picture = await this.services.productInfoStores.snacker.post_picture(payload.code, img_response.data)

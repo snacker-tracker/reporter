@@ -3,8 +3,6 @@ import CreateOperation from '../lib/CreateOperation'
 
 import { Code } from '../models'
 
-import uuid from 'uuid'
-
 class CreateCode extends CreateOperation {
   static model = Code
   static canBeCalledAnonymously = true
@@ -27,7 +25,9 @@ class CreateCode extends CreateOperation {
         ...req.body,
         created_at: d,
         updated_at: d,
-        categories: (req.body.categories || []).join('.')
+        categories: (req.body.categories || []).map( category => {
+          return category.replace(/-/g, '_').replace(/ /g, '_')
+        }).join('.')
       }
     }
   }

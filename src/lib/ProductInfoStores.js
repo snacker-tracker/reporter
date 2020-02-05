@@ -34,23 +34,29 @@ class TopsCoThInfoStore {
         }
       )
 
-      let result = response.data.filter( result => {
-        return result.sku == code
+      let data = response.data.filter( item => {
+        return item.sku == code
       })[0]
 
-      result = {
-        name: result.title
+      if(data === undefined) {
+        return false
       }
 
-      if(result.image) {
-        result.images = ['https://backend.tops.co.th/media/catalog/product/' + result.image]
+      console.log(data)
+
+      let result = {
+        name: data.title
+      }
+
+      if(data.image) {
+        result.images = ['https://backend.tops.co.th/media/catalog/product/' + data.image]
       } else {
         result.images = []
       }
 
       return result
     } catch( error ) {
-      //console.log(code, error.config)
+      console.log(code, error)
       return false
     }
   }
@@ -227,6 +233,22 @@ class BigCInfoStore {
   async get(code) {
     let bigc_result
     try {
+      // https://www.bigc.co.th/api/common/search/products?_store=2&q=8854698015523
+      bigc_result = await axios.get(
+        'https://www.bigc.co.th/api/common/search/products',
+        {
+          params: {
+            q: code,
+            _store: 2
+          },
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'User-agent': 'Mozilla Firefox'
+          }
+        }
+      )
+
+      /*
       bigc_result = await axios.get(
         'https://www.bigc.co.th/sb.php',
         {
@@ -241,12 +263,18 @@ class BigCInfoStore {
           }
         }
       )
+      */
 
-      if(bigc_result.data.response) {
-        if(bigc_result.data.response.numFound > 0) {
-          return bigc_result.data.response.docs[0]
+      if(bigc_result.data.result) {
+        if(bigc_result.data.result.itemCount > 0) {
+          return {
+            name: bigc_result.data.result.product[0].name,
+            images: [bigc_result.data.result.product[0].image, ['https://static.bigc.co.th/media/catalog/product', code.slice(0,1), code.slice(1,2), `${code}.jpg`].join('/')]
+          }
         }
       }
+
+      console.log(bigc_result.data)
 
       return false
     } catch(error) {
