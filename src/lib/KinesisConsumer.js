@@ -25,21 +25,88 @@ const sleep = async (delay) => {
   })
 }
 
+class KinesisIterator {
+  constructor(client, stream, type, config) {
+    this.client = client
+    this.stream = stream
+    this.type = type
+    this.config = {
+      pollingDelay: 10000,
+      limit: 10,
+      ...config
+    }
+    this.shardIterators = {} // Map<shardId, shardIterator>
+  }
+
+  async * shards() {
+    const shards = await this.client.listShards({
+      StreamName: this.stream
+    }).promise()
+
+    const shardIds = shards.Shards.map( (shard) => {
+      return shard.ShardId
+    })
+
+    for(const shard of shardIds) {
+      yield shard
+    }
+  }
+
+  async sleep(milliseconds) {
+    await new Promise( (resolve) => {
+      setTimeout(() => { resolve(true) }, milliseconds )
+    })
+  }
+
+  async * iterators(shardId) {
+    const iterator = await this.client.getShardIterator({
+      StreamName: this.stream,
+      ShardIteratorType: this.type,
+      ShardId: shardId
+    }).promise()
+
+    // yield the first iterator
+    yield iterator.ShardIterator
+
+    // then we update the iterator from records()
+    while(true) {
+      yield this.shardIterators[shardId]
+    }
+  }
+
+  async _records(iterator, limit) {
+    const records = await this.client.getRecords({
+      ShardIterator: iterator,
+      Limit: limit,
+    }).promise()
+
+    return records
+  }
+
+  async * records() {
+    for await (const shardId of this.shards()) {
+      for await ( const iterator of this.iterators(shardId) ) {
+        const records = await this._records(iterator, this.config.limit)
+        for(const record of records.Records) {
+          yield record
+        }
+
+        // we should use this the next time
+        this.shardIterators[shardId] = records.NextShardIterator
+
+        // dont sleep if it looks like we're still going through backlog
+        if(records.Records.length < this.config.limit) {
+          await this.sleep(this.config.pollingDelay)
+        }
+      }
+    }
+  }
+}
 
 class KinesisConsumer {
-  constructor(client, streamName, options = {}) {
-    options = {
-      refreshRate: 1000,
-      iteratorType: 'LATEST',
-      ...options
-    }
-
-    this.client = client
-    this.streamName = streamName
-    this.refreshRate = options.refreshRate
-    this._getRecords = this._getRecords.bind(this)
+  constructor(iterator, options = {}) {
     this.logger = options.logger
-    this.iteratorType = options.iteratorType
+    this.iterator = iterator
     this.handlers = {}
   }
 
@@ -51,43 +118,18 @@ class KinesisConsumer {
     this.handlerDependencies = dependencies
   }
 
-  _getRecords = async function () {
-    const newRecords = await this.client.getRecords({
-      ShardIterator: this.iterator,
-      Limit: 100
-    }).promise()
-
-    if(newRecords.Records.length > 0) {
-      //newRecords.Records.forEach(async (r) => {
-      for( const r of newRecords.Records ) {
-        await this.process(JSON.parse(r.Data.toString()))
-        //await sleep(5)
-      }
-    }
-
-    this.iterator = newRecords.NextShardIterator
-  }
-
-
   async start() {
-    let shards = await this.client.listShards({
-      StreamName: this.streamName
-    }).promise()
+    for await (const record of this.iterator.records()) {
+      let data
+      try {
+        data = JSON.parse(record.Data.toString())
+      } catch( error ) {
+        this.logger.error({'msg': 'failed to parse JSON', 'data': record.Data.toString()})
+        continue
+      }
 
-    let iterator = await this.client.getShardIterator({
-      ShardId: shards.Shards[0].ShardId,
-      ShardIteratorType: this.iteratorType,
-      StreamName: this.streamName
-    }).promise()
-
-    this.iterator = iterator.ShardIterator
-
-    setInterval(this._getRecords, this.refreshRate)
-    console.log('started streaming')
-  }
-
-  records(recordCount = 100) {
-    return this.records.shift(recordCount)
+      this.process(data)
+    }
   }
 
   async process(event) {
@@ -144,4 +186,7 @@ class KinesisConsumer {
   }
 }
 
-export default KinesisConsumer
+export {
+  KinesisConsumer,
+  KinesisIterator
+}

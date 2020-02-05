@@ -3,13 +3,12 @@ import config from './config/'
 
 import logger from './lib/logger'
 
-
 import express from 'express'
 const server = express()
 
 import prom from 'prom-client'
 
-import KinesisConsumer from './lib/KinesisConsumer'
+import { KinesisConsumer, KinesisIterator } from './lib/KinesisConsumer'
 import InfoStores from './lib/ProductInfoStores'
 import PopulateProductDataFromInternet from './eventHandlers/PopulateProductDataFromInternet'
 
@@ -22,6 +21,8 @@ server.get('/metrics', (req, res) => {
 server.listen(config.port)
 
 let kinesis = new AWS.Kinesis(config.kinesis)
+
+let iterator = new KinesisIterator(kinesis, config.kinesis.stream_name, 'LATEST', config.kinesis)
 
 const eventHandlerMapping = {
   ScanCreated: [
@@ -48,11 +49,7 @@ const dependencies = (event, handler) => {
   }
 }
 
-
-let consumer = new KinesisConsumer(kinesis, config.kinesis.stream_name, {
-  logger: new logger.constructor(logger.instance),
-  refreshRate: 1000
-})
+let consumer = new KinesisConsumer(iterator, {logger: logger})
 
 consumer.setHandlers(eventHandlerMapping)
 consumer.setHandlerDependencies(dependencies)
