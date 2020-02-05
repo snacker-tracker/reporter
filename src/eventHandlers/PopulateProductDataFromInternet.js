@@ -66,8 +66,6 @@ class PopulateProductDataFromInternet extends EventHandler {
       })
     }
 
-
-
     let upcdb = false
     try {
       upcdb = await this.services.productInfoStores.upcdb.get(payload.code)
@@ -145,7 +143,7 @@ class PopulateProductDataFromInternet extends EventHandler {
       })
     }
 
-    const local_pictures = this.services.productInfoStores.snacker.get_pictures(payload.code)
+    const local_pictures = await this.services.productInfoStores.snacker.get_pictures(payload.code)
 
     const shouldUploadPictures = local_pictures.length === 0 && images.length > 0
     if(shouldUploadPictures) {

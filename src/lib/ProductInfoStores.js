@@ -42,8 +42,6 @@ class TopsCoThInfoStore {
         return false
       }
 
-      console.log(data)
-
       let result = {
         name: data.title
       }
@@ -273,8 +271,6 @@ class BigCInfoStore {
           }
         }
       }
-
-      console.log(bigc_result.data)
 
       return false
     } catch(error) {
