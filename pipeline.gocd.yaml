@@ -135,6 +135,9 @@ pipelines:
                     set -e
 
                     ./auto/test
+                    docker run -ti \
+                      -v `pwd`:/app/ \
+                      alpine chown -R $(id -u):$(id -g) /app/coverage
 
               artifacts:
                 - test:
