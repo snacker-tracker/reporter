@@ -40,7 +40,19 @@ app.get('/health', (req, res) => {
 })
 
 app.get('/api-doc', (req, res) => {
-  res.status(200).json(swaggerDoc)
+  const host = req.headers['x-forwarded-host'] || req.headers['host']
+  const proto = req.headers['x-forwarded-proto'] || 'http'
+
+  const response = {
+    ...swaggerDoc,
+    servers: [
+      {
+        url: [proto, '://', host, swaggerDoc.servers[0].url].join('')
+      }
+    ]
+  }
+
+  res.status(200).json(response)
 })
 
 const handlers = Object.entries(operations)
