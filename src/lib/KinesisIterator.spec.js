@@ -67,8 +67,8 @@ describe(KinesisIterator, () => {
     kinesis.getRecords.awsResolve({
       NextShardIterator: 'next-shard-iterator',
       Records: [
-        {'Data': 'record one'},
-        {'Data': 'record two'}
+        { 'Data': 'record one' },
+        { 'Data': 'record two' }
       ]
     })
 
@@ -116,7 +116,7 @@ describe(KinesisIterator, () => {
 
     describe('delay', () => {
       it('does not sleep if we get a full batch', async () => {
-        KI = new KinesisIterator(kinesis, 'example-stream', 'LATEST', {limit: 1})
+        KI = new KinesisIterator(kinesis, 'example-stream', 'LATEST', { limit: 1 })
         KI.sleep = jest.fn()
 
         const next = await KI.records()
@@ -176,7 +176,7 @@ describe(KinesisIterator, () => {
 
       describe('options', () => {
         it('uses the limit option', async () => {
-          KI = new KinesisIterator(kinesis, 'another-stream', 'BLAH', {limit: 'should-be-a-number'})
+          KI = new KinesisIterator(kinesis, 'another-stream', 'BLAH', { limit: 'should-be-a-number' })
           KI.sleep = jest.fn()
 
           const next = await KI.records()
@@ -190,7 +190,7 @@ describe(KinesisIterator, () => {
         })
 
         it('uses the pollingDelay option', async () => {
-          KI = new KinesisIterator(kinesis, 'example-stream', 'LATEST', {pollingDelay: 123123123})
+          KI = new KinesisIterator(kinesis, 'example-stream', 'LATEST', { pollingDelay: 123123123 })
           KI.sleep = jest.fn()
 
           const next = await KI.records()
