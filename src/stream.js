@@ -8,7 +8,9 @@ const server = express()
 
 import prom from 'prom-client'
 
-import { KinesisConsumer, KinesisIterator } from './lib/KinesisConsumer'
+import KinesisIterator from './lib/KinesisIterator'
+import KinesisConsumer from './lib/KinesisConsumer'
+
 import InfoStores from './lib/ProductInfoStores'
 import PopulateProductDataFromInternet from './eventHandlers/PopulateProductDataFromInternet'
 
