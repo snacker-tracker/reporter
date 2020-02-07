@@ -135,7 +135,7 @@ pipelines:
                     set -e
 
                     ./auto/test
-                    docker run -ti \
+                    docker run \
                       -v `pwd`:/app/ \
                       alpine chown -R $(id -u):$(id -g) /app/coverage
 
