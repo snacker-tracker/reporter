@@ -21,8 +21,27 @@ const awsMock = () => {
     })
   }
 
+  const mockResolvedValueOnce = function(result) {
+    fn.mockReturnValueOnce({
+      promise() {
+        return Promise.resolve(result)
+      }
+    })
+  }
+
+  const mockRejectedValueOnce = function(result) {
+    fn.mockReturnValueOnce({
+      promise() {
+        return Promise.reject(result)
+      }
+    })
+  }
+
+
   fn.awsResolve = mockResolvedValue
+  fn.awsResolveOnce = mockResolvedValueOnce
   fn.awsReject = mockRejectedValue
+  fn.awsRejectOnce = mockRejectedValueOnce
 
   return fn
 }
@@ -46,61 +65,89 @@ describe(KinesisIterator, () => {
 
     kinesis.getRecords = awsMock()
     kinesis.getRecords.awsResolve({
+      NextShardIterator: 'next-shard-iterator',
       Records: [
-        {
-          'Data': 'abcabcabcabc'
-        }
+        {'Data': 'record one'},
+        {'Data': 'record two'}
       ]
     })
 
     KI = new KinesisIterator(kinesis, 'example-stream', 'LATEST', {})
+    KI.sleep = jest.fn()
   })
 
-  describe('* records()', () => {
-    describe('behaviour', () => {
-      it('returns an async generator', async () => {
+  describe('behaviour', () => {
+    describe('getting records', () => {
+      it('returns the first record of the batch', async () => {
         const next = await KI.records()
-        expect(next.constructor.name).toBe('AsyncGenerator')
-      })
 
-      it('has a next() method', async () => {
-        const next = await KI.records()
-        expect(typeof(next.next)).toBe('function')
-      })
-
-      it('returns a promise for a record when next() is called', async () => {
-        const next = await KI.records()
-        const recordPromise = next.next()
-
-        expect(recordPromise.constructor.name).toBe('Promise')
-      })
-
-      it('returns a record when awaited', async () => {
-        const next = await KI.records()
-        const record = await next.next()
-
+        let record = await next.next()
         expect(record).toMatchObject({
           done: false,
           value: {
-            'Data': 'abcabcabcabc'
+            'Data': 'record one'
+          }
+        })
+
+        record = await next.next()
+        expect(record).toMatchObject({
+          done: false,
+          value: {
+            'Data': 'record two'
+          }
+        })
+
+      })
+
+      it('returns the second record of the batch', async () => {
+        const next = await KI.records()
+        await next.next()
+
+        let record = await next.next()
+        expect(record).toMatchObject({
+          done: false,
+          value: {
+            'Data': 'record two'
           }
         })
       })
     })
 
-    describe('implementation details', () => {
-      it('calls listShards of the right stream', async () => {
-        const next = await KI.records()
-        const record = await next.next()
 
-        expect(kinesis.listShards).toHaveBeenCalledWith(
-          expect.objectContaining({
-            StreamName: 'example-stream'
-          })
-        )
+    describe('delay', () => {
+      it('does not sleep if we get a full batch', async () => {
+        KI = new KinesisIterator(kinesis, 'example-stream', 'LATEST', {limit: 1})
+        KI.sleep = jest.fn()
+
+        const next = await KI.records()
+        await next.next()
+        await next.next()
+
+        let record = await next.next()
+        expect(KI.sleep).not.toHaveBeenCalled()
       })
 
-      it('calls getShardIterator on the right stream and shard', async () => {
+      it('sleeps for a while if a batch was less than LIMIT', async () => {
+        KI = new KinesisIterator(kinesis, 'example-stream', 'LATEST', {})
+        KI.sleep = jest.fn()
+
+        const next = await KI.records()
+        await next.next()
+        await next.next()
+
+        let record = await next.next()
+        expect(KI.sleep).toHaveBeenCalledWith(KI.config.pollingDelay)
+      })
+
+    })
+  })
+
+  describe('implementation details', () => {
+    describe('Constructor', () => {
+      it('uses the ShardIteratorType argument', async () => {
+        KI = new KinesisIterator(kinesis, 'example-stream', 'BLAH', {})
+        KI.sleep = jest.fn()
+
         const next = await KI.records()
         const record = await next.next()
 
@@ -108,21 +155,100 @@ describe(KinesisIterator, () => {
           expect.objectContaining({
             StreamName: 'example-stream',
             ShardId: 'shard-00000001',
-            ShardIteratorType: 'LATEST'
+            ShardIteratorType: 'BLAH'
           })
         )
       })
 
-      it('calls getRecords with the right shard iterator', async () => {
+      it('uses the stream name from the constructor', async () => {
+        KI = new KinesisIterator(kinesis, 'another-stream', 'BLAH', {})
+        KI.sleep = jest.fn()
+
         const next = await KI.records()
         const record = await next.next()
 
-        expect(kinesis.getRecords).toHaveBeenCalledWith(
+        expect(kinesis.listShards).toHaveBeenCalledWith(
           expect.objectContaining({
-            ShardIterator: 'xxxyyyzzz'
+            StreamName: 'another-stream'
           })
         )
       })
+
+      describe('options', () => {
+        it('uses the limit option', async () => {
+          KI = new KinesisIterator(kinesis, 'another-stream', 'BLAH', {limit: 'should-be-a-number'})
+          KI.sleep = jest.fn()
+
+          const next = await KI.records()
+          const record = await next.next()
+
+          expect(kinesis.getRecords).toHaveBeenCalledWith(
+            expect.objectContaining({
+              Limit: 'should-be-a-number'
+            })
+          )
+        })
+
+        it('uses the pollingDelay option', async () => {
+          KI = new KinesisIterator(kinesis, 'example-stream', 'LATEST', {pollingDelay: 123123123})
+          KI.sleep = jest.fn()
+
+          const next = await KI.records()
+          await next.next()
+          await next.next()
+
+          let record = await next.next()
+          expect(KI.sleep).toHaveBeenCalledWith(123123123)
+        })
+      })
+    })
+
+    it('calls listShards of the right stream', async () => {
+      const next = await KI.records()
+      const record = await next.next()
+
+      expect(kinesis.listShards).toHaveBeenCalledWith(
+        expect.objectContaining({
+          StreamName: 'example-stream'
+        })
+      )
+    })
+
+    it('calls getShardIterator on the right stream and shard', async () => {
+      const next = await KI.records()
+      const record = await next.next()
+
+      expect(kinesis.getShardIterator).toHaveBeenCalledWith(
+        expect.objectContaining({
+          StreamName: 'example-stream',
+          ShardId: 'shard-00000001',
+          ShardIteratorType: 'LATEST'
+        })
+      )
+    })
+
+    it('calls getRecords with the right shard iterator', async () => {
+      const next = await KI.records()
+      const record = await next.next()
+
+      expect(kinesis.getRecords).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ShardIterator: 'xxxyyyzzz'
+        })
+      )
+    })
+
+    it('calls getRecords with the shard iterator from the previous getRecords', async () => {
+      const next = await KI.records()
+      await next.next()
+      await next.next()
+      const record = await next.next()
+
+      expect(kinesis.getRecords).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ShardIterator: 'next-shard-iterator'
+        })
+      )
     })
   })
 })
