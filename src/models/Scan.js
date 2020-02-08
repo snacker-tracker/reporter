@@ -3,8 +3,6 @@ import connection from '../database/knex'
 
 import Code from './Code'
 
-import uuid from 'uuid'
-
 Model.knex(connection)
 
 export default class Scan extends Model {

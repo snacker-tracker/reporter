@@ -1,8 +1,9 @@
-import Config from '../config'
-import logger from './logger'
-import EventPublisher from './event_publisher'
 import AWS from 'aws-sdk'
 
+import Config from '../config'
+import logger from './logger'
+
+import EventPublisher from './streaming/EventPublisher'
 import ImageRepository from './ImageRepository'
 
 let kinesis_client

@@ -1,8 +1,6 @@
 import { Model } from 'objection'
 import connection from '../database/knex'
 
-import uuid from 'uuid'
-
 Model.knex(connection)
 
 export default class Code extends Model {

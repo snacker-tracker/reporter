@@ -1,3 +1,3 @@
-import { Config } from './config'
+import { Config } from './Config'
 
 module.exports = Config(process.env)

@@ -1,0 +1,88 @@
+import prom from 'prom-client'
+
+
+const defaults = {
+  registers: []
+}
+
+const swagger = {
+  labelNames: ['operationId', 'statusCode']
+}
+
+const knex = {
+  labelNames: ['command', 'operationId']
+}
+
+const swagger_operation_time_spent = new prom.Histogram({
+  name: 'swagger_operation_time_spent',
+  help: 'time spent in operations',
+  buckets: [0.01, 0.05, 0.1, 0.5, 1, 2.5],
+  ...swagger,
+  ...defaults
+})
+
+let api_user_agents = new prom.Counter({
+  name: 'api_user_agents',
+  help: 'get the distribution of user agents and their version (eg, apps)',
+  ...swagger
+})
+
+const swagger_invalid_responses = new prom.Histogram({
+  name: 'swagger_invalid_responses',
+  help: 'number of responses that had one or more schema errors',
+  ...swagger,
+  ...defaults
+})
+
+const swagger_response_errors = new prom.Histogram({
+  name: 'swagger_response_errors',
+  help: 'number of responses that had one or more schema errors',
+  ...swagger,
+  ...defaults
+})
+
+const swagger_metrics = {
+  operation_time_spent: swagger_operation_time_spent,
+  invalid_responses: swagger_invalid_responses,
+  errors: swagger_response_errors
+}
+
+
+const knex_query_response_time = new prom.Histogram({
+  name: 'knex_query_response_time_seconds',
+  help: 'duration of queries in seconds',
+  ...knex,
+  ...defaults
+})
+
+const knex_query_affected_rows = new prom.Histogram({
+  name: 'knext_query_affected_rows',
+  help: 'number of rows affected by a query',
+  buckets: [0, 1, 5, 10, 25, 100],
+  ...knex,
+  ...defaults
+})
+
+const knex_metrics = {
+  affected_rows: knex_query_affected_rows,
+  response_time: knex_query_response_time
+}
+
+const product_info_store_time_spent = new prom.Histogram({
+  name: 'product_info_store_time_spent',
+  help: 'time spent querying product information stores',
+  labelNames: ['provider'],
+  ...defaults
+})
+
+const Metrics = {
+  api_user_agents,
+  swagger_operation_time_spent,
+  swagger_invalid_responses,
+  swagger_response_errors,
+  knex_query_response_time,
+  knex_query_affected_rows,
+  product_info_store_time_spent
+}
+
+export default Metrics
