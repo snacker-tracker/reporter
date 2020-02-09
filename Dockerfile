@@ -1,6 +1,5 @@
 FROM node:10-alpine
 
-ENV NODE_ENV=production
 RUN mkdir /app/
 WORKDIR /app/
 
@@ -15,6 +14,7 @@ COPY src ./src
 ENV PORT 8090
 EXPOSE $PORT
 
+ENV NODE_ENV=production
 RUN yarn build
 CMD node dist/bin/web.js
 
