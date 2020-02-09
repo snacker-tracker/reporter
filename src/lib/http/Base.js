@@ -15,7 +15,7 @@ class Operation {
 
   static canBeCalledAnonymously = true
 
-  async extract_params(req) {
+  async extract_params() {
     this.args = {}
   }
 
@@ -23,7 +23,7 @@ class Operation {
     return item
   }
 
-  async execute(req, res) {
+  async execute() {
     return new HTTPResponse({
       status: 501,
       body: {
@@ -32,11 +32,11 @@ class Operation {
     })
   }
 
-  async resources(req) {
+  async resources() {
     return {}
   }
 
-  async run(req, res) {
+  async run(req) {
     if(!req.user && !this.constructor.canBeCalledAnonymously) {
       return new HTTPResponse({
         status: 401,

@@ -29,38 +29,36 @@ class ListCategories extends ListOperation {
     return item
   }
 
-  resources(req) {
+  resources() {
     return {
       resources: (() => {
-        let q = this.constructor.model.query()
+        let query = this.constructor.model.query()
 
-        q.select('categories')
-        q.count('categories')
-        q.groupBy('categories')
+        query.select('categories')
+        query.count('categories')
+        query.groupBy('categories')
 
-        q.options({ 'operationId': this.constructor.name })
-        q.whereNotNull('categories')
-        q.whereNot('categories', '')
+        query.options({ 'operationId': this.constructor.name })
+        query.whereNotNull('categories')
+        query.whereNot('categories', '')
 
         if(this.args.parent) {
-          q.whereRaw('categories <@ \'' + this.args.parent + '\'')
+          query.whereRaw('categories <@ \'' + this.args.parent + '\'')
         }
 
         if(this.args.contains){ 
-          q.whereRaw('categories ~ \'*.' + this.args.contains + '.*\'')
+          query.whereRaw('categories ~ \'*.' + this.args.contains + '.*\'')
         }
 
-        q.skipUndefined()
-        q.offset(this.args.offset)
-        q.limit(this.args.limit)
+        query.skipUndefined()
+        query.offset(this.args.offset)
+        query.limit(this.args.limit)
         //        q.orderBy(this.args.order[0], this.args.order[1])
 
-        return q
+        return query
       })()
     }
   }
-
-
 }
 
 export {

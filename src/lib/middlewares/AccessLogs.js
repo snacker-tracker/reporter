@@ -68,9 +68,9 @@ const AccessLogs = (req, res, next) => {
     */
 
     event.request.headers = {}
-    Object.keys(req.headers).forEach(i => {
-      let key = i.replace(/-/g, '_')
-      let value = req.headers[i]
+    Object.keys(req.headers).forEach(header => {
+      let key = header.replace(/-/g, '_')
+      let value = req.headers[header]
       if (key == 'content_type') {
         if (value.includes('boundary')) {
           value = value.split(';')[0]
@@ -94,9 +94,9 @@ const AccessLogs = (req, res, next) => {
     let responseHeaders = res.getHeaders()
 
     event.response.headers = {}
-    Object.keys(responseHeaders).forEach(i => {
-      let key = i.replace(/-/g, '_')
-      let value = responseHeaders[i]
+    Object.keys(responseHeaders).forEach(header => {
+      let key = header.replace(/-/g, '_')
+      let value = responseHeaders[header]
       if (key == 'content_type') {
         if (value.includes('boundary')) {
           value = value.split(';')[0]

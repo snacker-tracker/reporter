@@ -41,13 +41,6 @@ const swagger_response_errors = new prom.Histogram({
   ...defaults
 })
 
-const swagger_metrics = {
-  operation_time_spent: swagger_operation_time_spent,
-  invalid_responses: swagger_invalid_responses,
-  errors: swagger_response_errors
-}
-
-
 const knex_query_response_time = new prom.Histogram({
   name: 'knex_query_response_time_seconds',
   help: 'duration of queries in seconds',
@@ -62,11 +55,6 @@ const knex_query_affected_rows = new prom.Histogram({
   ...knex,
   ...defaults
 })
-
-const knex_metrics = {
-  affected_rows: knex_query_affected_rows,
-  response_time: knex_query_response_time
-}
 
 const product_info_store_time_spent = new prom.Histogram({
   name: 'product_info_store_time_spent',

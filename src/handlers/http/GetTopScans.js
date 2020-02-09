@@ -10,7 +10,7 @@ class GetTopScans extends ListOperation {
     return item
   }
 
-  extract_params(req, res) {
+  extract_params(req) {
     this.args = {
       from_date: req.query.from_date || false,
       to_date: req.query.to_date || false,

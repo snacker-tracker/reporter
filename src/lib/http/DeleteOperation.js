@@ -1,11 +1,11 @@
 import { Operation, HTTPResponse } from './Base'
 
 export default class DeleteOperation extends Operation {
-  requesterCanDeleteResource(item) {
+  requesterCanDeleteResource() {
     return true
   }
 
-  resources(req) {
+  resources() {
     return {
       resource: (async () => {
         return this.constructor.model.query().findById(this.args.id)

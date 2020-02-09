@@ -1,4 +1,3 @@
-import { Operation, HTTPResponse } from '../../lib/http/Base'
 import CreateOperation from '../../lib/http/CreateOperation'
 
 import { Scan } from '../../models'
@@ -10,14 +9,14 @@ class CreateScan extends CreateOperation {
   static canBeCalledAnonymously = true
 
   async extract_params(req) {
-    const d = new Date().toISOString()
+    const now = new Date().toISOString()
 
     this.args = {
       body: {
         ...req.body,
         id: uuid(),
-        scanned_at: req.body.scanned_at || d,
-        created_at: d
+        scanned_at: req.body.scanned_at || now,
+        created_at: now
       }
     }
   }

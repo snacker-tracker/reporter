@@ -14,7 +14,7 @@ export default class CreateOperation extends Operation {
     }
   }
 
-  requesterCanCreateResource(item) {
+  requesterCanCreateResource() {
     return true
   }
 

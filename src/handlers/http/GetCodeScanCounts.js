@@ -43,8 +43,8 @@ class GetCodeScanCounts extends ListOperation {
 
             const fill = []
 
-            for( let s = start; s <= end; s.setTime( s.getTime() + 1 * 86400000 ) ) {
-              fill.push(new Date(s))
+            for( let starting = start; starting <= end; starting.setTime( starting.getTime() + 1 * 86400000 ) ) {
+              fill.push(new Date(starting))
             }
 
             return fill
@@ -55,17 +55,17 @@ class GetCodeScanCounts extends ListOperation {
               }, {})
           },
 
-          hourly(start, end) {
+          hourly() {
             const fill = {}
 
-            for( let h = 0; h < 24; h++) {
-              fill[h] = 0
+            for( let hour = 0; hour < 24; hour++) {
+              fill[hour] = 0
             }
 
             return fill
           },
 
-          weekdaily(start, end) {
+          weekdaily() {
             return {
               0: 0,
               1: 0,
@@ -103,12 +103,6 @@ class GetCodeScanCounts extends ListOperation {
 
         const results = await query
 
-        const asHash = results.reduce( (accumulator, current) => {
-          accumulator[current[period]] = current['count']
-
-          return accumulator
-        }, {} )
-
         const times = results.map(row => row[period])
 
         const bounds = [
@@ -119,25 +113,24 @@ class GetCodeScanCounts extends ListOperation {
         const fill = fillers[this.args.period](bounds[0], bounds[1])
 
         const zip = (timeseries, fill) => {
-          for( const e of timeseries ) {
-            fill[e[period]] = e.count
+          for( const entry of timeseries ) {
+            fill[entry[period]] = entry.count
           }
 
-          return Object.entries(fill).map( e => {
+          return Object.entries(fill).map( entry => {
             const point = {
-              count: e[1]
+              count: entry[1]
             }
 
             if(['hour', 'weekday'].includes(period)) {
-              point[period] = parseInt(e[0])
+              point[period] = parseInt(entry[0])
             } else {
-              point[period] = e[0]
+              point[period] = entry[0]
             }
 
             return point
           })
         }
-
 
         return zip(results, fill)
       })()

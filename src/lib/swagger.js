@@ -16,10 +16,10 @@ const setScheme = (swagger) => {
 }
 
 const add400Response = (swagger) => {
-  for(let p in swagger.paths) {
-    for(let verb in swagger.paths[p]) {
+  for(let path in swagger.paths) {
+    for(let verb in swagger.paths[path]) {
       if(verb != 'parameters') {
-        swagger.paths[p][verb].responses[400] = {
+        swagger.paths[path][verb].responses[400] = {
           description: 'Client error, most likely invalid input',
           content: {
             'application/json': {
@@ -30,7 +30,7 @@ const add400Response = (swagger) => {
           }
         }
 
-        swagger.paths[p][verb].responses[401] = {
+        swagger.paths[path][verb].responses[401] = {
           description: 'Unauthorized: This api requires authentication',
           content: {
             'application/json': {
@@ -41,7 +41,7 @@ const add400Response = (swagger) => {
           }
         }
 
-        swagger.paths[p][verb].responses[403] = {
+        swagger.paths[path][verb].responses[403] = {
           description: 'Forbidden: You may not be allowed to do this',
           content: {
             'application/json': {
@@ -53,7 +53,7 @@ const add400Response = (swagger) => {
         }
 
         if(verb !== 'get') {
-          swagger.paths[p][verb].responses[409] = {
+          swagger.paths[path][verb].responses[409] = {
             description: 'The request contains, or would create, a conflict (duplicate, probably)',
             content: {
               'application/json': {
@@ -65,7 +65,7 @@ const add400Response = (swagger) => {
           }
         }
 
-        swagger.paths[p][verb].responses[500] = {
+        swagger.paths[path][verb].responses[500] = {
           description: 'Something went wrong on the backend. *probably* not your fault',
           content: {
             'application/json': {
@@ -83,11 +83,11 @@ const add400Response = (swagger) => {
 }
 
 const setResponseValidityHeader = (swagger) => {
-  for(let p in swagger.paths) {
-    for(let verb in swagger.paths[p]) {
+  for(let path in swagger.paths) {
+    for(let verb in swagger.paths[path]) {
       if(verb != 'parameters') {
-        for(let response in swagger.paths[p][verb].responses) {
-          swagger.paths[p][verb].responses[response].headers = {
+        for(let response in swagger.paths[path][verb].responses) {
+          swagger.paths[path][verb].responses[response].headers = {
             'X-Swagger-Response-Valid': {
               schema: {
                 'type': 'boolean',
@@ -154,10 +154,10 @@ const setSecuritySettings = (swagger) => {
 }
 
 const setSecurityOnOperations = (swagger) => {
-  for(let p in swagger.paths) {
-    for(let verb in swagger.paths[p]) {
+  for(let path in swagger.paths) {
+    for(let verb in swagger.paths[path]) {
       if(verb != 'parameters') {
-        swagger.paths[p][verb].security = [ { Bearer: [] } ]
+        swagger.paths[path][verb].security = [ { Bearer: [] } ]
       }
     }
   }

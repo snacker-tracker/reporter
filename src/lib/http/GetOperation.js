@@ -1,13 +1,13 @@
 import { Operation, HTTPResponse } from './Base'
 
 export default class GetOperation extends Operation {
-  resources(req) {
+  resources() {
     return {
       resource: this.constructor.model.query().findById(this.args.id)
     }
   }
 
-  requesterCanReadResource(resource) {
+  requesterCanReadResource() {
     return true
   }
 

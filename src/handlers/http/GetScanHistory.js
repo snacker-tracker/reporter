@@ -12,7 +12,7 @@ class ListScans extends ListOperation {
     'weekly'
   ]
 
-  extract_params(req, res) {
+  extract_params(req) {
     this.args = {
       code: req.query.code,
       from_date: req.query.from_date,
@@ -22,9 +22,9 @@ class ListScans extends ListOperation {
   }
 
   async execute() {
-    const q = this.constructor.model.query()
+    const query = this.constructor.model.query()
 
-    q.select('code', '')
+    query.select('code', '')
   }
 
 }

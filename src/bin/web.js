@@ -81,22 +81,18 @@ initialize({
     'multipart/form-data': function(req, res, next) {
       multer().any()(req, res, function(err) {
         if (err) return next(err)
-        req.files.forEach(function(f) {
-          req.body[f.fieldname] = '' // Set to empty string to satisfy OpenAPI spec validation
+        req.files.forEach(function(file) {
+          req.body[file.fieldname] = '' // Set to empty string to satisfy OpenAPI spec validation
         })
         return next()
       })
     },
     'application/octet-stream': function(req, res, next) {
       multer().any()(req, res, function(err) {
-        //if (err) return next(err);
-        //req.files.forEach(function(f) {
-        //  req.body[f.fieldname] = ''; // Set to empty string to satisfy OpenAPI spec validation
-        //});
+        console.log(err)
         return next()
       })
     }
-
   }
 })
 

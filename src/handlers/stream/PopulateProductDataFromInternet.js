@@ -1,14 +1,6 @@
 import axios from 'axios'
 
-import logger from '../../lib/logger'
-
 import EventHandler from '../../lib/streaming/EventHandler'
-
-const sleep = async (delay) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => { resolve(true) }, delay)
-  })
-}
 
 const firstOf = (options) => {
   for(const option of options) {
@@ -23,7 +15,7 @@ const firstOf = (options) => {
 }
 
 class PopulateProductDataFromInternet extends EventHandler {
-  async run({ id, event, timestamp, payload, version, actor }) {
+  async run({ payload }) {
     this.services.logger.setContext('code', payload.code)
     this.services.logger.info({ msg: 'Start and end processing' })
 
@@ -128,8 +120,8 @@ class PopulateProductDataFromInternet extends EventHandler {
 
         try {
           local = await this.services.productInfoStores.snacker.post(createPayload)
-          local.categories = local.categories.filter( c => {
-            return c != ''
+          local.categories = local.categories.filter( category => {
+            return category != ''
           })
 
           this.services.logger.info({ msg: 'Created code', code: local })

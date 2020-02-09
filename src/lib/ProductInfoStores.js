@@ -1,28 +1,7 @@
 import axios from 'axios'
 import FormData from 'form-data'
 
-// https://www.tops.co.th/api/search/suggestions?query=8858259003134
-// curl 'https://www.tops.co.th/api/search/suggestions?query=8858259003134' -H 'x-store-code: tops_sa_432_th'
-
 class TopsCoThInfoStore {
-  /*
-    [{
-      "type": "product",
-      "sku": "8858259003134",
-      "title": "ซานมิกไลท์เบียร์ขวด 330ซีซี",
-      "image": "/8/8/8858259003134_11-09-19.jpg",
-      "url": "san-miguel-light-beer-bottle-330cc-8858259003134",
-      "price": "41.0000",
-      "final_price": "41.0000",
-      "price_html": "<span class=\"price\">฿41.0000</span>",
-      "count": 27,
-      "breadcrumb": [
-        "เครื่องดื่มแอลกอฮอล์",
-        "เบียร์",
-        "เบียร์ลาเกอร์"
-      ]
-    }, {}]
-  */
   async get(code) {
     try {
       const response = await axios.get(
@@ -61,7 +40,7 @@ class TopsCoThInfoStore {
 }
 
 class SnackerTrackerInfoStore {
-  constructor(base_url, options = {}) {
+  constructor(base_url) {
     this.base_url = base_url
   }
   async get(code) {
@@ -174,8 +153,8 @@ class OpenFoodFactsInfoStore {
       }
 
       if(response.data.product.categories_hierarchy && response.data.product.categories_hierarchy.length > 0) {
-        resp.categories = response.data.product.categories_hierarchy.map( (e) => {
-          const split = e.split(':')
+        resp.categories = response.data.product.categories_hierarchy.map( (category) => {
+          const split = category.split(':')
           if(split[0] == 'th') {
             return 'untranslated'
           } else {
@@ -245,23 +224,6 @@ class BigCInfoStore {
           }
         }
       )
-
-      /*
-      bigc_result = await axios.get(
-        'https://www.bigc.co.th/sb.php',
-        {
-          params: {
-            q: code,
-            storeid: 1,
-            currencycode: 'THB'
-          },
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'User-agent': 'Mozilla Firefox'
-          }
-        }
-      )
-      */
 
       if(bigc_result.data.result) {
         if(bigc_result.data.result.itemCount > 0) {

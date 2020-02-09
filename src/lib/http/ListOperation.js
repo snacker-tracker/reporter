@@ -11,34 +11,32 @@ export default class ListOperation extends Operation {
     }
   }
 
-  resources(req) {
+  resources() {
     return {
       resources: (() => {
-        let q = this.constructor.model.query()
+        let query = this.constructor.model.query()
 
-        q.options({ 'operationId': this.constructor.name })
+        query.options({ 'operationId': this.constructor.name })
         if (this.constructor.model.hasDeletion && !this.args.include_deleted) {
-          q.where({ '_deleted_at': null })
+          query.where({ '_deleted_at': null })
         }
 
-        q.skipUndefined()
-        q.offset(this.args.offset)
-        q.limit(this.args.limit)
-        q.orderBy(this.args.order[0], this.args.order[1])
+        query.skipUndefined()
+        query.offset(this.args.offset)
+        query.limit(this.args.limit)
+        query.orderBy(this.args.order[0], this.args.order[1])
 
-        return q
+        return query
       })()
     }
   }
 
   async execute() {
-    const resources = await this.resources
-
     return new HTTPResponse({
       status: 200,
       body: {
         pagination: {},
-        items: this.resources.resources.map(i => { return this.toHttpRepresentation(i) })
+        items: this.resources.resources.map(item => { return this.toHttpRepresentation(item) })
       }
     })
   }

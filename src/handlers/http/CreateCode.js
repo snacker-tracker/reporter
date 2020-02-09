@@ -1,4 +1,3 @@
-import { Operation, HTTPResponse } from '../../lib/http/Base'
 import CreateOperation from '../../lib/http/CreateOperation'
 
 import { Code } from '../../models'
@@ -18,13 +17,13 @@ class CreateCode extends CreateOperation {
   }
 
   async extract_params(req) {
-    const d = new Date().toISOString()
+    const now = new Date().toISOString()
 
     this.args = {
       body: {
         ...req.body,
-        created_at: d,
-        updated_at: d,
+        created_at: now,
+        updated_at: now,
         categories: (req.body.categories || []).map( category => {
           return category.replace(/-/g, '_').replace(/ /g, '_')
         }).join('.')

@@ -1,5 +1,4 @@
 import prom from 'prom-client'
-import logger from '../logger'
 
 const events_seen = new prom.Counter({
   name: 'stream_event_seen_count',
@@ -18,13 +17,6 @@ const handlers_time_spent = new prom.Histogram({
   help: 'time spent in various event handlers',
   labelNames: ['event', 'handler', 'result']
 })
-
-const sleep = async (delay) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => { resolve(true) }, delay)
-  })
-}
-
 
 
 class KinesisConsumer {
@@ -64,13 +56,13 @@ class KinesisConsumer {
   async process(event) {
     events_seen.labels(event.event).inc()
 
-    const l = new this.services.logger.constructor(this.services.logger.instance)
+    const logger = new this.services.logger.constructor(this.services.logger.instance)
 
-    l.setContext('event', event.event)
-    l.setContext('event_id', event.id)
+    logger.setContext('event', event.event)
+    logger.setContext('event_id', event.id)
 
     if(!this.handlers[event.event]) {
-      l.info('event has no handler')
+      logger.info('event has no handler')
       return
     }
 
@@ -105,7 +97,7 @@ class KinesisConsumer {
     )
 
     for(const result of results) {
-      l.info({
+      logger.info({
         handler: Object.entries(result)[0][0],
         result: Object.entries(result)[0][1]
       })

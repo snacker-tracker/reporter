@@ -1,23 +1,20 @@
 import { Operation, HTTPResponse } from '../../lib/http/Base'
-import CreateOperation from '../../lib/http/CreateOperation'
 
 import crypto from 'crypto'
 
 import { Code } from '../../models'
-
-import uuid from 'uuid'
 
 class CreateCodePicture extends Operation {
   static model = Code
   static canBeCalledAnonymously = true
 
   async extract_params(req) {
-    const d = new Date().toISOString()
+    const now = new Date().toISOString()
     this.args = {
       body: {
         ...req.params,
-        created_at: d,
-        updated_at: d
+        created_at: now,
+        updated_at: now
       },
       picture: req.files[0],
       base_url: [
