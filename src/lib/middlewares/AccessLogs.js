@@ -1,6 +1,6 @@
 import logger from '../logger'
 
-import Metrics from '../metrics'
+import Metrics from '../metrics/Metrics'
 
 const AccessLogs = (req, res, next) => {
   req._startTime = new Date()

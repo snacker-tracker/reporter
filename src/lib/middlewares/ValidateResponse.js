@@ -1,5 +1,5 @@
-import logger from '../../lib/logger'
-import Metrics from '../../lib/metrics'
+import logger from '../logger'
+import Metrics from '../metrics/Metrics'
 
 const ValidateResponse = (req, res, next) => {
   if (typeof res.validateResponse === 'function') {

@@ -1,32 +1,24 @@
-import Config from './config'
-
 import promBundle from 'express-prom-bundle'
 import bodyParser from 'body-parser'
 import express from 'express'
 import http from 'http'
 import path from 'path'
 import multer from 'multer'
-
-import RequestId from './lib/middlewares/RequestId'
-
 import cors from 'cors'
-
-import ValidateResponse from './lib/middlewares/ValidateResponse'
-
-import AccessLogs from './lib/middlewares/AccessLogs'
-
-import { getSwaggerDocument } from './lib/swagger'
-
-import operations from './handlers/http'
-import operation_to_handler from './lib/operation_to_handler'
-import logger from './lib/logger'
-
 import { initialize } from 'express-openapi'
 
-import Auth from './lib/middlewares/Auth'
+import Config from '../config'
+import RequestId from '../lib/middlewares/RequestId'
+import ValidateResponse from '../lib/middlewares/ValidateResponse'
+import AccessLogs from '../lib/middlewares/AccessLogs'
+import { getSwaggerDocument } from '../lib/swagger'
+import operations from '../handlers/http'
+import operation_to_handler from '../lib/operation_to_handler'
+import logger from '../lib/logger'
+import Auth from '../lib/middlewares/Auth'
 
 const swaggerDoc = getSwaggerDocument(
-  path.join(__dirname, 'swagger.yml')
+  path.join(__dirname, '../swagger.yml')
 )
 
 let app = express()

@@ -3,7 +3,7 @@ import { development, production } from './knexfile'
 
 import Config from '../config/'
 
-import Metrics from '../lib/metrics'
+import Metrics from '../lib/metrics/Metrics'
 
 // Initialize knex.
 let knexConfig = development
