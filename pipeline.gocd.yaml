@@ -144,7 +144,7 @@ pipelines:
 
                     set -e
 
-                    ./auto/test
+                    ./auto/yarn test:ci
 
                     set +e
 

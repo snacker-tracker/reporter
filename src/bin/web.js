@@ -8,14 +8,18 @@ import cors from 'cors'
 import { initialize } from 'express-openapi'
 
 import Config from '../config'
-import RequestId from '../lib/middlewares/RequestId'
-import ValidateResponse from '../lib/middlewares/ValidateResponse'
-import AccessLogs from '../lib/middlewares/AccessLogs'
-import { getSwaggerDocument } from '../lib/swagger'
-import operations from '../handlers/http'
-import operation_to_handler from '../lib/operation_to_handler'
 import logger from '../lib/logger'
-import Auth from '../lib/middlewares/Auth'
+
+import { getSwaggerDocument } from '../lib/swagger'
+import operation_to_handler from '../lib/operation_to_handler'
+import operations from '../handlers/http'
+
+import {
+  Auth,
+  AccessLogs,
+  RequestId,
+  ValidateResponse
+} from '../lib/middlewares/'
 
 const swaggerDoc = getSwaggerDocument(
   path.join(__dirname, '../swagger.yml')
