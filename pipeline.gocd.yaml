@@ -132,12 +132,21 @@ pipelines:
                 - script: |
                     ./auto/clean-up
 
+                    function finish {
+                      echo "in GOCD. Kill all containers"
+                      ## Change ownership so that GoCD can clean up after itself
+                      docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
+                      ./auto/clean-up || true
+                    }
+
+                    trap finish EXIT
+
+
                     set -e
 
                     ./auto/test
-                    docker run \
-                      -v `pwd`:/app/ \
-                      alpine chown -R $(id -u):$(id -g) /app/coverage
+
+                    set +e
 
               artifacts:
                 - test:
