@@ -7,6 +7,7 @@ import metrics from '../lib/metrics/Metrics'
 import { TimeSpentProxy } from '../lib/metrics/Proxies'
 
 import KinesisConsumer from '../lib/streaming/KinesisConsumer'
+import KinesisIteratorFake from '../lib/streaming/KinesisIteratorFake'
 import InfoStores from '../lib/ProductInfoStores'
 import PopulateProductDataFromInternet from '../handlers/stream/PopulateProductDataFromInternet'
 
@@ -46,25 +47,6 @@ const dependencies = (event, handler) => {
   }
 }
 
-class KinesisIteratorFake {
-  constructor() {
-    this._records = []
-  }
-
-  setRecords(records) {
-    this._records = records.map( (record) => {
-      return {
-        Data: JSON.stringify(record)
-      }
-    })
-  }
-
-  async * records() {
-    for(const record of this._records) {
-      yield record
-    }
-  }
-}
 
 
 let codes = [
