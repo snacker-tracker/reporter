@@ -53,7 +53,6 @@ class Operation {
     try {
       await this.fetch(this.resources(req))
     } catch (error) {
-      console.log('err', error)
       this.services.logger.warn({
         message: 'Exception thrown while doing a pre-fetch of resoures',
         error
@@ -72,7 +71,6 @@ class Operation {
         message: 'Exception thrown while doing a executing the request',
         error
       })
-      console.log(error)
       return new HTTPResponse({
         status: 500,
         body: { message: 'Unhandled error while executing the request' }
