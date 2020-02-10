@@ -49,6 +49,8 @@ const awsMock = () => {
 describe(KinesisIterator, () => {
   let KI
   let kinesis
+  let sleep
+
   beforeEach( () => {
     kinesis = {
     }
@@ -73,14 +75,14 @@ describe(KinesisIterator, () => {
     })
 
     KI = new KinesisIterator(kinesis, 'example-stream', 'LATEST', {})
-    KI.sleep = jest.fn()
+    sleep = jest.spyOn(KI, 'sleep')
+    sleep.mockResolvedValue(true)
   })
 
   describe('behaviour', () => {
     describe('Constructor', () => {
       it('uses the ShardIteratorType argument', async () => {
         KI = new KinesisIterator(kinesis, 'example-stream', 'BLAH', {})
-        KI.sleep = jest.fn()
 
         const next = await KI.records()
         await next.next()
@@ -96,7 +98,6 @@ describe(KinesisIterator, () => {
 
       it('uses the stream name from the constructor', async () => {
         KI = new KinesisIterator(kinesis, 'another-stream', 'BLAH', {})
-        KI.sleep = jest.fn()
 
         const next = await KI.records()
         await next.next()
@@ -111,7 +112,6 @@ describe(KinesisIterator, () => {
       describe('options', () => {
         it('uses the limit option', async () => {
           KI = new KinesisIterator(kinesis, 'another-stream', 'BLAH', { limit: 'should-be-a-number' })
-          KI.sleep = jest.fn()
 
           const next = await KI.records()
           await next.next()
@@ -124,15 +124,15 @@ describe(KinesisIterator, () => {
         })
 
         it('uses the pollingDelay option', async () => {
-          KI = new KinesisIterator(kinesis, 'example-stream', 'LATEST', { pollingDelay: 123123123 })
-          KI.sleep = jest.fn()
+          KI = new KinesisIterator(kinesis, 'example-stream', 'LATEST', { pollingDelay: 1 })
+          sleep = jest.spyOn(KI, 'sleep')
 
           const next = await KI.records()
           await next.next()
           await next.next()
 
           await next.next()
-          expect(KI.sleep).toHaveBeenCalledWith(123123123)
+          expect(KI.sleep).toHaveBeenCalledWith(1)
         })
       })
     })
@@ -177,7 +177,8 @@ describe(KinesisIterator, () => {
     describe('delay', () => {
       it('does not sleep if we get a full batch', async () => {
         KI = new KinesisIterator(kinesis, 'example-stream', 'LATEST', { limit: 1 })
-        KI.sleep = jest.fn()
+        sleep = jest.spyOn(KI, 'sleep')
+        sleep.mockResolvedValue(true)
 
         const next = await KI.records()
         await next.next()
@@ -189,7 +190,8 @@ describe(KinesisIterator, () => {
 
       it('sleeps for a while if a batch was less than LIMIT', async () => {
         KI = new KinesisIterator(kinesis, 'example-stream', 'LATEST', {})
-        KI.sleep = jest.fn()
+        const sleep = jest.spyOn(KI, 'sleep')
+        sleep.mockResolvedValue(true)
 
         const next = await KI.records()
         await next.next()
