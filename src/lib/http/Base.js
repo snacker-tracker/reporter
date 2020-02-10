@@ -45,7 +45,6 @@ class Operation {
         }
       })
     }
-
     this.user = req.user
 
     await this.extract_params(req)
