@@ -118,6 +118,13 @@ describe(CreateCodePicture, () => {
         expect(response.body.last_modified).toEqual(expect.any(String))
       })
 
+      it('returns a 201', async () => {
+        const response = await operation.run(request)
+
+        expect(response.status).toEqual(201)
+      })
+
+
     })
   })
 })
