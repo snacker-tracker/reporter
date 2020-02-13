@@ -17,9 +17,6 @@ export default class ListOperation extends Operation {
         let query = this.constructor.model.query()
 
         query.options({ 'operationId': this.constructor.name })
-        if (this.constructor.model.hasDeletion && !this.args.include_deleted) {
-          query.where({ '_deleted_at': null })
-        }
 
         query.skipUndefined()
         query.offset(this.args.offset)
