@@ -100,6 +100,14 @@ describe(DeleteOperation, () => {
       )
     })
 
+    it('returns a 403 if the resource cant be deleted', async () => {
+      operation.requesterCanDeleteResource = () => { return false }
+      const response = await operation.run(request, null)
+
+      expect(response.status).toBe(403)
+
+    })
+
     it('returns a 404 when the object doesnt exist', async () => {
       queryBuilder.resolve(null)
 
