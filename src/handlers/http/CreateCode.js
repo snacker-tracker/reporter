@@ -13,6 +13,10 @@ class CreateCode extends CreateOperation {
       item.categories = []
     }
 
+    if(!item.url) {
+      delete item.url
+    }
+
     return item
   }
 
