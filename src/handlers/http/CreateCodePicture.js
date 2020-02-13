@@ -45,6 +45,12 @@ class CreateCodePicture extends Operation {
       )
     } catch(error) {
       this.services.logger.warn({ 'msg': 'Failed to upload picture', error })
+      return new HTTPResponse({
+        status: 500,
+        body: {
+          'message': "Failed to save picture"
+        }
+      })
     }
 
     const picture = {

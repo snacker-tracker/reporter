@@ -97,6 +97,14 @@ describe(CreateCodePicture, () => {
         await operation.run(request)
         expect(warn).toHaveBeenCalled()
       })
+
+      it('returns a 500 if the upload fails', async () => {
+        image_repository.put.mockRejectedValue('asd')
+        const response = await operation.run(request)
+        expect(response.status).toBe(500)
+        expect(response.body.message).toBe('Failed to save picture')
+      })
+
     })
 
     describe('output', () => {
