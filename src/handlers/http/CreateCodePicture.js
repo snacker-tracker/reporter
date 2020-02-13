@@ -31,14 +31,24 @@ class CreateCodePicture extends Operation {
     let hash = crypto.createHash('sha256').update(this.args.picture.buffer).digest('hex')
 
     try {
-      await this.services.image_repository.put([this.args.body.code, hash].join('/') + '.' + this.args.picture.mimetype.split('/')[1], this.args.picture.buffer)
+      await this.services.image_repository.put(
+        (
+          [
+            this.args.body.code, hash
+          ].join('/')
+          +
+          '.'
+          +
+          this.args.picture.mimetype.split('/')[1]
+        ),
+        this.args.picture.buffer
+      )
     } catch(error) {
       this.services.logger.warn({ 'msg': 'Failed to upload picture', error })
     }
 
     const picture = {
       id: hash,
-      url: this.args.base_url + '/' + hash + '.' + this.args.picture.mimetype.split('/')[1],
       size: this.args.picture.size,
       last_modified: new Date().toISOString()
     }
