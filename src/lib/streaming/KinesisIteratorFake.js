@@ -11,6 +11,15 @@ class KinesisIteratorFake {
     })
   }
 
+  setRecordsRaw(records) {
+    this._records = records.map( (record) => {
+      return {
+        Data: record
+      }
+    })
+  }
+
+
   async * records() {
     for(const record of this._records) {
       yield record

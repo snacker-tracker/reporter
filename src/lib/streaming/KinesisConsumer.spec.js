@@ -29,6 +29,7 @@ describe(KinesisConsumer, () => {
   let iterator
   let consumer
   let dependencyProvider
+  let loggerSpy = {}
 
   const codes = [
     'deadbeef-1'
@@ -59,6 +60,8 @@ describe(KinesisConsumer, () => {
       'a database': 'blah'
     })
 
+    loggerSpy.error = jest.spyOn(logger, 'error')
+    loggerSpy.error.mockReturnValue()
 
     const dependencies = (event, handler) => {
       return {
@@ -86,6 +89,20 @@ describe(KinesisConsumer, () => {
     })
 
     describe('processing records', () => {
+      it('logs a message when theres invalid JSON', async () => {
+        iterator.setRecordsRaw([{
+          Data: 'INVALID JSON'
+        }])
+
+        await consumer.start()
+
+        expect(loggerSpy.error).toHaveBeenCalledWith(
+          expect.objectContaining({
+            msg: 'failed to parse JSON'
+          })
+        )
+      })
+
       describe('handler instantiation', () => {
         describe('first event handler', () => {
           it('creates a new instance of the handler', async () => {
