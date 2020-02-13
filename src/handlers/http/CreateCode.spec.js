@@ -57,7 +57,7 @@ describe(CreateCode, () => {
           })
 
           expect(operation.args.body).toEqual(
-            expect.objectContaining({categories:''})
+            expect.objectContaining({ categories: '' })
           )
         })
 
@@ -84,7 +84,7 @@ describe(CreateCode, () => {
 
         const mapped = operation.toHttpRepresentation(item)
 
-        expect(mapped).toEqual({categories:[], url: 'asdasd'})
+        expect(mapped).toEqual({ categories: [], url: 'asdasd' })
       })
 
       it('removes URL if it is null', () => {
@@ -94,7 +94,7 @@ describe(CreateCode, () => {
 
         const mapped = operation.toHttpRepresentation(item)
 
-        expect(mapped).toEqual({categories:[]})
+        expect(mapped).toEqual({ categories: [] })
       })
 
       it('splits categories into an array', () => {

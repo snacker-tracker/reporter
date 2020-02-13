@@ -48,7 +48,7 @@ class CreateCodePicture extends Operation {
       return new HTTPResponse({
         status: 500,
         body: {
-          'message': "Failed to save picture"
+          'message': 'Failed to save picture'
         }
       })
     }
