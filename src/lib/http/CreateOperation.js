@@ -14,10 +14,6 @@ export default class CreateOperation extends Operation {
     }
   }
 
-  requesterCanCreateResource() {
-    return true
-  }
-
   async execute() {
     this.services.logger.info(this.args)
 
