@@ -23,9 +23,9 @@ export default class CreateOperation extends Operation {
 
     let inserted
     try {
-      inserted = await this.constructor.model.insert({
-        ...this.args.body,
-      }, true).options({ operationId: this.constructor.name })
+      inserted = await this.constructor.model.query()
+        .options({ operationId: this.constructor.name })
+        .insertAndFetch(this.args.body)
     } catch (error) {
       switch(error.code) {
         case '23505':

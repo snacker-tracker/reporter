@@ -5,10 +5,16 @@ export default class DeleteOperation extends Operation {
     return true
   }
 
+  extract_params(req) {
+    this.args = {
+      id: req.params.id
+    }
+  }
+
   resources() {
     return {
       resource: (async () => {
-        return this.constructor.model.query().findById(this.args.id)
+        return this.constructor.model.query().findById(this.args.id).options({ operationId: this.constructor.name })
       })()
     }
   }
@@ -29,30 +35,19 @@ export default class DeleteOperation extends Operation {
     const now = new Date().toISOString()
 
     if (this.requesterCanDeleteResource(this.resources.resource)) {
-      let patch = {
-        _deleted_at: now
-      }
-
-      if (this.args.sub) {
-        patch._deleted_by = this.args.sub
-      }
-
       await this.constructor.model.query()
-        .patch(patch)
-        .findById(this.resources.resource.id)
-
-      this.resources.resource.deleted = true
-      this.resources.resource._deleted_at = now
+        .deleteById(this.resources.resource.id)
 
       this.services.event_publisher.publish(
         [this.constructor.model.name, 'Deleted'].join(''),
         {
           id: this.resources.resource.id
-        }
+        },
+        this.user
       )
 
       return new HTTPResponse({
-        status: 200,
+        status: 201,
         body: this.toHttpRepresentation(this.resources.resource)
       })
 
