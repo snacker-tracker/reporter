@@ -100,6 +100,15 @@ describe(DeleteOperation, () => {
       )
     })
 
+    it('returns a 404 when the object doesnt exist', async () => {
+      queryBuilder.resolve(null)
+
+      const response = await operation.run(request, null)
+
+      expect(response.status).toBe(404)
+    })
+
+
     it('returns a 500 on unhandled exceptions', async () => {
       queryBuilder.reject({
         code: 'whatever'
