@@ -24,7 +24,7 @@ class ListCodes extends ListOperation {
       item.categories = []
     }
 
-    if(!item.url) {
+    if(item.url == null) {
       delete item.url
     }
 
