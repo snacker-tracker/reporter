@@ -2,9 +2,20 @@ import Middleware from './Middleware'
 
 class ValidateResponse extends Middleware {
   validate(req, res) {
-    const body = JSON.parse(JSON.stringify(res.locals.response))
     if(res.validateResponse) {
       // Because magic happens; dates get formatted using ISO8???
+      let body
+      try {
+        body = JSON.parse(JSON.stringify(res.locals.response))
+      } catch(error) {
+        this.options.logger({message: 'cannot valite invalid json'})
+        this.options.metrics.swagger
+          .response_errors
+          .labels(log_event.operationId, res.statusCode)
+          .observe(1)
+        return
+      }
+
       const log_event = {
         errors: [],
         operationId: req.operationDoc.operationId
