@@ -52,7 +52,6 @@ class Operation {
     try {
       await this.fetch(this.resources(req))
     } catch (error) {
-      console.log(error)
       this.services.logger.warn({
         message: 'Exception thrown while doing a pre-fetch of resoures',
         error: error.toString()

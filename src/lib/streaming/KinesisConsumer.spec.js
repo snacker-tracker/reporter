@@ -61,10 +61,14 @@ describe(KinesisConsumer, () => {
     })
 
     loggerSpy.error = jest.spyOn(logger, 'error')
-    loggerSpy.error.mockReturnValue()
+    loggerSpy.error.mockReturnValue(true)
 
     loggerSpy.info = jest.spyOn(logger, 'info')
-    loggerSpy.info.mockReturnValue()
+    loggerSpy.info.mockReturnValue(true)
+
+    loggerSpy.warn = jest.spyOn(logger, 'warn')
+    loggerSpy.warn.mockReturnValue(true)
+
 
     const dependencies = (event, handler) => {
       return {

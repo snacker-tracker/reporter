@@ -13,6 +13,12 @@ describe(Operation, () => {
   let operation
   let request
   beforeEach( () => {
+    let log_info = jest.spyOn(logger, 'info')
+    log_info.mockReturnValue(true)
+
+    let log_warn = jest.spyOn(logger, 'warn')
+    log_warn.mockReturnValue(true)
+
     operation = new ExampleOperation({ logger })
     request = {
       params: {
@@ -57,6 +63,5 @@ describe(Operation, () => {
       expect(response.constructor.name).toBe('HTTPResponse')
       expect(response.status).toBe(501)
     })
-
   })
 })

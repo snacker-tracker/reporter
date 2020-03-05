@@ -43,6 +43,10 @@ describe(ListOperation, () => {
   let publisher
 
   beforeEach( () => {
+    jest.spyOn(logger, 'info').mockReturnValue(true)
+
+    jest.spyOn(logger, 'warn').mockReturnValue(true)
+
     operation = new ExampleOperation({ logger, event_publisher })
     request = {
       query: {

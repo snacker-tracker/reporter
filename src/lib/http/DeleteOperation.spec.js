@@ -41,8 +41,19 @@ describe(DeleteOperation, () => {
   let queryResult
   let queryBuilder
   let publisher
+  let loggerSpy = {}
+
 
   beforeEach( () => {
+    loggerSpy.error = jest.spyOn(logger, 'error')
+    loggerSpy.error.mockReturnValue(true)
+
+    loggerSpy.info = jest.spyOn(logger, 'info')
+    loggerSpy.info.mockReturnValue(true)
+
+    loggerSpy.warn = jest.spyOn(logger, 'warn')
+    loggerSpy.warn.mockReturnValue(true)
+
     operation = new ExampleOperation({ logger, event_publisher })
     request = {
       params: {
