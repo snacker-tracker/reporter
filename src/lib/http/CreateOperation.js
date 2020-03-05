@@ -1,7 +1,6 @@
-import { Operation, HTTPResponse } from './Base'
-
 import uuid from 'uuid'
-//import Scan from '../models/QRCodeScan'
+
+import { Operation, HTTPResponse } from './Base'
 
 export default class CreateOperation extends Operation {
 

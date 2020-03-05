@@ -1,6 +1,6 @@
 import ListOperation from '../../lib/http/GetOperation'
 import { HTTPResponse } from '../../lib/http/Base'
-import { Code } from '../../models'
+import Code from '../../models/Code'
 
 class ListCodePictures extends ListOperation {
   static model = Code

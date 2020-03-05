@@ -1,65 +1,15 @@
-import AWS from 'aws-sdk'
+import models from '../services/models'
 
-import Config from '../config'
-import logger from './logger'
-
-import EventPublisher from './streaming/EventPublisher'
-import ImageRepository from './ImageRepository'
-
-let kinesis_client
-let stream_name
-
-let s3_client
-let s3_bucket
-
-if(Config.s3) {
-  s3_client = new AWS.S3(Config.s3)
-  s3_bucket = Config.s3.bucket
-}
-
-
-const IR = new ImageRepository(s3_client, s3_bucket)
-
-
-if (Config.kinesis.enabled) {
-  kinesis_client = new AWS.Kinesis(Config.kinesis)
-  stream_name = Config.kinesis.stream_name
-} else {
-  kinesis_client = {
-    putRecord: (event) => {
-      console.log('Would have written', JSON.stringify(event), 'to the wire')
-      return {
-        promise: () => { Promise.resolve(true) }
-      }
-    }
-  }
-  stream_name = 'doesnt-exist'
-}
-
-
-const operation_to_handler = (operationId, operation) => {
-  return [async (req, res) => {
-
-    const l = new logger.constructor(logger.instance)
-    const EP = new EventPublisher(kinesis_client, stream_name, { logger: l })
-
-    if (req.correlation_id) {
-      l.setContext('correlation_id', req.correlation_id)
-    }
-
-    l.setContext('request_id', req.request_id)
-
-    const cmd = new operation({
-      logger: l,
-      event_publisher: EP,
-      image_repository: IR
-    })
+const operation_to_handler = (operationId, operation, dependencies) => {
+  return [async (req, res, next) => {
+    const deps = dependencies(operation, req)
+    const cmd = new operation(deps)
 
     let response
     try {
       response = await cmd.run(req, res)
     } catch (error) {
-      console.log(error)
+      deps.logger.warn(error.toString())
       response = {
         status: error.status || 500,
         body: error,

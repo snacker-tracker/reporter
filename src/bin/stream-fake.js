@@ -2,8 +2,8 @@ import prom from 'prom-client'
 import uuid from 'uuid'
 
 import config from '../config/'
-import logger from '../lib/logger'
-import metrics from '../lib/metrics/Metrics'
+import logger from '../services/logger'
+import metrics from '../services/metrics'
 import { TimeSpentProxy } from '../lib/metrics/Proxies'
 
 import KinesisConsumer from '../lib/streaming/KinesisConsumer'

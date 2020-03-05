@@ -1,14 +1,5 @@
-import winston from 'winston'
-
-const logger = winston.createLogger({
-  level: 'debug',
-  format: winston.format.json(),
-  transports: [new winston.transports.Console()],
-})
-
 class Logger {
-  constructor(instance) {
-    this.instance = instance
+  constructor() {
     this.clearContext()
   }
 
@@ -29,11 +20,11 @@ class Logger {
       message = { message }
     }
 
-    this.instance[level]({
+    console.log(JSON.stringify({
+      level,
       ...this.context,
       ...message
-    })
-
+    }))
   }
 
   debug(message) {
@@ -53,4 +44,4 @@ class Logger {
   }
 }
 
-export default new Logger(logger)
+export default Logger

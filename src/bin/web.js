@@ -1,25 +1,20 @@
-import promBundle from 'express-prom-bundle'
 import bodyParser from 'body-parser'
 import express from 'express'
 import http from 'http'
 import path from 'path'
 import multer from 'multer'
-import cors from 'cors'
+
 import { initialize } from 'express-openapi'
 
+import dependencies from '../services/web'
+
 import Config from '../config'
-import logger from '../lib/logger'
 
 import { getSwaggerDocument } from '../lib/swagger'
 import operation_to_handler from '../lib/operation_to_handler'
 import operations from '../handlers/http'
 
-import {
-  Auth,
-  AccessLogs,
-  RequestId,
-  ValidateResponse
-} from '../lib/middlewares/'
+import middlewares from '../services/middlewares'
 
 const swaggerDoc = getSwaggerDocument(
   path.join(__dirname, '../swagger.yml')
@@ -27,34 +22,24 @@ const swaggerDoc = getSwaggerDocument(
 
 let app = express()
 
-app.use(promBundle({}))
-app.use(AccessLogs)
-app.use(cors())
-
-app.get('/health', (req, res) => {
-  res.status(200).json('ok')
+app.use(async (req, res, next) => {
+  req.locals = {
+    startTime: new Date()
+  }
+  next()
 })
 
-app.get('/api-doc', (req, res) => {
-  const host = req.headers['x-forwarded-host'] || req.headers['host']
-  const proto = req.headers['x-forwarded-proto'] || 'http'
+const injector = dependencies(Config, {})
 
-  const response = {
-    ...swaggerDoc,
-    servers: [
-      {
-        url: [proto, '://', host, swaggerDoc.servers[0].url].join('')
-      }
-    ]
-  }
-
-  res.status(200).json(response)
+middlewares(app, {
+  config: Config,
+  spec: swaggerDoc,
+  services: injector({}, {})
 })
 
 const handlers = Object.entries(operations)
   .map(([operationId, operation]) => {
-    console.log(operationId)
-    return operation_to_handler(operationId, operation)
+    return operation_to_handler(operationId, operation, injector)
   }).reduce((accumulator, current) => {
     accumulator[current[1]] = current[0]
     return accumulator
@@ -62,14 +47,7 @@ const handlers = Object.entries(operations)
 
 initialize({
   app,
-  apiDoc: {
-    ...swaggerDoc,
-    'x-express-openapi-additional-middleware': [
-      ValidateResponse,
-      RequestId,
-      Auth(Config.oauth)
-    ]
-  },
+  apiDoc: swaggerDoc,
   operations: handlers,
   consumesMiddleware: {
     'application/json': bodyParser.json(),
@@ -92,16 +70,9 @@ initialize({
   }
 })
 
-
-app.use((err, req, res, next) => {
-  console.log(err)
-  res.status(err.status).json(err)
-  next()
-})
-
 app.server = http.createServer(app)
 app.server.listen(process.env.PORT || Config.port, () => {
-  logger.info(`Started on port ${app.server.address().port}`)
+  console.log('started')
 })
 
 export default app

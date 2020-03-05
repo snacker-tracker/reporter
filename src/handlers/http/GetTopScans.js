@@ -1,5 +1,5 @@
 import ListOperation from '../../lib/http/ListOperation'
-import { Scan } from '../../models'
+import Scan from '../../models/Scan'
 
 class GetTopScans extends ListOperation {
   static model = Scan

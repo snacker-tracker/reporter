@@ -1,5 +1,5 @@
 import { CreateCodePicture } from './CreateCodePicture'
-import logger from '../../lib/logger'
+import logger from '../../services/logger'
 
 describe(CreateCodePicture, () => {
   let operation

@@ -52,9 +52,10 @@ class Operation {
     try {
       await this.fetch(this.resources(req))
     } catch (error) {
+      console.log(error)
       this.services.logger.warn({
         message: 'Exception thrown while doing a pre-fetch of resoures',
-        error
+        error: error.toString()
       })
 
       return new HTTPResponse({
@@ -68,7 +69,7 @@ class Operation {
     } catch (error) {
       this.services.logger.warn({
         message: 'Exception thrown while doing a executing the request',
-        error
+        error: error.toString()
       })
       return new HTTPResponse({
         status: 500,

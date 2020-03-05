@@ -1,6 +1,5 @@
 import prom from 'prom-client'
 
-
 const defaults = {
   registers: []
 }
@@ -64,13 +63,19 @@ const product_info_store_time_spent = new prom.Histogram({
 })
 
 const Metrics = {
-  api_user_agents,
-  swagger_operation_time_spent,
-  swagger_invalid_responses,
-  swagger_response_errors,
-  knex_query_response_time,
-  knex_query_affected_rows,
-  product_info_store_time_spent
+  swagger: {
+    invalid_responses: swagger_invalid_responses,
+    response_errors: swagger_response_errors,
+    time_spent: swagger_operation_time_spent,
+    api_user_agents
+  },
+  knex: {
+    response_time: knex_query_response_time,
+    affected_rows: knex_query_affected_rows
+  },
+  other: {
+    product_info_store_time_spent
+  }
 }
 
 export default Metrics

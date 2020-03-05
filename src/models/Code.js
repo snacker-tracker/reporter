@@ -1,7 +1,4 @@
 import { Model } from 'objection'
-import connection from '../database/knex'
-
-Model.knex(connection)
 
 export default class Code extends Model {
   static get tableName() {

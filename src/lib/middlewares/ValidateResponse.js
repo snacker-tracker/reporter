@@ -1,46 +1,75 @@
-import logger from '../logger'
-import Metrics from '../metrics/Metrics'
+import Middleware from './Middleware'
 
-const ValidateResponse = (req, res, next) => {
-  if (typeof res.validateResponse === 'function') {
-    const send = res.send
-    res.send = function expressOpenAPISend(...args) {
-      const body = args[0] || '{}'
-      let validation = res.validateResponse(res.statusCode, JSON.parse(body))
-
-      let errors = []
-
-      if(validation) {
-        if(validation.errors != null) {
-          errors = validation.errors
-        }
-
-        if(errors.length > 0) {
-          const message = {
-            request_id: req.request_id,
-            message: 'response is invalid',
-            errors: errors
-          }
-
-          if(req.correlation_id) {
-            message.correlation_id = req.correlation_id
-          }
-
-          logger.warn(message)
-        }
+class ValidateResponse extends Middleware {
+  validate(req, res) {
+    const body = JSON.parse(JSON.stringify(res.locals.response))
+    if(res.validateResponse) {
+      // Because magic happens; dates get formatted using ISO8???
+      const log_event = {
+        errors: [],
+        operationId: req.operationDoc.operationId
       }
 
-      res.set('X-Swagger-Response-Valid', errors.length == 0)
-      res.set('X-Swagger-Response-Error-Count', errors.length)
+      if(req.request_id) {
+        log_event.request_id = req.request_id
+      }
 
-      Metrics.swagger_invalid_responses.labels( req.operationDoc.operationId || 'unknown', res.statusCode || 'unknown').observe(errors.length != 0 ? 1 : 0)
-      Metrics.swagger_response_errors.labels( req.operationDoc.operationid || 'unknown', res.statusCode || 'unknown').observe(errors.length)
+      if(req.correlation_id) {
+        log_event.correlation_id = req.correlation_id
+      }
 
-      return send.apply(res, args)
+      const errors = res.validateResponse(res.statusCode, body)
+
+      if(errors) {
+        log_event.message = 'response is invalid'
+        log_event.operationId = req.operationDoc.operationId
+        log_event.errors = errors.errors
+
+        this.options.logger.info(log_event)
+      }
+
+      this.options.metrics.swagger
+        .response_errors
+        .labels(log_event.operationId, res.statusCode)
+        .observe(log_event.errors.length)
+
+
+      if(this.options.config.swagger.validateResponsesSynchronously &&
+        this.options.config.swagger.exposeResponseValidationResult) {
+        res.set({
+          'X-Swagger-Response-Valid': log_event.errors.length === 0,
+          'X-Swagger-Response-Error-Count': log_event.errors.length
+        })
+      }
     }
+
+
   }
 
-  next()
+  handler(req, res, next) {
+    const self = this
+    const original = res.json.bind(res)
+
+    const validateSynchronously = this.options.config.swagger.validation.sync || false
+
+    const overwrite = function(object) {
+      res.locals = { response: object }
+      if(validateSynchronously) {
+        self.validate(res.req, res)
+      }
+      original(object)
+    }
+
+    res.json = overwrite.bind(this)
+
+    if(!validateSynchronously) {
+      res.on('finish', () => {
+        this.validate(res.req, res)
+      })
+    }
+
+    next()
+  }
 }
 
 export default ValidateResponse

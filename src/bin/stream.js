@@ -1,13 +1,13 @@
 import AWS from 'aws-sdk'
 import config from '../config/'
 
-import logger from '../lib/logger'
+import logger from '../services/logger'
 
 import express from 'express'
 const server = express()
 
 import prom from 'prom-client'
-import metrics from '../lib/metrics/Metrics'
+import metrics from '../services/metrics'
 import { TimeSpentProxy } from '../lib/metrics/Proxies'
 
 import KinesisIterator from '../lib/streaming/KinesisIterator'
@@ -23,7 +23,7 @@ server.get('/metrics', (req, res) => {
 })
 
 
-register.registerMetric(metrics.product_info_store_time_spent)
+register.registerMetric(metrics.other.product_info_store_time_spent)
 
 server.listen(config.port)
 
@@ -39,9 +39,17 @@ let kinesis = new AWS.Kinesis(config.kinesis)
 
 let iterator = new KinesisIterator(kinesis, config.kinesis.stream_name, 'TRIM_HORIZON', config.kinesis)
 
+
+class Dumper {
+  run(event) {
+    console.log(event)
+  }
+}
+
 const eventHandlerMapping = {
   ScanCreated: [
     PopulateProductDataFromInternet
+    //Dumper
   ]
 }
 
@@ -62,11 +70,11 @@ const dependencies = (event, handler) => {
   return {
     logger: log,
     productInfoStores: {
-      bigc: new TimeSpentProxy(bigc, metrics.product_info_store_time_spent),
-      upcdb: new TimeSpentProxy(upcdb, metrics.product_info_store_time_spent),
-      off: new TimeSpentProxy(off, metrics.product_info_store_time_spent),
-      snacker: new TimeSpentProxy(snacker, metrics.product_info_store_time_spent),
-      tops: new TimeSpentProxy(tops, metrics.product_info_store_time_spent)
+      bigc: new TimeSpentProxy(bigc, metrics.other.product_info_store_time_spent),
+      upcdb: new TimeSpentProxy(upcdb, metrics.other.product_info_store_time_spent),
+      off: new TimeSpentProxy(off, metrics.other.product_info_store_time_spent),
+      snacker: new TimeSpentProxy(snacker, metrics.other.product_info_store_time_spent),
+      tops: new TimeSpentProxy(tops, metrics.other.product_info_store_time_spent)
     }
   }
 }

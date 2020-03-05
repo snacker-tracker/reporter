@@ -1,6 +1,6 @@
 import CreateOperation from '../../lib/http/CreateOperation'
 
-import { Scan } from '../../models'
+import Scan from '../../models/Scan'
 
 import uuid from 'uuid'
 

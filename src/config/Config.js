@@ -33,9 +33,19 @@ const baseConfig = env => ({
     accessKeyId: env.AWS_ACCESS_KEY_ID,
     secretAccessKey: env.AWS_SECRET_ACCESS_KEY
   },
+  swagger: {
+    validation: {
+      sync: false,
+      exposeResult: false
+    }
+  }
 })
 
 export const Config = env => {
   const base = baseConfig(env)
+  if(env.ENVIRONMENT_NAME === 'dev') {
+    base.swagger.validation.sync = true
+    base.swagger.validation.exposeResult = true
+  }
   return base
 }

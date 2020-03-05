@@ -1,5 +1,5 @@
 import PatchOperation from '../../lib/http/PatchOperation'
-import { Code } from '../../models'
+import Code from '../../models/Code'
 
 class PatchCode extends PatchOperation {
   static model = Code

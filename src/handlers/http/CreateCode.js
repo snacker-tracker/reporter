@@ -1,6 +1,6 @@
 import CreateOperation from '../../lib/http/CreateOperation'
 
-import { Code } from '../../models'
+import Code from '../..//models/Code'
 
 class CreateCode extends CreateOperation {
   static model = Code

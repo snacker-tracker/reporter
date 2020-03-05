@@ -595,6 +595,7 @@ components:
 
     CodeList:
       type: object
+      additionalProperties: false
       properties:
         pagination:
           $ref: "#/components/schemas/Pagination"

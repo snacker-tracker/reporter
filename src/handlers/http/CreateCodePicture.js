@@ -2,7 +2,7 @@ import { Operation, HTTPResponse } from '../../lib/http/Base'
 
 import crypto from 'crypto'
 
-import { Code } from '../../models'
+import Code from '../../models/Code'
 
 class CreateCodePicture extends Operation {
   static model = Code

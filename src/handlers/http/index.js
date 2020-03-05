@@ -5,6 +5,7 @@ const files = glob.sync('*.js', {
 
 const operations = files
   .filter(file => file != 'index.js')
+  .filter(file => !file.match(/.*\.spec\.js/))
   .map(file => {
     return require('./' + file)
   })

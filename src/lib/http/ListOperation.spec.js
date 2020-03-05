@@ -1,5 +1,5 @@
 import ListOperation from './ListOperation'
-import logger from '../logger'
+import logger from '../../services/logger'
 
 import { Model, QueryBuilder } from 'objection'
 

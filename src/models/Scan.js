@@ -1,9 +1,6 @@
 import { Model } from 'objection'
-import connection from '../database/knex'
 
 import Code from './Code'
-
-Model.knex(connection)
 
 export default class Scan extends Model {
   static get tableName() {

@@ -1,5 +1,5 @@
 import DeleteOperation from './DeleteOperation'
-import logger from '../logger'
+import logger from '../../services/logger'
 
 import { Model, QueryBuilder } from 'objection'
 

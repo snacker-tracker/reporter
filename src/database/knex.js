@@ -3,7 +3,7 @@ import { development, production } from './knexfile'
 
 import Config from '../config/'
 
-import Metrics from '../lib/metrics/Metrics'
+import Metrics from '../services/metrics'
 
 // Initialize knex.
 let knexConfig = development
@@ -22,11 +22,11 @@ knex
   .on('query-response', (response, query) => {
     const responseTime = (Date.now() - timings[query.__knexQueryUid]) / 1000
 
-    Metrics.knex_query_response_time.labels(
+    Metrics.knex.response_time.labels(
       query.method, query.options.operationId || 'unknown'
     ).observe(responseTime)
 
-    Metrics.knex_query_affected_rows.labels(
+    Metrics.knex.affected_rows.labels(
       query.method,
       query.options.operationId || 'unknown'
     ).observe(query.response.rowCount)

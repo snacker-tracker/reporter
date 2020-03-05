@@ -1,5 +1,5 @@
 import PatchOperation from './PatchOperation'
-import logger from '../logger'
+import logger from '../../services/logger'
 
 import { Model, QueryBuilder } from 'objection'
 
@@ -41,6 +41,7 @@ describe(PatchOperation, () => {
   let queryResult
   let queryBuilder
   let publisher
+  let info
 
   beforeEach( () => {
     operation = new ExampleOperation({ logger, event_publisher })
@@ -53,6 +54,9 @@ describe(PatchOperation, () => {
         'another-property': 'another value'
       }
     }
+
+    info = jest.spyOn(logger, 'info')
+    info.mockReturnValue(true)
 
     queryBuilder = TestQueryBuilder.forClass(MockModel)
 

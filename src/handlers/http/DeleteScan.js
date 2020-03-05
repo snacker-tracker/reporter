@@ -1,9 +1,9 @@
 import DeleteOperation from '../../lib/http/DeleteOperation'
 
-import { Product } from '../../models'
+import Scan from '../../models/Scan'
 
 class DeleteScan extends DeleteOperation {
-  static model = Product
+  static model = Scan
   static canBeCalledAnonymously = false
 
   extract_params(req) {

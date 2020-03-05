@@ -1,5 +1,5 @@
 import { CreateCode } from './CreateCode'
-import logger from '../../lib/logger'
+import logger from '../../services/logger'
 
 describe(CreateCode, () => {
   let operation

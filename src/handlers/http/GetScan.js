@@ -1,8 +1,8 @@
 import GetOperation from '../../lib/http/GetOperation'
-import { Product } from '../../models'
+import Scan from '../../models/Scan'
 
 class GetScan extends GetOperation {
-  static model = Product
+  static model = Scan
   static canBeCalledAnonymously = true
 
   toHttpRepresentation(item) {

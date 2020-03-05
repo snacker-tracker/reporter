@@ -1,4 +1,5 @@
 import EventPublisher from './EventPublisher'
+import logger from '../../services/logger'
 
 const awsMock = () => {
   const fn = jest.fn()
@@ -45,8 +46,8 @@ const awsMock = () => {
 
 describe(EventPublisher, () => {
   let kinesis
-  let logger
   let publisher
+  let info
 
   const event = 'ExampleEvent'
   let payload
@@ -61,9 +62,8 @@ describe(EventPublisher, () => {
     kinesis.putRecord = awsMock()
     kinesis.putRecord.awsResolve(true)
 
-    logger = {
-      info: jest.fn()
-    }
+    info = jest.spyOn(logger, 'info')
+    info.mockReturnValue(true)
 
     publisher = new EventPublisher(kinesis, 'example-stream', { logger })
   })

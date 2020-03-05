@@ -1,4 +1,4 @@
-import { Code } from '../../models'
+import Code from '../../models/Code'
 import ListOperation from '../../lib/http/ListOperation'
 
 class ListCategories extends ListOperation {

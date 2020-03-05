@@ -1,27 +1,33 @@
-const jwt = require('express-jwt')
-//const jwtAuthz = require('express-jwt-authz')
-const jwksRsa = require('jwks-rsa')
+import jwt from 'express-jwt'
+import jwksRsa from 'jwks-rsa'
 
-// Authentication middleware. When used, the
-// Access Token must exist and be verified against
-// the Auth0 JSON Web Key Set
+import Middleware from './Middleware'
 
-const Auth = (config) => {
-  const checkJwt = jwt({
-    credentialsRequired: false,
-    secret: jwksRsa.expressJwtSecret({
-      cache: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: 5,
-      jwksUri: `https://${config.issuer}/.well-known/jwks.json`
-    }),
+class Auth extends Middleware {
+  constructor(path = false, options) {
+    super(path, options)
+    this.configure(options.config)
+  }
 
-    audience: `${config.audience}`,
-    issuer: `https://${config.issuer}/`,
-    algorithms: ['RS256']
-  })
+  configure(options) {
+    this.check = jwt({
+      credentialsRequired: false,
+      secret: jwksRsa.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `https://${this.options.config.issuer}/.well-known/jwks.json`
+      }),
 
-  return checkJwt
+      audience: `${this.options.config.audience}`,
+      issuer: `https://${this.options.config.issuer}/`,
+      algorithms: ['RS256']
+    })
+  }
+
+  handler(req, res, next) {
+    this.check(req, res, next)
+  }
 }
 
 export default Auth

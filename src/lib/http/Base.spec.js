@@ -1,5 +1,5 @@
 import { Operation } from './Base'
-import logger from '../logger'
+import logger from '../../services/logger'
 
 class ExampleAuthenticatedOperation extends Operation {
   static canBeCalledAnonymously = false
@@ -8,7 +8,6 @@ class ExampleAuthenticatedOperation extends Operation {
 class ExampleOperation extends Operation {
   static canBeCalledAnonymously = true
 }
-
 
 describe(Operation, () => {
   let operation

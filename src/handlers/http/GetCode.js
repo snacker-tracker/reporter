@@ -1,5 +1,5 @@
 import GetOperation from '../../lib/http/GetOperation'
-import { Code } from '../../models'
+import Code from '../../models/Code'
 
 class GetCode extends GetOperation {
   static model = Code

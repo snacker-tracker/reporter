@@ -1,7 +1,7 @@
 import KinesisConsumer from './KinesisConsumer'
 import KinesisIteratorFake from './KinesisIteratorFake'
 
-import logger from '../logger'
+import logger from '../../services/logger'
 
 class TestEventHandler2 {
   run = jest.fn()
@@ -62,6 +62,9 @@ describe(KinesisConsumer, () => {
 
     loggerSpy.error = jest.spyOn(logger, 'error')
     loggerSpy.error.mockReturnValue()
+
+    loggerSpy.info = jest.spyOn(logger, 'info')
+    loggerSpy.info.mockReturnValue()
 
     const dependencies = (event, handler) => {
       return {

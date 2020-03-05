@@ -1,5 +1,5 @@
 import CreateOperation from './CreateOperation'
-import logger from '../logger'
+import logger from '../../services/logger'
 
 import { Model, QueryBuilder } from 'objection'
 
@@ -41,6 +41,7 @@ describe(CreateOperation, () => {
   let queryResult
   let queryBuilder
   let publisher
+  let info
 
   beforeEach( () => {
     operation = new ExampleOperation({ logger, event_publisher })
@@ -62,6 +63,10 @@ describe(CreateOperation, () => {
       'some-property': 'some value',
       'another-property': 'another value'
     })
+
+    info = jest.spyOn(logger, 'info')
+    info.mockReturnValue(true)
+
   })
 
 
