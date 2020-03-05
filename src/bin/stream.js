@@ -27,14 +27,6 @@ register.registerMetric(metrics.other.product_info_store_time_spent)
 
 server.listen(config.port)
 
-config.kinesis = {
-  ...config.kinesis,
-  endpoint: 'https://kinesis.aws.k8s.fscker.org',
-  stream_name: 'snacker-tracker-prod'
-}
-
-config.reporter_base_url = 'https://reporter.snacker-tracker.qa.k8s.fscker.org/v1'
-
 let kinesis = new AWS.Kinesis(config.kinesis)
 
 let iterator = new KinesisIterator(kinesis, config.kinesis.stream_name, 'TRIM_HORIZON', config.kinesis)
