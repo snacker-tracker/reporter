@@ -8,7 +8,7 @@ class ValidateResponse extends Middleware {
       try {
         body = JSON.parse(JSON.stringify(res.locals.response))
       } catch(error) {
-        this.options.logger({message: 'cannot valite invalid json'})
+        this.options.logger({ message: 'cannot validate invalid json' })
         this.options.metrics.swagger
           .response_errors
           .labels(log_event.operationId, res.statusCode)
