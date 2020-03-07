@@ -272,7 +272,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorCode"
+                $ref: "#/components/schemas/ErrorResponse"
 
     post:
       operationId: CreateCodePicture
