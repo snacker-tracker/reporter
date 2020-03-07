@@ -64,19 +64,30 @@ class SnackerTrackerInfoStore {
   }
 
   async post(code_and_info) {
-    const response = await axios.post(
-      ['codes'].join('/'),
-      code_and_info
-    )
+    try {
+      const response = await this._request({
+        method: 'post',
+        url: ['codes'].join('/'),
+        payload: code_and_info
+      })
 
-    return response.data
+      return response.data
+
+    } catch(error) {
+      console.log(error)
+      throw error
+    }
   }
 
   async patch(code, payload) {
-    const response = await axios.patch(
-      ['codes', code].join('/'),
-      payload
-    )
+    const response = await this._request({
+      method: 'patch',
+      url: ['codes', code].join('/'),
+      payload,
+      headers: {
+        'Cache-Control': 'no-cache'
+      }
+    })
 
     return response.data
   }
@@ -88,22 +99,25 @@ class SnackerTrackerInfoStore {
       contentType: 'image/jpeg'
     })
 
-    const response = await axios.post(
-      ['codes', code, 'pictures'].join('/'),
-      form,
-      {
-        headers: form.getHeaders()
-      }
-    )
+    const response = await this._request({
+      method: 'post',
+      url: ['codes', code, 'pictures'].join('/'),
+      payload: form,
+      headers: form.getHeaders()
+    })
 
     return response.data
   }
 
   async get_pictures(code) {
     try {
-      const response = await axios.get(
-        ['codes', code, 'pictures'].join('/')
-      )
+      const response = await this._request({
+        method: 'get',
+        url: ['codes', code, 'pictures'].join('/'),
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      })
 
       return response.data.items
     } catch( error ) {
@@ -122,6 +136,26 @@ class SnackerTrackerInfoStore {
       case 'get':
         return this.axios.get(
           request.url,
+          {
+            params: request.params,
+            headers
+          }
+        )
+
+      case 'post':
+        return this.axios.post(
+          request.url,
+          request.payload,
+          {
+            params: request.params,
+            headers
+          }
+        )
+
+      case 'patch':
+        return this.axios.patch(
+          request.url,
+          request.payload,
           {
             params: request.params,
             headers
