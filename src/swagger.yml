@@ -201,6 +201,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Code"
+        "404":
+          description: |
+            Barcode not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
     patch:
       operationId: PatchCode
@@ -259,6 +266,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CodePictureList"
+        "404":
+          description: |
+            Barcode not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorCode"
 
     post:
       operationId: CreateCodePicture
@@ -270,7 +284,6 @@ paths:
           required: true
           schema:
             $ref: "#/components/schemas/UPCCode"
-
       responses:
         "201":
           description: |
@@ -386,6 +399,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Scan"
+        "404":
+          description: |
+            Scan not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
     delete:
       operationId: DeleteScan
       tags:
@@ -433,7 +454,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CategoriesList"
-
 
 components:
   schemas:
