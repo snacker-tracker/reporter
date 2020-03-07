@@ -13,19 +13,7 @@ class PatchCode extends PatchOperation {
     return this.args.body
   }
 
-  toHttpRepresentation(item) {
-    if(item.categories && item.categories.length > 0) {
-      item.categories = item.categories.split('.')
-    } else {
-      item.categories = []
-    }
-
-    if(!item.url) {
-      delete item.url
-    }
-
-    return item
-  }
+  toHttpRepresentation = Code.toHttpRepresentation
 
   async extract_params(req) {
     this.args = {

@@ -9,6 +9,20 @@ export default class Code extends Model {
     return 'code'
   }
 
+  static toHttpRepresentation(item) {
+    if(item.categories && item.categories.length > 0) {
+      item.categories = item.categories.split('.')
+    } else {
+      item.categories = []
+    }
+
+    if(!item.url) {
+      delete item.url
+    }
+
+    return item
+  }
+
   static insert(code, andFetch = false) {
     if(andFetch) {
       return this.query().insert(code)
