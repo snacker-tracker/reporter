@@ -26,6 +26,13 @@ let api_user_agents = new prom.Counter({
   ...swagger
 })
 
+let openid_clients = new prom.Counter({
+  name: 'openid_clients_count',
+  help: 'Counting the number of openid clients',
+  labelNames: ['operationId', 'openid_client']
+})
+
+
 const swagger_invalid_responses = new prom.Histogram({
   name: 'swagger_invalid_responses',
   help: 'number of responses that had one or more schema errors',
@@ -67,7 +74,8 @@ const Metrics = {
     invalid_responses: swagger_invalid_responses,
     response_errors: swagger_response_errors,
     time_spent: swagger_operation_time_spent,
-    api_user_agents
+    api_user_agents,
+    openid_clients
   },
   knex: {
     response_time: knex_query_response_time,
