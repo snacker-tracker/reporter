@@ -1,8 +1,6 @@
 import KinesisConsumer from './KinesisConsumer'
 import KinesisIteratorFake from './KinesisIteratorFake'
 
-import logger from '../../services/logger'
-
 class TestEventHandler2 {
   run = jest.fn()
 }
@@ -24,12 +22,34 @@ TestEventHandlerTwo.mockImplementation(() => {
   }
 })
 
+class MockLogger {
+  info() {
+
+  }
+
+  warn() {
+
+  }
+
+  debug() {
+
+  }
+
+  error() {
+
+  }
+
+  setContext() {
+
+  }
+}
 
 describe(KinesisConsumer, () => {
   let iterator
   let consumer
   let dependencyProvider
   let loggerSpy = {}
+  let logger
 
   const codes = [
     'deadbeef-1'
@@ -59,6 +79,8 @@ describe(KinesisConsumer, () => {
     dependencyProvider.mockReturnValue({
       'a database': 'blah'
     })
+
+    logger = new MockLogger()
 
     loggerSpy.error = jest.spyOn(logger, 'error')
     loggerSpy.error.mockReturnValue(true)

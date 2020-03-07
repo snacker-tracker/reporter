@@ -29,19 +29,17 @@ server.listen(config.port)
 
 let kinesis = new AWS.Kinesis(config.kinesis)
 
-let iterator = new KinesisIterator(kinesis, config.kinesis.stream_name, 'TRIM_HORIZON', config.kinesis)
+let iterator = new KinesisIterator(
+  kinesis,
+  config.kinesis.stream_name,
+  config.kinesis.iterator_type,
+  config.kinesis
+)
 
-
-class Dumper {
-  run(event) {
-    console.log(event)
-  }
-}
 
 const eventHandlerMapping = {
   ScanCreated: [
     PopulateProductDataFromInternet
-    //Dumper
   ]
 }
 

@@ -28,6 +28,7 @@ const baseConfig = env => ({
   kinesis: {
     enabled: true,
     region: 'local',
+    iterator_type: 'LATEST',
     endpoint: env.KINESIS_ENDPOINT || 'http://kinesis:4567',
     stream_name: env.KINESIS_STREAM || 'snacker-tracker-' + env.ENVIRONMENT_NAME,
     accessKeyId: env.AWS_ACCESS_KEY_ID,
@@ -46,6 +47,7 @@ export const Config = env => {
   if(env.ENVIRONMENT_NAME === 'dev') {
     base.swagger.validation.sync = true
     base.swagger.validation.exposeResult = true
+    base.kinesis.iterator_type = 'TRIM_HORIZON'
   }
   return base
 }

@@ -1,48 +1,7 @@
 import EventPublisher from './EventPublisher'
 import logger from '../../services/logger'
 
-const awsMock = () => {
-  const fn = jest.fn()
-  const mockResolvedValue = function(result) {
-    fn.mockReturnValue({
-      promise() {
-        return Promise.resolve(result)
-      }
-    })
-  }
-
-  const mockRejectedValue = function(result) {
-    fn.mockReturnValue({
-      promise() {
-        return Promise.reject(result)
-      }
-    })
-  }
-
-  const mockResolvedValueOnce = function(result) {
-    fn.mockReturnValueOnce({
-      promise() {
-        return Promise.resolve(result)
-      }
-    })
-  }
-
-  const mockRejectedValueOnce = function(result) {
-    fn.mockReturnValueOnce({
-      promise() {
-        return Promise.reject(result)
-      }
-    })
-  }
-
-
-  fn.awsResolve = mockResolvedValue
-  fn.awsResolveOnce = mockResolvedValueOnce
-  fn.awsReject = mockRejectedValue
-  fn.awsRejectOnce = mockRejectedValueOnce
-
-  return fn
-}
+import { Kinesis } from '../../utils/AWSMocks'
 
 describe(EventPublisher, () => {
   let kinesis
@@ -57,10 +16,9 @@ describe(EventPublisher, () => {
       id: 'deadbeef',
       key: 'some arbitrary value'
     }
-    kinesis = {}
 
-    kinesis.putRecord = awsMock()
-    kinesis.putRecord.awsResolve(true)
+    kinesis = new Kinesis()
+    kinesis.putRecord.mockResolvedValue(true)
 
     info = jest.spyOn(logger, 'info')
     info.mockReturnValue(true)

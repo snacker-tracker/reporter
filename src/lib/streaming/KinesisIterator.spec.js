@@ -1,50 +1,7 @@
 import KinesisIterator from './KinesisIterator'
+import { Kinesis } from '../../utils/AWSMocks'
 
-const awsMock = () => {
-  const fn = jest.fn()
-  //const oldMockResolvedValue = fn.mockResolvedValue
-  //const oldMockRejectedValue = fn.mockRejectedValue
-
-  const mockResolvedValue = function(result) {
-    fn.mockReturnValue({
-      promise() {
-        return Promise.resolve(result)
-      }
-    })
-  }
-
-  const mockRejectedValue = function(result) {
-    fn.mockReturnValue({
-      promise() {
-        return Promise.reject(result)
-      }
-    })
-  }
-
-  const mockResolvedValueOnce = function(result) {
-    fn.mockReturnValueOnce({
-      promise() {
-        return Promise.resolve(result)
-      }
-    })
-  }
-
-  const mockRejectedValueOnce = function(result) {
-    fn.mockReturnValueOnce({
-      promise() {
-        return Promise.reject(result)
-      }
-    })
-  }
-
-
-  fn.awsResolve = mockResolvedValue
-  fn.awsResolveOnce = mockResolvedValueOnce
-  fn.awsReject = mockRejectedValue
-  fn.awsRejectOnce = mockRejectedValueOnce
-
-  return fn
-}
+class ExpiredIteratorException {}
 
 describe(KinesisIterator, () => {
   let KI
@@ -52,21 +9,17 @@ describe(KinesisIterator, () => {
   let sleep
 
   beforeEach( () => {
-    kinesis = {
-    }
+    kinesis = new Kinesis()
 
-    kinesis.listShards = awsMock()
-    kinesis.listShards.awsResolve({
+    kinesis.listShards.mockResolvedValue({
       Shards: [ { ShardId: 'shard-00000001' } ]
     })
 
-    kinesis.getShardIterator = awsMock()
-    kinesis.getShardIterator.awsResolve({
+    kinesis.getShardIterator.mockResolvedValue({
       ShardIterator: 'xxxyyyzzz'
     })
 
-    kinesis.getRecords = awsMock()
-    kinesis.getRecords.awsResolve({
+    kinesis.getRecords.mockResolvedValue({
       NextShardIterator: 'next-shard-iterator',
       Records: [
         { 'Data': 'record one' },
@@ -252,6 +205,77 @@ describe(KinesisIterator, () => {
       expect(kinesis.getRecords).toHaveBeenCalledWith(
         expect.objectContaining({
           ShardIterator: 'next-shard-iterator'
+        })
+      )
+    })
+
+    it('retries at the last know checkpoint if the iterator expires', async () => {
+
+      const kinesis = new Kinesis()
+      kinesis.listShards.mockResolvedValue({
+        Shards: [ { ShardId: 'shard-00000001' } ]
+      })
+
+      kinesis.getShardIterator.mockResolvedValueOnce({
+        ShardIterator: 'first-shard-iterator'
+      })
+
+      kinesis.getShardIterator.mockResolvedValueOnce({
+        ShardIterator: 'the-at-sequence-iterator'
+      })
+
+
+      kinesis.getRecords.mockResolvedValueOnce({
+        NextShardIterator: 'next-shard-iterator',
+        Records: [
+          { 'Data': 'record one' },
+          { 'Data': 'record two' }
+        ],
+        SequenceNumber: 'some-sequence-number'
+      })
+
+      kinesis.getRecords.mockRejectedValueOnce(new ExpiredIteratorException())
+
+      kinesis.getRecords.mockResolvedValueOnce({
+        NextShardIterator: 'another-next-shard-iterator',
+        Records: [
+          { 'Data': 'record one' },
+          { 'Data': 'record two' }
+        ],
+        SequenceNumber: 'another-sequence-number'
+      })
+
+
+      KI = new KinesisIterator(kinesis, 'example-stream', 'LATEST', {})
+      sleep = jest.spyOn(KI, 'sleep')
+      sleep.mockResolvedValue(true)
+
+      const iterator = await KI.records()
+
+      await iterator.next()
+      await iterator.next()
+      await iterator.next()
+
+      expect(kinesis.getShardIterator).toHaveBeenNthCalledWith( 1,
+        expect.objectContaining({
+          StreamName: 'example-stream',
+          ShardId: 'shard-00000001',
+          ShardIteratorType: 'LATEST'
+        })
+      )
+
+      expect(kinesis.getShardIterator).toHaveBeenNthCalledWith( 2,
+        expect.objectContaining({
+          StreamName: 'example-stream',
+          ShardId: 'shard-00000001',
+          ShardIteratorType: 'AFTER_SEQUENCE_NUMBER',
+          StartingSequenceNumber: 'some-sequence-number'
+        })
+      )
+
+      expect(kinesis.getRecords).toHaveBeenNthCalledWith(3,
+        expect.objectContaining({
+          'ShardIterator': 'the-at-sequence-iterator'
         })
       )
     })
