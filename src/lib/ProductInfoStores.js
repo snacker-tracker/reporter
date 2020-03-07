@@ -118,8 +118,6 @@ class SnackerTrackerInfoStore {
       headers['Authorization'] = ['Bearer', token].join(' ')
     }
 
-    request.headers = headers
-
     switch(request.method) {
       case 'get':
         return this.axios.get(

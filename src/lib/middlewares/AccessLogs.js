@@ -35,7 +35,7 @@ class AccessLogs extends Middleware {
     }
 
     if(event.request.headers.authorization) {
-      event.request.headers.authorization = "REDACTED"
+      event.request.headers.authorization = 'REDACTED'
     }
 
     if(res.req.user) {
