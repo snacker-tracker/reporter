@@ -37,23 +37,24 @@ class Operation {
   }
 
   async run(req) {
-    if(this.services.config.auth.authn.enabled) {
-      this.user = req.user
-    } else {
-      this.user = false
-    }
+    if(this.services.config) {
+      if(this.services.config.auth.authn.enabled) {
+        this.user = req.user
+      } else {
+        this.user = false
+      }
 
-    if(this.services.config.auth.authz.enabled) {
-      if(!req.user && !this.constructor.canBeCalledAnonymously) {
-        return new HTTPResponse({
-          status: 401,
-          body: {
-            message: 'Unauthorized'
-          }
-        })
+      if(this.services.config.auth.authz.enabled) {
+        if(!req.user && !this.constructor.canBeCalledAnonymously) {
+          return new HTTPResponse({
+            status: 401,
+            body: {
+              message: 'Unauthorized'
+            }
+          })
+        }
       }
     }
-
 
     await this.extract_params(req)
 

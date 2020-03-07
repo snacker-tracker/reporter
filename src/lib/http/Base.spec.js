@@ -12,12 +12,14 @@ class ExampleOperation extends Operation {
 describe(Operation, () => {
   let operation
   let request
+
   beforeEach( () => {
     let log_info = jest.spyOn(logger, 'info')
     log_info.mockReturnValue(true)
 
     let log_warn = jest.spyOn(logger, 'warn')
     log_warn.mockReturnValue(true)
+
 
     operation = new ExampleOperation({ logger })
     request = {
@@ -32,7 +34,18 @@ describe(Operation, () => {
 
   describe('behaviour', () => {
     it('returns a 401 if it cannot be called anonymously', async () => {
-      operation = new ExampleAuthenticatedOperation({ logger })
+      const config = {
+        auth: {
+          authn: {
+            enabled: true
+          },
+          authz: {
+            enabled: true
+          }
+        }
+      }
+
+      operation = new ExampleAuthenticatedOperation({ logger, config })
       const response = await operation.run(request, {})
       expect(response.constructor.name).toBe('HTTPResponse')
       expect(response.status).toBe(401)
