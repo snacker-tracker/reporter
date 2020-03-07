@@ -5,6 +5,14 @@ const baseConfig = env => ({
   corsHeaders: ['Link'],
   useSwaggerValidation: true,
   reporter_base_url: env.REPORTER_BASE_URL || 'http://full:5000/v1',
+  auth: {
+    authz: {
+      enabled: true
+    },
+    authn: {
+      enabled: true
+    }
+  },
   oauth: {
     enabled: !(env.OAUTH_ENABLED === 'false'),
     issuer: env.OAUTH_ISSUER || 'fscker-public-qa.eu.auth0.com',

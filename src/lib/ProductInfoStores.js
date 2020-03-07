@@ -1,5 +1,5 @@
-import axios from 'axios'
 import FormData from 'form-data'
+import axios from 'axios'
 
 class TopsCoThInfoStore {
   async get(code) {
@@ -40,30 +40,32 @@ class TopsCoThInfoStore {
 }
 
 class SnackerTrackerInfoStore {
-  constructor(base_url) {
-    this.base_url = base_url
+  constructor(base_url, options = {}) {
+    Object.assign(this, options)
+
+    this.axios = options.axios.create({
+      baseURL: base_url
+    })
   }
   async get(code) {
     try {
-      const response = await axios.get(
-        this.base_url + '/codes/' + code,
-        {
-          headers: {
-            'Cache-Control': 'no-cache'
-          }
+      const response = await this._request({
+        method: 'get',
+        url: ['codes', code].join('/'),
+        headers: {
+          'Cache-Control': 'no-cache'
         }
-      )
+      })
 
       return response.data
     } catch( error ) {
-      //console.log(code, error.config)
       return false
     }
   }
 
   async post(code_and_info) {
     const response = await axios.post(
-      [this.base_url, 'codes'].join('/'),
+      ['codes'].join('/'),
       code_and_info
     )
 
@@ -72,7 +74,7 @@ class SnackerTrackerInfoStore {
 
   async patch(code, payload) {
     const response = await axios.patch(
-      [this.base_url, 'codes', code].join('/'),
+      ['codes', code].join('/'),
       payload
     )
 
@@ -87,7 +89,7 @@ class SnackerTrackerInfoStore {
     })
 
     const response = await axios.post(
-      [this.base_url, 'codes', code, 'pictures'].join('/'),
+      ['codes', code, 'pictures'].join('/'),
       form,
       {
         headers: form.getHeaders()
@@ -100,12 +102,33 @@ class SnackerTrackerInfoStore {
   async get_pictures(code) {
     try {
       const response = await axios.get(
-        [this.base_url, 'codes', code, 'pictures'].join('/')
+        ['codes', code, 'pictures'].join('/')
       )
 
       return response.data.items
     } catch( error ) {
       return false
+    }
+  }
+
+  async _request(request) {
+    const headers = request.headers || {}
+    if(this.tokenProvider) {
+      const token = await this.tokenProvider.getToken()
+      headers['Authorization'] = ['Bearer', token].join(' ')
+    }
+
+    request.headers = headers
+
+    switch(request.method) {
+      case 'get':
+        return this.axios.get(
+          request.url,
+          {
+            params: request.params,
+            headers
+          }
+        )
     }
   }
 }

@@ -1,6 +1,8 @@
 import prom from 'prom-client'
 import uuid from 'uuid'
 
+import axios from 'axios'
+
 import config from '../config/'
 import logger from '../services/logger'
 import metrics from '../services/metrics'
@@ -11,8 +13,10 @@ import KinesisIteratorFake from '../lib/streaming/KinesisIteratorFake'
 import InfoStores from '../lib/ProductInfoStores'
 import PopulateProductDataFromInternet from '../handlers/stream/PopulateProductDataFromInternet'
 
+import TokenProvider from '../lib/TokenProvider'
+
 const register = prom.register
-register.registerMetric(metrics.product_info_store_time_spent)
+register.registerMetric(metrics.other.product_info_store_time_spent)
 
 config.reporter_base_url = 'https://reporter.snacker-tracker.qa.k8s.fscker.org/v1'
 
@@ -21,6 +25,20 @@ const eventHandlerMapping = {
     PopulateProductDataFromInternet
   ]
 }
+
+const tokenProvider = new TokenProvider(
+  {
+    issuer: 'https://' + config.oauth.issuer,
+    client_id: config.oauth.client_id,
+    client_secret: config.oauth.client_secret,
+    audience: config.oauth.audience,
+    endpoints: {
+      token: '/oauth/token'
+    }
+  }, {
+    axios
+  }
+)
 
 const dependencies = (event, handler) => {
   const log = new logger.constructor(logger.instance)
@@ -32,17 +50,19 @@ const dependencies = (event, handler) => {
   const bigc = new InfoStores.BigCInfoStore()
   const upcdb = new InfoStores.UPCItemDBInfoStore()
   const off = new InfoStores.OpenFoodFactsInfoStore()
-  const snacker = new InfoStores.SnackerTrackerInfoStore(config.reporter_base_url)
+  const snacker = new InfoStores.SnackerTrackerInfoStore(config.reporter_base_url, {
+    axios, tokenProvider
+  })
   const tops = new InfoStores.TopsCoThInfoStore()
 
   return {
     logger: log,
     productInfoStores: {
-      bigc: new TimeSpentProxy(bigc, metrics.product_info_store_time_spent),
-      upcdb: new TimeSpentProxy(upcdb, metrics.product_info_store_time_spent),
-      off: new TimeSpentProxy(off, metrics.product_info_store_time_spent),
-      snacker: new TimeSpentProxy(snacker, metrics.product_info_store_time_spent),
-      tops: new TimeSpentProxy(tops, metrics.product_info_store_time_spent)
+      bigc: new TimeSpentProxy(bigc, metrics.other.product_info_store_time_spent),
+      upcdb: new TimeSpentProxy(upcdb, metrics.other.product_info_store_time_spent),
+      off: new TimeSpentProxy(off, metrics.other.product_info_store_time_spent),
+      snacker: new TimeSpentProxy(snacker, metrics.other.product_info_store_time_spent),
+      tops: new TimeSpentProxy(tops, metrics.other.product_info_store_time_spent)
     }
   }
 }

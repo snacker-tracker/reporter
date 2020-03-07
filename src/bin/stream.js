@@ -1,4 +1,6 @@
 import AWS from 'aws-sdk'
+import axios from 'axios'
+
 import config from '../config/'
 
 import logger from '../services/logger'
@@ -13,6 +15,7 @@ import { TimeSpentProxy } from '../lib/metrics/Proxies'
 import KinesisIterator from '../lib/streaming/KinesisIterator'
 import KinesisConsumer from '../lib/streaming/KinesisConsumer'
 
+import TokenProvider from '../lib/TokenProvider'
 import InfoStores from '../lib/ProductInfoStores'
 import PopulateProductDataFromInternet from '../handlers/stream/PopulateProductDataFromInternet'
 
@@ -43,6 +46,20 @@ const eventHandlerMapping = {
   ]
 }
 
+const tokenProvider = new TokenProvider(
+  {
+    issuer: 'https://' + config.oauth.issuer,
+    client_id: config.oauth.client_id,
+    client_secret: config.oauth.client_secret,
+    audience: config.oauth.audience,
+    endpoints: {
+      token: '/oauth/token'
+    }
+  }, {
+    axios
+  }
+)
+
 const dependencies = (event, handler) => {
   const log = new logger.constructor(logger.instance)
 
@@ -53,7 +70,9 @@ const dependencies = (event, handler) => {
   const bigc = new InfoStores.BigCInfoStore()
   const upcdb = new InfoStores.UPCItemDBInfoStore()
   const off = new InfoStores.OpenFoodFactsInfoStore()
-  const snacker = new InfoStores.SnackerTrackerInfoStore(config.reporter_base_url)
+  const snacker = new InfoStores.SnackerTrackerInfoStore(config.reporter_base_url, {
+    axios, tokenProvider
+  })
   const tops = new InfoStores.TopsCoThInfoStore()
 
 

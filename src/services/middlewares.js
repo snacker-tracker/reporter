@@ -13,10 +13,12 @@ const register = (app, { config, spec, services }) => {
   const RequestId = new middlewares.RequestId(false, services)
   const AccessLogs = new middlewares.AccessLogs(false, services)
   const Prometheus = new middlewares.Prometheus('/metrics', services)
+  const Auth = new middlewares.Auth(false, services)
 
   const list = [
     Cors,
     AccessLogs,
+    Auth,
     ValidateResponse,
     HealthCheck,
     SwaggerDoc,

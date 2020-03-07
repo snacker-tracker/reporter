@@ -20,7 +20,7 @@ class AccessLogs extends Middleware {
   }
 
   log(res) {
-    this.options.logger.info({
+    const event = {
       request: {
         method: res.req.method,
         url: res.req.url,
@@ -31,7 +31,18 @@ class AccessLogs extends Middleware {
         headers: this.mapKeysAndValues(res.getHeaders(), this.mapHeader)
       },
       time_spent: (new Date() - res.req.locals.startTime) / 1000
-    })
+
+    }
+
+    if(event.request.headers.authorization) {
+      event.request.headers.authorization = "REDACTED"
+    }
+
+    if(res.req.user) {
+      event.request.user = res.req.user
+    }
+
+    this.options.logger.info(event)
 
     if(res.req.operationDoc && res.req.operationDoc.operationId) {
       this.options.metrics.swagger.time_spent.labels(

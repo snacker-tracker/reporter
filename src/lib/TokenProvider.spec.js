@@ -1,5 +1,4 @@
 import TokenProvider from './TokenProvider'
-import axios from 'axios'
 
 describe(TokenProvider, () => {
   const config = {

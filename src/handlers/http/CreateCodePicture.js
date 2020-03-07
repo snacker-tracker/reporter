@@ -6,7 +6,7 @@ import Code from '../../models/Code'
 
 class CreateCodePicture extends Operation {
   static model = Code
-  static canBeCalledAnonymously = true
+  static canBeCalledAnonymously = false
 
   async extract_params(req) {
     const now = new Date().toISOString()

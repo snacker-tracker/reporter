@@ -4,7 +4,7 @@ import Code from '../..//models/Code'
 
 class CreateCode extends CreateOperation {
   static model = Code
-  static canBeCalledAnonymously = true
+  static canBeCalledAnonymously = false
 
   toHttpRepresentation = Code.toHttpRepresentation
 
