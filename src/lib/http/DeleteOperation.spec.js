@@ -37,8 +37,6 @@ const event_publisher = {
 describe(DeleteOperation, () => {
   let operation
   let request
-  let queryBuilderProvider
-  let queryResult
   let queryBuilder
   let publisher
   let loggerSpy = {}
@@ -101,7 +99,7 @@ describe(DeleteOperation, () => {
     })
 
     it('publishes an event post creation', async () => {
-      const response = await operation.run(request, null)
+      await operation.run(request, null)
       expect(publisher).toHaveBeenCalledWith(
         'MockModelDeleted',
         expect.objectContaining({

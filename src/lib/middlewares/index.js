@@ -5,7 +5,7 @@ import HealthCheck from './HealthCheck'
 import SwaggerDoc from './SwaggerDoc'
 import Cors from './Cors'
 import ValidateResponse from './ValidateResponse'
-import Prometheus from './Metrics'
+import Prometheus from './Prometheus'
 
 export {
   AccessLogs,

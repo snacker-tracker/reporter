@@ -125,9 +125,7 @@ const setSecuritySettings = (swagger) => {
           tokenUrl: `https://${Config.oauth.issuer}/oauth/token`,
           scopes: {
             openid: 'openid',
-            profile: 'your basic profile information',
-            phone: 'your phone number',
-            offline_access: 'Get a refresh token (optional)'
+            profile: 'your basic profile information'
           }
         }
       }
@@ -137,18 +135,6 @@ const setSecuritySettings = (swagger) => {
       Bearer: bearerConfig
     }
   }
-
-  /*
-        implicit: {
-          authorizationUrl: `https://${Config.oauth.issuer}/authorize?audience=${Config.oauth.audience}`,
-          scopes: {
-            openid: 'openid',
-            profile: 'your basic profile information',
-            phone: 'your phone number',
-          }
-        },
-        */
-
 
   return swagger
 }

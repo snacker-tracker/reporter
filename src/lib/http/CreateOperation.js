@@ -22,16 +22,14 @@ export default class CreateOperation extends Operation {
         .options({ operationId: this.constructor.name })
         .insertAndFetch(this.args.body)
     } catch (error) {
-      switch(error.code) {
-        case '23505':
-          return new HTTPResponse({
-            status: 409,
-            body: {
-              'message': 'Entity already exists or fails a uniqueness constraint'
-            }
-          })
-
-        default:
+      if(error.code === '23505') {
+        return new HTTPResponse({
+          status: 409,
+          body: {
+            'message': 'Entity already exists or fails a uniqueness constraint'
+          }
+        })
+      } else {
           throw error
       }
     }

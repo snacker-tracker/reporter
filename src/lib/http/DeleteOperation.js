@@ -32,8 +32,6 @@ export default class DeleteOperation extends Operation {
 
     this.args.include_meta = true
 
-    const now = new Date().toISOString()
-
     if (this.requesterCanDeleteResource(this.resources.resource)) {
       await this.constructor.model.query()
         .deleteById(this.resources.resource.id)

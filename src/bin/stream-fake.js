@@ -41,8 +41,6 @@ const tokenProvider = new TokenProvider(
 )
 
 const dependencies = (event, handler) => {
-  const log = new logger.constructor(logger.instance)
-
   log.setContext('event', event.event)
   log.setContext('event_id', event.id)
   log.setContext('handler', handler.name)
@@ -56,7 +54,7 @@ const dependencies = (event, handler) => {
   const tops = new InfoStores.TopsCoThInfoStore()
 
   return {
-    logger: log,
+    logger: new logger.constructor(logger.instance),
     productInfoStores: {
       bigc: new TimeSpentProxy(bigc, metrics.other.product_info_store_time_spent),
       upcdb: new TimeSpentProxy(upcdb, metrics.other.product_info_store_time_spent),
@@ -66,8 +64,6 @@ const dependencies = (event, handler) => {
     }
   }
 }
-
-
 
 let codes = [
   '6901668054401',

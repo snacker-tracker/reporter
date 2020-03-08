@@ -37,8 +37,6 @@ const event_publisher = {
 describe(PatchOperation, () => {
   let operation
   let request
-  let queryBuilderProvider
-  let queryResult
   let queryBuilder
   let publisher
   let info
@@ -118,7 +116,7 @@ describe(PatchOperation, () => {
 
 
     it('publishes an event post patching', async () => {
-      const response = await operation.run(request, null)
+      await operation.run(request, null)
       expect(publisher).toHaveBeenCalledWith(
         'MockModelPatched',
         expect.objectContaining({

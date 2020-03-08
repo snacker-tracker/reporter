@@ -1,5 +1,3 @@
-import promBundle from 'express-prom-bundle'
-
 import Middleware from './Middleware'
 
 class Prometheus extends Middleware {

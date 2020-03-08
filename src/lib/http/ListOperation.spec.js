@@ -37,8 +37,6 @@ const event_publisher = {
 describe(ListOperation, () => {
   let operation
   let request
-  let queryBuilderProvider
-  let queryResult
   let queryBuilder
   let publisher
 

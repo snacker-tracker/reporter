@@ -1,5 +1,4 @@
 import stores from './ProductInfoStores'
-import TokenProvider from './TokenProvider'
 
 describe(stores.SnackerTrackerInfoStore, () => {
   let store
@@ -24,12 +23,6 @@ describe(stores.SnackerTrackerInfoStore, () => {
     store = new stores.SnackerTrackerInfoStore('https://reporter.snacker-tracker.qa.k8s.fscker.org/v1/', {
       axios,
       tokenProvider
-    })
-  })
-
-  describe('for real', () => {
-    it('makes a real request', async () => {
-      const response = await store.get('8850999220000')
     })
   })
 

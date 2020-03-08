@@ -157,10 +157,9 @@ class PopulateProductDataFromInternet extends EventHandler {
       for(const image of images) {
         this.services.logger.info({ msg: 'Downloading picture', url: image })
 
-        let img_response, extension
+        let img_response
         try {
           img_response = await axios.get(image, { responseType: 'arraybuffer' })
-          extension = img_response.headers['content-type'].split('/')[1]
         } catch( error ) {
           this.services.logger.info({ 'msg': 'Failed to download image', error })
           continue

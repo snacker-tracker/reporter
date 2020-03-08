@@ -37,8 +37,6 @@ const event_publisher = {
 describe(CreateOperation, () => {
   let operation
   let request
-  let queryBuilderProvider
-  let queryResult
   let queryBuilder
   let publisher
   let info
@@ -108,7 +106,7 @@ describe(CreateOperation, () => {
 
 
     it('publishes an event post creation', async () => {
-      const response = await operation.run(request, null)
+      await operation.run(request, null)
       expect(publisher).toHaveBeenCalledWith(
         'MockModelCreated',
         expect.objectContaining({

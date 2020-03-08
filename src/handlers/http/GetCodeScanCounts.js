@@ -110,7 +110,7 @@ class GetCodeScanCounts extends ListOperation {
           times[times.length - 1]
         ]
 
-        const fill = fillers[this.args.period](bounds[0], bounds[1])
+        const filled = fillers[this.args.period](bounds[0], bounds[1])
 
         const zip = (timeseries, fill) => {
           for( const entry of timeseries ) {
@@ -132,7 +132,7 @@ class GetCodeScanCounts extends ListOperation {
           })
         }
 
-        return zip(results, fill)
+        return zip(results, filled)
       })()
     }
   }

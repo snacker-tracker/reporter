@@ -2,7 +2,7 @@ import * as middlewares from '../lib/middlewares/'
 
 const register = (app, { config, spec, services }) => {
   const register = services.prometheus.register
-  Object.entries(services.metrics.swagger).map( ([key, value]) => {
+  Object.entries(services.metrics.swagger).forEach( ([key, value]) => {
     register.registerMetric(value)
   })
 
@@ -26,7 +26,7 @@ const register = (app, { config, spec, services }) => {
     Prometheus
   ]
 
-  list.map( (middleware) => {
+  list.forEach( (middleware) => {
     middleware.registerFunction(app)()
   })
 }
