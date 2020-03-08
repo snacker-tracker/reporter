@@ -101,14 +101,18 @@ class KinesisConsumer {
 
     let results = await Promise.all(promises)
 
+    this.log_results(logger, results)
+
+    return true
+  }
+
+  log_results(logger, results) {
     for(const result of results) {
       logger.info({
         handler: Object.entries(result)[0][0],
         result: Object.entries(result)[0][1]
       })
     }
-
-    return true
   }
 }
 

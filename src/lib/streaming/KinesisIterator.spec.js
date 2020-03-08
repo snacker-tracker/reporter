@@ -228,10 +228,9 @@ describe(KinesisIterator, () => {
       kinesis.getRecords.mockResolvedValueOnce({
         NextShardIterator: 'next-shard-iterator',
         Records: [
-          { 'Data': 'record one' },
-          { 'Data': 'record two' }
+          { 'Data': 'record one', SequenceNumber: 'one' },
+          { 'Data': 'record two', SequenceNumber: 'two' }
         ],
-        SequenceNumber: 'some-sequence-number'
       })
 
       kinesis.getRecords.mockRejectedValueOnce(new ExpiredIteratorException())
@@ -239,10 +238,9 @@ describe(KinesisIterator, () => {
       kinesis.getRecords.mockResolvedValueOnce({
         NextShardIterator: 'another-next-shard-iterator',
         Records: [
-          { 'Data': 'record one' },
-          { 'Data': 'record two' }
-        ],
-        SequenceNumber: 'another-sequence-number'
+          { 'Data': 'record one', SequenceNumber: 'three' },
+          { 'Data': 'record two', SequenceNumber: 'four' }
+        ]
       })
 
 
@@ -269,7 +267,7 @@ describe(KinesisIterator, () => {
           StreamName: 'example-stream',
           ShardId: 'shard-00000001',
           ShardIteratorType: 'AFTER_SEQUENCE_NUMBER',
-          StartingSequenceNumber: 'some-sequence-number'
+          StartingSequenceNumber: 'two'
         })
       )
 

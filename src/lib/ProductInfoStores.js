@@ -132,36 +132,18 @@ class SnackerTrackerInfoStore {
       headers['Authorization'] = ['Bearer', token].join(' ')
     }
 
-    switch(request.method) {
-      case 'get':
-        return this.axios.get(
-          request.url,
-          {
-            params: request.params,
-            headers
-          }
-        )
+    const axios_params = [request.url]
 
-      case 'post':
-        return this.axios.post(
-          request.url,
-          request.payload,
-          {
-            params: request.params,
-            headers
-          }
-        )
-
-      case 'patch':
-        return this.axios.patch(
-          request.url,
-          request.payload,
-          {
-            params: request.params,
-            headers
-          }
-        )
+    if(request.method !== 'get') {
+      axios.params.push(request.payload)
     }
+
+    axios_params.push({
+      params: request.params,
+      headers
+    })
+
+    return this.axios[request.method].apply(axios, axios_params)
   }
 }
 

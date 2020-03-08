@@ -63,13 +63,12 @@ class KinesisIterator {
         try {
           const {
             Records,
-            SequenceNumber,
             NextShardIterator
           } = await this._records(iterator, this.config.limit)
 
-          lastSeenSequenceNumber = SequenceNumber
 
           for(const record of Records) {
+            lastSeenSequenceNumber = record.SequenceNumber
             yield record
           }
 
