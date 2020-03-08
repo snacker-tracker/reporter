@@ -1,4 +1,3 @@
-import Models from '../services/models'
 
 const operation_to_handler = (operationId, operation, dependencies) => {
   return [async (req, res, next) => {

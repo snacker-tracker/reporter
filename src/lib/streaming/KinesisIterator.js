@@ -56,16 +56,6 @@ class KinesisIterator {
     return records
   }
 
-  /*
-   * var params = {
-  ShardId: 'STRING_VALUE', 
-  ShardIteratorType: AT_SEQUENCE_NUMBER | AFTER_SEQUENCE_NUMBER | TRIM_HORIZON | LATEST | AT_TIMESTAMP, 
-  StreamName: 'STRING_VALUE', 
-  StartingSequenceNumber: 'STRING_VALUE',
-  Timestamp: new Date || 'Wed Dec 31 1969 16:00:00 GMT-0800 (PST)' || 123456789
-};
-   * */
-
   async * records() {
     for await (const shardId of this.shards()) {
       let lastSeenSequenceNumber
@@ -92,20 +82,26 @@ class KinesisIterator {
           }
         } catch(error) {
           if(error.constructor.name === 'ExpiredIteratorException') {
-            const newIterator = await this.client.getShardIterator({
-              StreamName: this.stream,
-              ShardIteratorType: 'AFTER_SEQUENCE_NUMBER',
-              ShardId: shardId,
-              StartingSequenceNumber: lastSeenSequenceNumber
-            }).promise()
-
-            this.shardIterators[shardId] = newIterator.ShardIterator
+            await this.resetIteratorToLastSeenSequenceNumber(
+              this.stream, shardId, lastSeenSequenceNumber
+            )
           } else {
             throw error
           }
         }
       }
     }
+  }
+
+  async resetIteratorToLastSeenSequenceNumber(
+      stream, shardId, lastSeenSequenceNumber) {
+    const iterator =  await this.client.getShardIterator({
+      StreamName: stream,
+      ShardIteratorType: 'AFTER_SEQUENCE_NUMBER',
+      ShardId: shardId,
+      StartingSequenceNumber: lastSeenSequenceNumber
+    }).promise()
+    this.shardIterators[shardId] = iterator.ShardIterator
   }
 }
 

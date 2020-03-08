@@ -6,6 +6,8 @@ import metrics from './metrics'
 import EventPublisher from '../lib/streaming/EventPublisher'
 import ImageRepository from '../lib/ImageRepository'
 
+import Models from '../services/models'
+
 
 const web = (config, services) => {
   const kinesis = new AWS.Kinesis(config.kinesis)
@@ -20,6 +22,7 @@ const web = (config, services) => {
       metrics,
       prometheus,
       image_repository,
+      models: Models,
 
       get logger() {
         const logger = new Logger()

@@ -53,6 +53,27 @@ class KinesisConsumer {
     }
   }
 
+  async measure_time_spent(handler, event) {
+    const start = new Date()
+
+    const response = await handler.run(event)
+
+    handlers_time_spent
+      .labels(event.event, handler.constructor.name, true)
+      .observe((new Date() - start) / 1000)
+
+    handlers_triggered
+      .labels(event.event, handler.constructor.name, true)
+      .inc()
+
+    return response
+  }
+
+  instantiate_dependencies(event, handler_class) {
+    return ( typeof(this.handlerDependencies) === 'function' ) ?
+      this.handlerDependencies(event, handler_class) : this.handlerDependencies
+  }
+
   async process(event) {
     events_seen.labels(event.event).inc()
 
@@ -66,35 +87,19 @@ class KinesisConsumer {
       return
     }
 
-    const instances = this.handlers[event.event].map( handler => {
-      let dependencies
-      if(typeof(this.handlerDependencies) === 'function') {
-        dependencies = this.handlerDependencies(event, handler)
-      } else {
-        dependencies = this.handlerDependencies
-      }
-
+    const handler_instances = this.handlers[event.event].map( handler => {
+      const dependencies = this.instantiate_dependencies(event, handler)
       return new handler(dependencies)
     })
 
-    let results = await Promise.all(
-      instances.map( async (handler) => {
-        const response = {}
-        const start = new Date()
+    const promises = handler_instances.map( async (handler) => {
+      return [
+        handler.constructor.name,
+        await this.measure_time_spent(handler, event)
+      ]
+    })
 
-        response[handler.constructor.name] = await handler.run(event)
-
-        handlers_triggered
-          .labels(event.event, handler.constructor.name, true)
-          .inc()
-
-        handlers_time_spent
-          .labels(event.event, handler.constructor.name, true)
-          .observe((new Date() - start) / 1000)
-
-        return response
-      })
-    )
+    let results = await Promise.all(promises)
 
     for(const result of results) {
       logger.info({
