@@ -5,6 +5,7 @@ managed REST API which exposes the endpoints to drive the scanner and UI compone
 
 The API is documented in `src/swagger.yml`
 
+<a href="https://codeclimate.com/github/snacker-tracker/reporter/maintainability"><img src="https://api.codeclimate.com/v1/badges/653ebd9271d102bcb81c/maintainability" /></a>
 
 # Getting Started
 
