@@ -93,7 +93,7 @@ class KinesisIterator {
   }
 
   async resetIteratorToLastSeenSequenceNumber(
-      stream, shardId, lastSeenSequenceNumber) {
+    stream, shardId, lastSeenSequenceNumber) {
     const iterator =  await this.client.getShardIterator({
       StreamName: stream,
       ShardIteratorType: 'AFTER_SEQUENCE_NUMBER',

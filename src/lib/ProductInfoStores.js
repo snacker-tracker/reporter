@@ -135,7 +135,7 @@ class SnackerTrackerInfoStore {
     const axios_params = [request.url]
 
     if(request.method !== 'get') {
-      axios.params.push(request.payload)
+      axios_params.push(request.payload)
     }
 
     axios_params.push({

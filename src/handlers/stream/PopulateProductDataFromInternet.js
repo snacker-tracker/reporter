@@ -2,179 +2,122 @@ import axios from 'axios'
 
 import EventHandler from '../../lib/streaming/EventHandler'
 
-const firstOf = (options) => {
-  for(const option of options) {
-    if(typeof(option) == 'string') {
-      if(option !== '' && option !== 'unknown') {
-        return option
-      }
+
+class PopulateProductDataFromInternet extends EventHandler {
+  async query(provider, code) {
+    try {
+      const response = await this.services.productInfoStores[provider].get(code)
+      this.services.logger.info({
+        'msg': ['got', provider].join(' '),
+        response
+      })
+
+      return response
+    } catch(error) {
+      this.services.logger.warn(['failed to get', provider].join(' '))
+      return false
     }
   }
 
-  return false
-}
+  firstOf(options) {
+    for(const option of options) {
+      if(typeof(option) == 'string') {
+        if(option !== '' && option !== 'unknown') {
+          return option
+        }
+      }
+    }
 
-class PopulateProductDataFromInternet extends EventHandler {
+    return false
+  }
+
+
+  merge(sources) {
+    const merged = {}
+    merged.name = this.firstOf([
+      sources.off.name,
+      sources.tops.name,
+      sources.bigc.name,
+      sources.upcdb.name
+    ])
+
+    if(sources.off) {
+      merged.categories = sources.off.categories || []
+    }
+
+    const pictures = Object.values(sources).map((source) => {
+      return source.pictures ? source.pictures : []
+    })
+
+    merged.pictures = [].concat.apply([], pictures)
+
+    return merged
+  }
+
   async run({ payload }) {
     this.services.logger.setContext('code', payload.code)
-    this.services.logger.info({ msg: 'Start and end processing' })
+    this.services.logger.info('start processing')
 
-    let local = false
-    try {
-      local = await this.services.productInfoStores.snacker.get(payload.code)
-      this.services.logger.info({
-        'msg': 'Got local',
-        local
-      })
-    } catch(error) {
-      this.services.logger.warn({
-        'msg': 'Failed to get local'
-      })
+    let local = await this.query('snacker', payload.code)
+
+    if(local) {
+      this.services.logger.info('stop here, we know about this product')
+      return true
     }
 
-    let off = false
-    try {
-      off = await this.services.productInfoStores.off.get(payload.code)
-      this.services.logger.info({
-        'msg': 'Got off',
-        off
-      })
-    } catch(error) {
-      this.services.logger.warn({
-        'msg': 'Failed to get off'
-      })
-    }
+    let off = await this.query('off', payload.code)
+    let tops = await this.query('tops', payload.code)
+    let upcdb = await this.query('upcdb', payload.code)
+    let bigc = await this.query('bigc', payload.code)
 
-    let tops = false
-    try {
-      tops = await this.services.productInfoStores.tops.get(payload.code)
-      this.services.logger.info({
-        'msg': 'Got tops',
-        tops
-      })
-    } catch(error) {
-      this.services.logger.warn({
-        'msg': 'Failed to get tops'
-      })
-    }
+    const product_info = this.merge({
+      off, tops, upcdb, bigc
+    })
 
-    let upcdb = false
-    try {
-      upcdb = await this.services.productInfoStores.upcdb.get(payload.code)
-      this.services.logger.info({
-        'msg': 'Got upcdb',
-        upcdb
-      })
-    } catch(error) {
-      this.services.logger.warn({
-        'msg': 'Failed to get upcdb'
-      })
-    }
-
-    let bigc = false
-    try {
-      bigc = await this.services.productInfoStores.bigc.get(payload.code)
-      this.services.logger.info({
-        'msg': 'Got bigc',
-        bigc
-      })
-    } catch(error) {
-      this.services.logger.warn({
-        'msg': 'Failed to get bigc'
-      })
-    }
-
-    let images = []
-
-    if(tops) {
-      images = images.concat(tops.images)
-    }
-
-    if(off) {
-      images = images.concat(off.images)
-    }
-
-    if(bigc) {
-      images = images.concat(bigc.images)
-    }
-
-    const shouldCreate = local === false
-
-    if(shouldCreate) {
-      const name = firstOf([
-        off.name,
-        tops.name,
-        bigc.name,
-        upcdb.name
-      ])
-
-      if(name) {
-        this.services.logger.info(`Using "${name}" as name`)
-        let createPayload = {
-          code: payload.code,
-          name,
-          categories: off.categories || []
-        }
-        this.services.logger.info({ createPayload })
-
-
-        try {
-          local = await this.services.productInfoStores.snacker.post(createPayload)
-          local.categories = local.categories.filter( category => {
-            return category != ''
-          })
-
-          this.services.logger.info({ msg: 'Created code', code: local })
-        } catch(error) {
-          this.services.logger.info('failed to create code')
-        }
-      } else {
-        this.services.logger.info('Couldn\'t determine name')
+    if(product_info.name) {
+      this.services.logger.info(`Using "${product_info.name}" as name`)
+      let createPayload = {
+        code: payload.code,
+        name: product_info.name,
+        categories: product_info.categories || []
       }
-    }
 
-    const shouldPatchCategories = local.categories != off.categories
-    if(shouldPatchCategories) {
-      try {
-        this.services.productInfoStores.snacker.patch(payload.code, {
-          categories: off.categories
-        })
-      } catch(error) {
-        this.services.logger.warn('failed to patch code')
-        this.services.logger.warn(error)
-      }
-    }
+      this.services.logger.info({ createPayload })
+      local = await this.services.productInfoStores.snacker.post(createPayload)
 
-    let local_pictures
-    try {
-      local_pictures = await this.services.productInfoStores.snacker.get_pictures(payload.code)
-    } catch(error) {
-      this.services.logger.warn('failed to get local pictures')
-    }
-
-    const shouldUploadPictures = local_pictures && local_pictures.length === 0 && images.length > 0
-    if(shouldUploadPictures) {
-      for(const image of images) {
-        this.services.logger.info({ msg: 'Downloading picture', url: image })
-
-        let img_response
-        try {
-          img_response = await axios.get(image, { responseType: 'arraybuffer' })
-        } catch( error ) {
-          this.services.logger.info({ 'msg': 'Failed to download image', error })
-          continue
-        }
-
-        try {
-          const picture = await this.services.productInfoStores.snacker.post_picture(payload.code, img_response.data)
-          this.services.logger.info({ msg: 'Image uploaded', picture })
-        } catch(error) {
-          this.services.logger.info({ 'msg': 'Failed to upload image', error })
+      if(product_info.pictures.length > 0) {
+        for(const image of product_info.pictures) {
+          const img_response = await this.download_picture(image)
+          if(img_response) {
+            await this.upload_picture(payload.code, img_response)
+          }
         }
       }
     }
 
     return true
+  }
+
+  async download_picture(url) {
+    let img_response
+    try {
+      this.services.logger.info({ msg: 'Downloading picture', url })
+      return await axios.get(url, { responseType: 'arraybuffer' })
+    } catch( error ) {
+      this.services.logger.info({ 'msg': 'Failed to download image', error })
+      return false
+    }
+  }
+
+  async upload_picture(code, picture) {
+    try {
+      await this.services.productInfoStores.snacker.post_picture(code, picture)
+      this.services.logger.info('image uploaded')
+      return true
+    } catch(error) {
+      this.services.logger.warn({ 'msg': 'Failed to upload image', error })
+      return false
+    }
   }
 }
 

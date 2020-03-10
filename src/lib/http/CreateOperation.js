@@ -30,7 +30,7 @@ export default class CreateOperation extends Operation {
           }
         })
       } else {
-          throw error
+        throw error
       }
     }
 
