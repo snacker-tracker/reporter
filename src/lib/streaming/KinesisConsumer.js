@@ -37,6 +37,10 @@ class KinesisConsumer {
   }
 
   async start() {
+    if(Object.keys(this.handlers).length == 0) {
+      throw new Error('NoHandlersDefined')
+    }
+
     for await (const record of this.iterator.records()) {
       let data
       try {
@@ -81,6 +85,7 @@ class KinesisConsumer {
 
     logger.setContext('event', event.event)
     logger.setContext('event_id', event.id)
+    logger.setContext('component', 'kinesis-consumer')
 
     if(!this.handlers[event.event]) {
       logger.info('event has no handler')

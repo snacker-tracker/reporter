@@ -1,5 +1,5 @@
 class KinesisIterator {
-  constructor(client, stream, type, config) {
+  constructor(client, stream, type, config, services = {}) {
     this.client = client
     this.stream = stream
     this.type = type
@@ -8,6 +8,7 @@ class KinesisIterator {
       limit: 10,
       ...config
     }
+    this.services = services
     this.shardIterators = {} // Map<shardId, shardIterator>
   }
 
@@ -57,18 +58,26 @@ class KinesisIterator {
   }
 
   async * records() {
+    this.services.logger.setContext('stream', this.stream)
     for await (const shardId of this.shards()) {
+      this.services.logger.info('got a list of shards')
+      this.services.logger.setContext('shardId', shardId)
       let lastSeenSequenceNumber
       for await ( const iterator of this.iterators(shardId) ) {
         try {
           const {
             Records,
-            NextShardIterator
+            NextShardIterator,
+            MillisBehindLatest
           } = await this._records(iterator, this.config.limit)
 
+          if(Records.length > 0) {
+            this.services.logger.debug('got records - ' + (MillisBehindLatest / 1000) + 'ms behind latest')
+          }
 
           for(const record of Records) {
             lastSeenSequenceNumber = record.SequenceNumber
+            this.services.logger.debug('yielding record')
             yield record
           }
 

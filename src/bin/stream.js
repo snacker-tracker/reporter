@@ -1,44 +1,45 @@
-import AWS from 'aws-sdk'
-import axios from 'axios'
-
 import config from '../config/'
 
-import logger from '../services/logger'
+import stream from '../services/stream'
+import streamhandler from '../services/streamhandlers'
 
 import express from 'express'
 const server = express()
 
-import prom from 'prom-client'
-import metrics from '../services/metrics'
-import { TimeSpentProxy } from '../lib/metrics/Proxies'
 
 import KinesisIterator from '../lib/streaming/KinesisIterator'
 import KinesisConsumer from '../lib/streaming/KinesisConsumer'
 
-import TokenProvider from '../lib/TokenProvider'
-import InfoStores from '../lib/ProductInfoStores'
 import PopulateProductDataFromInternet from '../handlers/stream/PopulateProductDataFromInternet'
 
-const register = prom.register
-server.get('/metrics', (req, res) => {
-  res.set('Content-Type', register.contentType)
-  res.end(register.metrics())
+const streamDependencies = stream(config, {})()
+
+const streamHandlersDependencyProvider = streamhandler(config, {
+  prometheus: streamDependencies.prometheus,
+  logger: streamDependencies.logger
 })
 
-
-register.registerMetric(metrics.other.product_info_store_time_spent)
+server.get('/metrics', (req, res) => {
+  res.set('Content-Type', streamDependencies.prometheus.register.contentType)
+  res.end(streamDependencies.prometheus.register.metrics())
+})
 
 server.listen(config.port)
 
-let kinesis = new AWS.Kinesis(config.kinesis)
-
 let iterator = new KinesisIterator(
-  kinesis,
-  config.kinesis.stream_name,
-  config.kinesis.iterator_type,
-  config.kinesis
-)
+  streamDependencies.kinesis,
+  streamDependencies.config.kinesis.stream_name,
+  streamDependencies.config.kinesis.iterator_type,
+  streamDependencies.config.kinesis,
+  {
+    logger: (() => {
+      const logger = new streamDependencies.logger.constructor()
+      logger.setContext('component', 'kinesis-iterator')
 
+      return logger
+    })()
+  }
+)
 
 const eventHandlerMapping = {
   ScanCreated: [
@@ -46,50 +47,8 @@ const eventHandlerMapping = {
   ]
 }
 
-const tokenProvider = new TokenProvider(
-  {
-    issuer: 'https://' + config.oauth.issuer,
-    client_id: config.oauth.client_id,
-    client_secret: config.oauth.client_secret,
-    audience: config.oauth.audience,
-    endpoints: {
-      token: '/oauth/token'
-    }
-  }, {
-    axios
-  }
-)
-
-const dependencies = (event, handler) => {
-  const log = new logger.constructor(logger.instance)
-
-  log.setContext('event', event.event)
-  log.setContext('event_id', event.id)
-  log.setContext('handler', handler.name)
-
-  const bigc = new InfoStores.BigCInfoStore()
-  const upcdb = new InfoStores.UPCItemDBInfoStore()
-  const off = new InfoStores.OpenFoodFactsInfoStore()
-  const snacker = new InfoStores.SnackerTrackerInfoStore(config.reporter_base_url, {
-    axios, tokenProvider
-  })
-  const tops = new InfoStores.TopsCoThInfoStore()
-
-
-  return {
-    logger: log,
-    productInfoStores: {
-      bigc: new TimeSpentProxy(bigc, metrics.other.product_info_store_time_spent),
-      upcdb: new TimeSpentProxy(upcdb, metrics.other.product_info_store_time_spent),
-      off: new TimeSpentProxy(off, metrics.other.product_info_store_time_spent),
-      snacker: new TimeSpentProxy(snacker, metrics.other.product_info_store_time_spent),
-      tops: new TimeSpentProxy(tops, metrics.other.product_info_store_time_spent)
-    }
-  }
-}
-
-let consumer = new KinesisConsumer(iterator, { logger: logger })
+let consumer = new KinesisConsumer(iterator, { logger: streamDependencies.logger })
 
 consumer.setHandlers(eventHandlerMapping)
-consumer.setHandlerDependencies(dependencies)
+consumer.setHandlerDependencies(streamHandlersDependencyProvider)
 consumer.start()
