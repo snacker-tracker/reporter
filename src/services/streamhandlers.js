@@ -6,7 +6,7 @@ import TokenProvider from '../lib/TokenProvider'
 import InfoStores from '../lib/ProductInfoStores'
 import { TimeSpentProxy } from '../lib/metrics/Proxies'
 
-import metrics from '../services/metrics'
+import metrics from './metrics'
 
 const streamhandlers = (config, services) => {
 
@@ -26,6 +26,7 @@ const streamhandlers = (config, services) => {
     }
   )
 
+  const store_time_spent = metrics.other.product_info_store_time_spent
 
   const dependencies = (event, handler) => {
     const log = new services.logger.constructor()
@@ -34,27 +35,23 @@ const streamhandlers = (config, services) => {
     log.setContext('event_id', event.id)
     log.setContext('handler', handler.name)
 
-    const bigc = new InfoStores.BigCInfoStore()
-    const upcdb = new InfoStores.UPCItemDBInfoStore()
-    const off = new InfoStores.OpenFoodFactsInfoStore()
-    const snacker = new InfoStores.SnackerTrackerInfoStore(config.reporter_base_url, {
-      axios, tokenProvider
-    })
-    const tops = new InfoStores.TopsCoThInfoStore()
-
+    const stores = {
+      bigc: new InfoStores.BigCInfoStore(),
+      upcdb: new InfoStores.UPCItemDBInfoStore(),
+      tops: new InfoStores.TopsCoThInfoStore(),
+      off: new InfoStores.OpenFoodFactsInfoStore(),
+      snacker: new InfoStores.SnackerTrackerInfoStore(config.reporter_base_url, {
+        axios, tokenProvider
+      })
+    }
 
     return {
       logger: log,
-      productInfoStores: {
-        bigc: new TimeSpentProxy(bigc, metrics.other.product_info_store_time_spent),
-        upcdb: new TimeSpentProxy(upcdb, metrics.other.product_info_store_time_spent),
-        off: new TimeSpentProxy(off, metrics.other.product_info_store_time_spent),
-        snacker: new TimeSpentProxy(snacker, metrics.other.product_info_store_time_spent),
-        tops: new TimeSpentProxy(tops, metrics.other.product_info_store_time_spent)
-      }
+      productInfoStores: stores
     }
-
   }
+
+  return dependencies
 }
 
 export default streamhandlers
