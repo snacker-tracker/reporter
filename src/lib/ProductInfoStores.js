@@ -237,7 +237,7 @@ class UPCItemDBInfoStore {
 
       return false
     } catch(error) {
-      console.log('Failed to query the UPC database')
+      //console.log('Failed to query the UPC database')
       return false
     }
   }
