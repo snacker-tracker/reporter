@@ -118,14 +118,7 @@ pipelines:
       only_on_changes: yes
     materials:
       git:
-        plugin_configuration:
-          id: git.fb
-          version: 1.3.5
-        options:
-          url: https://github.com/snacker-tracker/reporter.git
-          branchwhitelist: master,test-*
-        destination: ./
-
+        type: configrepo
     environment_variables:
       # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
       IMAGE: snacker-tracker/reporter
@@ -237,13 +230,7 @@ pipelines:
         pipeline: snacker-tracker-reporter-test
         stage: dummy-stage
       git:
-        plugin_configuration:
-          id: git.fb
-          version: 1.3.5
-        options:
-          url: https://github.com/snacker-tracker/reporter.git
-          branchwhitelist: master,test-*
-        destination: ./
+        type: configrepo
     environment_variables:
       # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
       IMAGE: snacker-tracker/reporter
@@ -324,13 +311,7 @@ pipelines:
     lock_behavior: unlockWhenFinished
     materials:
       git:
-        plugin_configuration:
-          id: git.fb
-          version: 1.3.5
-        options:
-          url: https://github.com/snacker-tracker/reporter.git
-          branchwhitelist: master,test-*
-        destination: ./
+        type: configrepo
       upstream:
         pipeline: snacker-tracker-reporter-deploy-qa
         stage: deploy
@@ -430,13 +411,7 @@ pipelines:
     lock_behavior: unlockWhenFinished
     materials:
       git:
-        plugin_configuration:
-          id: git.fb
-          version: 1.3.5
-        options:
-          url: https://github.com/snacker-tracker/reporter.git
-          branchwhitelist: master,test-*
-        destination: ./
+        type: configrepo
       upstream:
         pipeline: snacker-tracker-reporter-deploy-prod
         stage: deploy
