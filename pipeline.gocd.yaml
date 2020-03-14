@@ -314,7 +314,7 @@ pipelines:
             - script: |
                 set -e
 
-                export GIT_BRANCH="${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL_CURRENT_BRANCH}"
+                export GIT_BRANCH="${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_CURRENT_BRANCH}"
 
                 if [ "$GIT_BRANCH" != "master" ]; then
                   curl "${GO_SERVER_URL}/api/stages/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/cancel" \
