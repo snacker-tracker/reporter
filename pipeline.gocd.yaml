@@ -236,8 +236,6 @@ pipelines:
       upstream:
         pipeline: snacker-tracker-reporter-test
         stage: dummy-stage
-      git:
-        type: configrepo
     environment_variables:
       # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
       IMAGE: snacker-tracker/reporter
@@ -317,8 +315,6 @@ pipelines:
     label_template: "${upstream}"
     lock_behavior: unlockWhenFinished
     materials:
-      git:
-        type: configrepo
       upstream:
         pipeline: snacker-tracker-reporter-deploy-qa
         stage: deploy
@@ -417,8 +413,6 @@ pipelines:
     label_template: "${upstream}"
     lock_behavior: unlockWhenFinished
     materials:
-      git:
-        type: configrepo
       upstream:
         pipeline: snacker-tracker-reporter-deploy-prod
         stage: deploy
