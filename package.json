@@ -42,7 +42,6 @@
     "yaml": "^1.7.2"
   },
   "devDependencies": {
-    "nodemon": "^1.19.4",
     "@babel/cli": "^7.6.4",
     "@babel/core": "^7.6.4",
     "@babel/node": "^7.6.3",
@@ -55,6 +54,7 @@
     "cucumber": "^6.0.3",
     "eslint": "^6.6.0",
     "jest": "^24.9.0",
+    "nodemon": "^1.19.4",
     "swagger-cli": "^2.3.3"
   }
 }
