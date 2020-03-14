@@ -116,15 +116,7 @@ pipelines:
     timer:
       spec: "* * * * * ? */15"
       only_on_changes: yes
-    materials:
-      git:
-        plugin_configuration:
-          id: git.fb
-          version: 1.3.5
-        options:
-          url: https://github.com/snacker-tracker/reporter.git
-          branchwhitelist: master,test-*
-        destination: ./
+    materials: {}
 
     environment_variables:
       # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
