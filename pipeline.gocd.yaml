@@ -19,6 +19,8 @@ common:
       script: |
         set -e
 
+        echo -- hello world
+
         docker pull \
           ${REGISTRY}/${IMAGE}:${GO_PIPELINE_LABEL}
 
