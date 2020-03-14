@@ -111,13 +111,13 @@ common:
 pipelines:
   snacker-tracker-reporter-test:
     group: snacker-tracker-reporter
-    label_template: "${git[:8]}"
+    label_template: "${git-snacker-tracker-reporter[:8]}"
     lock_behavior: unlockWhenFinished
     timer:
       spec: "* * * * * ? */15"
       only_on_changes: yes
     materials:
-      git:
+      git-snacker-tracker-reporter:
         plugin_configuration:
           id: git.fb
           version: 1.3.5
@@ -236,6 +236,15 @@ pipelines:
       upstream:
         pipeline: snacker-tracker-reporter-test
         stage: dummy-stage
+      git-snacker-tracker-reporter:
+        plugin_configuration:
+          id: git.fb
+          version: 1.3.5
+        options:
+          url: https://github.com/snacker-tracker/reporter.git
+          branchwhitelist: master,test-*
+        destination: ./
+
     environment_variables:
       # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
       IMAGE: snacker-tracker/reporter
@@ -318,6 +327,15 @@ pipelines:
       upstream:
         pipeline: snacker-tracker-reporter-deploy-qa
         stage: deploy
+      git-snacker-tracker-reporter:
+        plugin_configuration:
+          id: git.fb
+          version: 1.3.5
+        options:
+          url: https://github.com/snacker-tracker/reporter.git
+          branchwhitelist: master,test-*
+        destination: ./
+
     environment_variables:
       # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
       IMAGE: snacker-tracker/reporter
@@ -416,6 +434,15 @@ pipelines:
       upstream:
         pipeline: snacker-tracker-reporter-deploy-prod
         stage: deploy
+      git-snacker-tracker-reporter:
+        plugin_configuration:
+          id: git.fb
+          version: 1.3.5
+        options:
+          url: https://github.com/snacker-tracker/reporter.git
+          branchwhitelist: master,test-*
+        destination: ./
+
     environment_variables:
       REGISTRY: "registry.k8s.fscker.org"
       IMAGE: snacker-tracker/reporter
