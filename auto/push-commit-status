@@ -1,0 +1,24 @@
+#/usr/bin/env bash -x
+
+REPO="${1}"
+COMMIT_HASH="${2}"
+
+CONTEXT="${3}"
+STATUS="${4}"
+URL="${5}"
+DESCRIPTION="${6}"
+
+read -r -d '' PAYLOAD <<EOF
+{
+  "state": "${STATUS}",
+  "target_url": "${URL}",
+  "description": "${DESCRIPTION}",
+  "context": "${CONTEXT}"
+}
+EOF
+
+
+echo curl -H "Authorization: token ${GITHUB_AUTOMATION_PASSWORD}" \
+  -H 'Content-Type: application/json' \
+  https://api.github.com/repos/${1}/statuses/${2} \
+  -d "${PAYLOAD}"

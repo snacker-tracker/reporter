@@ -124,6 +124,12 @@ pipelines:
       IMAGE: snacker-tracker/reporter
       CHART_NAME: snacker-tracker-reporter
       PROJECT: snacker-tracker
+      GO_AUTOMATION_USER: automaton
+      GITHUB_AUTOMATION_USER: gocd-service-account
+    secure_variables:
+      GO_AUTOMATION_PASSWORD: "AES:+heX4S6WsUXSqPxj5nNOoQ==:9jXtfK+GoUYDpS7mvGGWmA=="
+      GITHUB_AUTOMATION_PASSWORD: "AES:COGz3KIPEuFOsaCmbTHjlA==:6aivxs5PQyswiBSWgfZ8Q+1MxwKWnV14g5944GDXWMWwWfgBEmCqAX+rvwOnS54q"
+
     stages:
       - tests:
           jobs:
@@ -137,6 +143,10 @@ pipelines:
                       ## Change ownership so that GoCD can clean up after itself
                       docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
                       ./auto/clean-up || true
+
+                      bash auto/push-commit-status \
+                        snacker-tracker/reporter \
+                        ${GO_SCM_GIT_LABEL} "gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}" success "https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/1/${GO_JOB_NAME}" "this is a custom success message"
                     }
 
                     trap finish EXIT
@@ -160,6 +170,11 @@ pipelines:
                     ./auto/lint
                     ./auto/clean-up
 
+                    bash auto/push-commit-status \
+                      snacker-tracker/reporter \
+                      ${GO_SCM_GIT_LABEL} "gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}" success "https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/1/${GO_JOB_NAME}" "this is a custom success message"
+
+
             audit:
               tasks:
                 - script: |
@@ -173,12 +188,38 @@ pipelines:
                       exit 1
                     fi
 
+                    bash auto/push-commit-status \
+                      snacker-tracker/reporter \
+                      ${GO_SCM_GIT_LABEL} "gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}" success "https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/1/${GO_JOB_NAME}" "this is a custom success message"
+
+
             validate-swagger:
               tasks:
                 - script: |
                     set -e
 
                     ./auto/validate-swagger
+
+                    bash auto/push-commit-status \
+                      snacker-tracker/reporter \
+                      ${GO_SCM_GIT_LABEL} "gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}" success "https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/1/${GO_JOB_NAME}" "this is a custom success message"
+
+
+      - dummy-stage:
+          tasks:
+            - script: |
+                set -e
+
+                export GIT_BRANCH="${GO_SCM_GIT_CURRENT_BRANCH}"
+
+                if [ "$GIT_BRANCH" != "master" ]; then
+                  curl "${GO_SERVER_URL}/api/stages/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/cancel" \
+                    -u "${GO_AUTOMATION_USER}:${GO_AUTOMATION_PASSWORD}" \
+                    -H 'Confirm: true' \
+                    -X POST \
+                    -k
+                fi
+
 
   snacker-tracker-reporter-build:
     group: snacker-tracker-reporter
@@ -187,7 +228,7 @@ pipelines:
     materials:
       upstream:
         pipeline: snacker-tracker-reporter-test
-        stage: tests
+        stage: dummy-stage
       git:
         type: configrepo
     environment_variables:
