@@ -143,27 +143,31 @@ pipelines:
             tests:
               tasks:
                 - script: |
-                    ./auto/clean-up
-
+                    ./auto/clean-up || true
+                - script: |
                     function finish {
-                      echo "in GOCD. Kill all containers"
-                      ## Change ownership so that GoCD can clean up after itself
+                      EXIT_CODE=$?
+                      set +e
+
                       docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
+
                       ./auto/clean-up || true
+
+                       [[ $EXIT_CODE = 0 ]] && GH_STATUS="success" || GH_STATUS="failure"
 
                       bash auto/push-commit-status \
                         snacker-tracker/reporter \
-                        ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} "gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}" success "https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/${GO_STAGE_COUNTER}/${GO_JOB_NAME}" "this is a custom success message"
+                        ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                        $GH_STATUS "${GH_STATUS_DESCRIPTION}"
+
+                      exit $EXIT_CODE
                     }
 
                     trap finish EXIT
 
-
                     set -e
 
                     ./auto/yarn test:ci
-
-                    set +e
 
               artifacts:
                 - test:
@@ -172,43 +176,106 @@ pipelines:
             lint:
               tasks:
                 - script: |
+                    ./auto/clean-up || true
+                - script: |
+                    function finish {
+                      EXIT_CODE=$?
+                      set +e
+
+                      docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
+
+                      ./auto/clean-up || true
+
+                       [[ $EXIT_CODE = 0 ]] && GH_STATUS="success" || GH_STATUS="failure"
+
+                      bash auto/push-commit-status \
+                        snacker-tracker/reporter \
+                        ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                        $GH_STATUS "${GH_STATUS_DESCRIPTION}"
+
+                      exit $EXIT_CODE
+                    }
+
+                    trap finish EXIT
+
                     set -e
 
                     ./auto/lint
                     ./auto/clean-up
 
-                    bash auto/push-commit-status \
-                      snacker-tracker/reporter \
-                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} "gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}" success "https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/${GO_STAGE_COUNTER}/${GO_JOB_NAME}" "this is a custom success message"
-
             audit:
               tasks:
                 - script: |
-                    ##AUDIT_RESULT="$(./auto/yarn audit)"
-                    AUDIT_RESULT="$(docker run -v `pwd`:/app/ -w /app/ node:10 yarn audit)"
+                    ./auto/clean-up || true
+                - script: |
+                    function finish {
+                      EXIT_CODE=$?
+                      set +e
+
+                      docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
+
+                      ./auto/clean-up || true
+
+                       [[ $EXIT_CODE = 0 ]] && GH_STATUS="success" || GH_STATUS="failure"
+
+                      bash auto/push-commit-status \
+                        snacker-tracker/reporter \
+                        ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                        $GH_STATUS "${GH_STATUS_DESCRIPTION}"
+
+                      exit $EXIT_CODE
+                    }
+
+                    trap finish EXIT
+
+                    AUDIT_RESULT="$(docker run -v `pwd`:/app/ -w /app/ node:10 yarn audit --json --groups dependencies --level moderate)"
+                    export EXIT_CODE=$?
+
                     set -e
 
-                    echo "$AUDIT_RESULT"
+                    echo "$AUDIT_RESULT" | jq .
 
-                    if [ "$(echo $AUDIT_RESULT | grep High | wc -l)" -gt 0 ]; then
-                      exit 1
-                    fi
+                    DEPENDENCIES="$(echo \"$AUDIT_RESULT\" | jq .data.dependencies)"
+                    LOW="$(echo \"$AUDIT_RESULT\" | jq .data.vulnerabilities.low)"
+                    MODERATE="$(echo \"$AUDIT_RESULT\" | jq .data.vulnerabilities.moderate)"
+                    HIGH="$(echo \"$AUDIT_RESULT\" | jq .data.vulnerabilities.high)"
+                    CRITICAL="$(echo \"$AUDIT_RESULT\" | jq .data.vulnerabilities.critical)"
 
-                    bash auto/push-commit-status \
-                      snacker-tracker/reporter \
-                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} "gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}" success "https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/${GO_STAGE_COUNTER}/${GO_JOB_NAME}" "this is a custom success message"
+                    export GH_STATUS_DESCRIPTION="$DEPENDENCIES dependencies - Low=$LOW Moderate=$MODERATE High=$HIGH Critical=$CRITICAL"
+
+                    exit $EXIT_CODE
 
             validate-swagger:
               tasks:
                 - script: |
-                    set -e
+                    ./auto/clean-up || true
+                - script: |
+                    function finish {
+                      EXIT_CODE=$?
+                      set +e
+
+                      docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
+
+                      ./auto/clean-up || true
+
+                       [[ $EXIT_CODE = 0 ]] && GH_STATUS="success" || GH_STATUS="failure"
+
+                      bash auto/push-commit-status \
+                        snacker-tracker/reporter \
+                        ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                        $GH_STATUS "${GH_STATUS_DESCRIPTION}"
+
+                      exit $EXIT_CODE
+                    }
+
+                    trap finish EXIT
 
                     ./auto/validate-swagger
+                    EXIT_CODE=$?
 
-                    bash auto/push-commit-status \
-                      snacker-tracker/reporter \
-                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} "gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}" success "https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/1/${GO_JOB_NAME}" "this is a custom success message"
+                    [[ $EXIT_CODE = 0 ]] && GH_STATUS_DESCRIPTION="Swager is VALID" || GH_STATUS_DESCRIPTION="Swagger is INVALID"
 
+                    exit $EXIT_CODE
 
       - dummy-stage:
           tasks:
