@@ -235,13 +235,15 @@ pipelines:
 
                     echo "$AUDIT_RESULT" | jq .
 
-                    DEPENDENCIES="$(echo \"$AUDIT_RESULT\" | jq .data.dependencies)"
-                    LOW="$(echo \"$AUDIT_RESULT\" | jq .data.vulnerabilities.low)"
-                    MODERATE="$(echo \"$AUDIT_RESULT\" | jq .data.vulnerabilities.moderate)"
-                    HIGH="$(echo \"$AUDIT_RESULT\" | jq .data.vulnerabilities.high)"
-                    CRITICAL="$(echo \"$AUDIT_RESULT\" | jq .data.vulnerabilities.critical)"
+                    DEPENDENCIES="$(echo "$AUDIT_RESULT" | jq .data.dependencies)"
+                    LOW="$(echo "$AUDIT_RESULT" | jq .data.vulnerabilities.low)"
+                    MODERATE="$(echo "$AUDIT_RESULT" | jq .data.vulnerabilities.moderate)"
+                    HIGH="$(echo "$AUDIT_RESULT" | jq .data.vulnerabilities.high)"
+                    CRITICAL="$(echo "$AUDIT_RESULT" | jq .data.vulnerabilities.critical)"
 
                     export GH_STATUS_DESCRIPTION="$DEPENDENCIES dependencies - Low=$LOW Moderate=$MODERATE High=$HIGH Critical=$CRITICAL"
+
+                    echo "$GH_STATUS_DESCRIPTION"
 
                     exit $EXIT_CODE
 
