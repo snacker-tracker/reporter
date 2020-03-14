@@ -480,6 +480,8 @@ pipelines:
           jobs:
             migrate:
               tasks:
+                - script: |
+                    find ./
                 - *migrate
 
       - sync-pictures:
