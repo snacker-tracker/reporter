@@ -111,7 +111,7 @@ common:
 pipelines:
   snacker-tracker-reporter-test:
     group: snacker-tracker-reporter
-    label_template: "${git[:8]}"
+    label_template: "${another_git[:8]}"
     lock_behavior: unlockWhenFinished
     timer:
       spec: "* * * * * ? */15"
