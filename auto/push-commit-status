@@ -1,0 +1,22 @@
+#/usr/bin/env bash -x
+REPO="${1}"
+COMMIT_HASH="${2}"
+STATUS="${3}"
+DESCRIPTION="${4:-\"No description provided\"}"
+
+CONTEXT="gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}"
+URL="https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/${GO_STAGE_COUNTER}/${GO_JOB_NAME}"
+
+read -r -d '' PAYLOAD <<EOF
+{
+  "state": "${STATUS}",
+  "target_url": "${URL}",
+  "description": "${DESCRIPTION}",
+  "context": "${CONTEXT}"
+}
+EOF
+
+curl -H "Authorization: token ${GITHUB_AUTOMATION_PASSWORD}" \
+  -H 'Content-Type: application/json' \
+  https://api.github.com/repos/${REPO}/statuses/${COMMIT_HASH} \
+  -d "${PAYLOAD}"

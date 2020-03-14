@@ -111,42 +111,73 @@ common:
 pipelines:
   snacker-tracker-reporter-test:
     group: snacker-tracker-reporter
-    label_template: "${git[:8]}"
+    label_template: "${git-snacker-tracker-reporter[:8]}"
     lock_behavior: unlockWhenFinished
     timer:
       spec: "* * * * * ? */15"
       only_on_changes: yes
     materials:
-      git:
-        type: configrepo
+      git-snacker-tracker-reporter:
+        plugin_configuration:
+          id: git.fb
+          version: 1.3.5
+        options:
+          url: https://github.com/snacker-tracker/reporter.git
+          branchwhitelist: master,test-*
+        destination: ./
+
     environment_variables:
       # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
       IMAGE: snacker-tracker/reporter
       CHART_NAME: snacker-tracker-reporter
       PROJECT: snacker-tracker
+      GO_AUTOMATION_USER: automaton
+      GITHUB_AUTOMATION_USER: gocd-service-account
+    secure_variables:
+      GO_AUTOMATION_PASSWORD: "AES:+heX4S6WsUXSqPxj5nNOoQ==:9jXtfK+GoUYDpS7mvGGWmA=="
+      GITHUB_AUTOMATION_PASSWORD: "AES:COGz3KIPEuFOsaCmbTHjlA==:6aivxs5PQyswiBSWgfZ8Q+1MxwKWnV14g5944GDXWMWwWfgBEmCqAX+rvwOnS54q"
+
     stages:
       - tests:
           jobs:
             tests:
               tasks:
                 - script: |
-                    ./auto/clean-up
+                    bash auto/push-commit-status \
+                      snacker-tracker/reporter \
+                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                      "pending" "Build is running"
 
+                - script: |
+                    ./auto/clean-up || true
+                - script: |
                     function finish {
-                      echo "in GOCD. Kill all containers"
-                      ## Change ownership so that GoCD can clean up after itself
+                      EXIT_CODE=$?
+                      set +e
+
                       docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
+
                       ./auto/clean-up || true
+
+                       [[ $EXIT_CODE = 0 ]] && GH_STATUS="success" || GH_STATUS="failure"
+
+                      bash auto/push-commit-status \
+                        snacker-tracker/reporter \
+                        ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                        $GH_STATUS "${GH_STATUS_DESCRIPTION}"
+
+                      exit $EXIT_CODE
                     }
 
                     trap finish EXIT
 
-
-                    set -e
-
                     ./auto/yarn test:ci
+                    EXIT_CODE=$?
 
-                    set +e
+                    [[ $EXIT_CODE = 0 ]] && GH_STATUS_DESCRIPTION="Tests passed" || GH_STATUS_DESCRIPTION="Tests failed"
+
+                    exit $EXIT_CODE
+
 
               artifacts:
                 - test:
@@ -155,30 +186,142 @@ pipelines:
             lint:
               tasks:
                 - script: |
-                    set -e
+                    bash auto/push-commit-status \
+                      snacker-tracker/reporter \
+                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                      "pending" "Build is running"
+
+                - script: |
+                    ./auto/clean-up || true
+                - script: |
+                    function finish {
+                      EXIT_CODE=$?
+                      set +e
+
+                      docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
+
+                      ./auto/clean-up || true
+
+                       [[ $EXIT_CODE = 0 ]] && GH_STATUS="success" || GH_STATUS="failure"
+
+                      bash auto/push-commit-status \
+                        snacker-tracker/reporter \
+                        ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                        $GH_STATUS "${GH_STATUS_DESCRIPTION}"
+
+                      exit $EXIT_CODE
+                    }
+
+                    trap finish EXIT
 
                     ./auto/lint
-                    ./auto/clean-up
+                    EXIT_CODE=$?
+
+                    [[ $EXIT_CODE = 0 ]] && GH_STATUS_DESCRIPTION="No linting errors" || GH_STATUS_DESCRIPTION="There are linting errors"
+                    exit $EXIT_CODE
 
             audit:
               tasks:
                 - script: |
-                    ##AUDIT_RESULT="$(./auto/yarn audit)"
-                    AUDIT_RESULT="$(docker run -v `pwd`:/app/ -w /app/ node:10 yarn audit)"
+                    bash auto/push-commit-status \
+                      snacker-tracker/reporter \
+                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                      "pending" "Build is running"
+
+                - script: |
+                    ./auto/clean-up || true
+                - script: |
+                    function finish {
+                      EXIT_CODE=$?
+                      set +e
+
+                      docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
+
+                      ./auto/clean-up || true
+
+                       [[ $EXIT_CODE = 0 ]] && GH_STATUS="success" || GH_STATUS="failure"
+
+                      bash auto/push-commit-status \
+                        snacker-tracker/reporter \
+                        ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                        $GH_STATUS "${GH_STATUS_DESCRIPTION}"
+
+                      exit $EXIT_CODE
+                    }
+
+                    trap finish EXIT
+
+                    AUDIT_RESULT="$(docker run -v `pwd`:/app/ -w /app/ node:10 yarn audit --json --groups dependencies --level moderate)"
+                    export EXIT_CODE=$?
+
                     set -e
 
-                    echo "$AUDIT_RESULT"
+                    echo "$AUDIT_RESULT" | jq .
 
-                    if [ "$(echo $AUDIT_RESULT | grep High | wc -l)" -gt 0 ]; then
-                      exit 1
-                    fi
+                    DEPENDENCIES="$(echo "$AUDIT_RESULT" | jq .data.dependencies)"
+                    LOW="$(echo "$AUDIT_RESULT" | jq .data.vulnerabilities.low)"
+                    MODERATE="$(echo "$AUDIT_RESULT" | jq .data.vulnerabilities.moderate)"
+                    HIGH="$(echo "$AUDIT_RESULT" | jq .data.vulnerabilities.high)"
+                    CRITICAL="$(echo "$AUDIT_RESULT" | jq .data.vulnerabilities.critical)"
+
+                    export GH_STATUS_DESCRIPTION="$DEPENDENCIES dependencies - Low=$LOW Moderate=$MODERATE High=$HIGH Critical=$CRITICAL"
+
+                    echo "$GH_STATUS_DESCRIPTION"
+
+                    exit $EXIT_CODE
 
             validate-swagger:
               tasks:
                 - script: |
-                    set -e
+                    bash auto/push-commit-status \
+                      snacker-tracker/reporter \
+                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                      "pending" "Build is running"
+                - script: |
+                    ./auto/clean-up || true
+                - script: |
+                    function finish {
+                      EXIT_CODE=$?
+                      set +e
+
+                      docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
+
+                      ./auto/clean-up || true
+
+                       [[ $EXIT_CODE = 0 ]] && GH_STATUS="success" || GH_STATUS="failure"
+
+                      bash auto/push-commit-status \
+                        snacker-tracker/reporter \
+                        ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                        $GH_STATUS "${GH_STATUS_DESCRIPTION}"
+
+                      exit $EXIT_CODE
+                    }
+
+                    trap finish EXIT
 
                     ./auto/validate-swagger
+                    EXIT_CODE=$?
+
+                    [[ $EXIT_CODE = 0 ]] && GH_STATUS_DESCRIPTION="Swager is VALID" || GH_STATUS_DESCRIPTION="Swagger is INVALID"
+
+                    exit $EXIT_CODE
+
+      - dummy-stage:
+          tasks:
+            - script: |
+                set -e
+
+                export GIT_BRANCH="${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL_CURRENT_BRANCH}"
+
+                if [ "$GIT_BRANCH" != "master" ]; then
+                  curl "${GO_SERVER_URL}/api/stages/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/cancel" \
+                    -u "${GO_AUTOMATION_USER}:${GO_AUTOMATION_PASSWORD}" \
+                    -H 'Confirm: true' \
+                    -X POST \
+                    -k
+                fi
+
 
   snacker-tracker-reporter-build:
     group: snacker-tracker-reporter
@@ -187,9 +330,16 @@ pipelines:
     materials:
       upstream:
         pipeline: snacker-tracker-reporter-test
-        stage: tests
-      git:
-        type: configrepo
+        stage: dummy-stage
+      git-snacker-tracker-reporter:
+        plugin_configuration:
+          id: git.fb
+          version: 1.3.5
+        options:
+          url: https://github.com/snacker-tracker/reporter.git
+          branchwhitelist: master,test-*
+        destination: ./
+
     environment_variables:
       # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
       IMAGE: snacker-tracker/reporter
@@ -269,11 +419,18 @@ pipelines:
     label_template: "${upstream}"
     lock_behavior: unlockWhenFinished
     materials:
-      git:
-        type: configrepo
       upstream:
         pipeline: snacker-tracker-reporter-deploy-qa
         stage: deploy
+      git-snacker-tracker-reporter:
+        plugin_configuration:
+          id: git.fb
+          version: 1.3.5
+        options:
+          url: https://github.com/snacker-tracker/reporter.git
+          branchwhitelist: master,test-*
+        destination: ./
+
     environment_variables:
       # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
       IMAGE: snacker-tracker/reporter
@@ -369,11 +526,18 @@ pipelines:
     label_template: "${upstream}"
     lock_behavior: unlockWhenFinished
     materials:
-      git:
-        type: configrepo
       upstream:
         pipeline: snacker-tracker-reporter-deploy-prod
         stage: deploy
+      git-snacker-tracker-reporter:
+        plugin_configuration:
+          id: git.fb
+          version: 1.3.5
+        options:
+          url: https://github.com/snacker-tracker/reporter.git
+          branchwhitelist: master,test-*
+        destination: ./
+
     environment_variables:
       REGISTRY: "registry.k8s.fscker.org"
       IMAGE: snacker-tracker/reporter
