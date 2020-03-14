@@ -237,7 +237,13 @@ pipelines:
         pipeline: snacker-tracker-reporter-test
         stage: dummy-stage
       git:
-        type: configrepo
+        plugin_configuration:
+          id: git.fb
+          version: 1.3.5
+        options:
+          url: https://github.com/snacker-tracker/reporter.git
+          branchwhitelist: master,test-*
+        destination: ./
     environment_variables:
       # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
       IMAGE: snacker-tracker/reporter
