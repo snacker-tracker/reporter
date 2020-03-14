@@ -324,7 +324,13 @@ pipelines:
     lock_behavior: unlockWhenFinished
     materials:
       git:
-        type: configrepo
+        plugin_configuration:
+          id: git.fb
+          version: 1.3.5
+        options:
+          url: https://github.com/snacker-tracker/reporter.git
+          branchwhitelist: master,test-*
+        destination: ./
       upstream:
         pipeline: snacker-tracker-reporter-deploy-qa
         stage: deploy
@@ -424,7 +430,13 @@ pipelines:
     lock_behavior: unlockWhenFinished
     materials:
       git:
-        type: configrepo
+        plugin_configuration:
+          id: git.fb
+          version: 1.3.5
+        options:
+          url: https://github.com/snacker-tracker/reporter.git
+          branchwhitelist: master,test-*
+        destination: ./
       upstream:
         pipeline: snacker-tracker-reporter-deploy-prod
         stage: deploy
