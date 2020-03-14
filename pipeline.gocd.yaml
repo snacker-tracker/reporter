@@ -172,9 +172,9 @@ pipelines:
                     trap finish EXIT
 
                     ./auto/yarn test:ci
-                    EXIT_CODE=?$
+                    EXIT_CODE=$?
 
-                    [[ $EXIT_CODE = 0 ]] && GH_STATUS_DESCRIPTION="No linting errors" || GH_STATUS_DESCRIPTION="There are linting errors"
+                    [[ $EXIT_CODE = 0 ]] && GH_STATUS_DESCRIPTION="Tests passed" || GH_STATUS_DESCRIPTION="Tests failed"
 
                     exit $EXIT_CODE
 
@@ -215,7 +215,7 @@ pipelines:
                     trap finish EXIT
 
                     ./auto/lint
-                    EXIT_CODE=?$
+                    EXIT_CODE=$?
 
                     [[ $EXIT_CODE = 0 ]] && GH_STATUS_DESCRIPTION="No linting errors" || GH_STATUS_DESCRIPTION="There are linting errors"
                     exit $EXIT_CODE
