@@ -153,7 +153,7 @@ pipelines:
 
                       bash auto/push-commit-status \
                         snacker-tracker/reporter \
-                        ${GO_SCM_GIT_LABEL} "gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}" success "https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/1/${GO_JOB_NAME}" "this is a custom success message"
+                        ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} "gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}" success "https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/${GO_STAGE_COUNTER}/${GO_JOB_NAME}" "this is a custom success message"
                     }
 
                     trap finish EXIT
@@ -179,8 +179,7 @@ pipelines:
 
                     bash auto/push-commit-status \
                       snacker-tracker/reporter \
-                      ${GO_SCM_GIT_LABEL} "gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}" success "https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/1/${GO_JOB_NAME}" "this is a custom success message"
-
+                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} "gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}" success "https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/${GO_STAGE_COUNTER}/${GO_JOB_NAME}" "this is a custom success message"
 
             audit:
               tasks:
@@ -197,8 +196,7 @@ pipelines:
 
                     bash auto/push-commit-status \
                       snacker-tracker/reporter \
-                      ${GO_SCM_GIT_LABEL} "gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}" success "https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/1/${GO_JOB_NAME}" "this is a custom success message"
-
+                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} "gocd/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/${GO_JOB_NAME}" success "https://gocd.k8s.fscker.org/go/tab/build/detail/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/${GO_STAGE_COUNTER}/${GO_JOB_NAME}" "this is a custom success message"
 
             validate-swagger:
               tasks:

@@ -17,8 +17,7 @@ read -r -d '' PAYLOAD <<EOF
 }
 EOF
 
-
 curl -H "Authorization: token ${GITHUB_AUTOMATION_PASSWORD}" \
   -H 'Content-Type: application/json' \
-  https://api.github.com/repos/${1}/statuses/${2} \
+  https://api.github.com/repos/${REPO}/statuses/${COMMIT_HASH} \
   -d "${PAYLOAD}"
