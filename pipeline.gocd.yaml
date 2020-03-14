@@ -117,9 +117,6 @@ pipelines:
       spec: "* * * * * ? */15"
       only_on_changes: yes
     materials:
-      git:
-        type: configrepo
-
       another_git:
         plugin_configuration:
           id: git.fb
