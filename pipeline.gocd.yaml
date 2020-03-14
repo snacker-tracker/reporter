@@ -143,6 +143,12 @@ pipelines:
             tests:
               tasks:
                 - script: |
+                    bash auto/push-commit-status \
+                      snacker-tracker/reporter \
+                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                      "pending" "Build is running"
+
+                - script: |
                     ./auto/clean-up || true
                 - script: |
                     function finish {
@@ -180,6 +186,12 @@ pipelines:
             lint:
               tasks:
                 - script: |
+                    bash auto/push-commit-status \
+                      snacker-tracker/reporter \
+                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                      "pending" "Build is running"
+
+                - script: |
                     ./auto/clean-up || true
                 - script: |
                     function finish {
@@ -210,6 +222,12 @@ pipelines:
 
             audit:
               tasks:
+                - script: |
+                    bash auto/push-commit-status \
+                      snacker-tracker/reporter \
+                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                      "pending" "Build is running"
+
                 - script: |
                     ./auto/clean-up || true
                 - script: |
@@ -254,6 +272,11 @@ pipelines:
 
             validate-swagger:
               tasks:
+                - script: |
+                    bash auto/push-commit-status \
+                      snacker-tracker/reporter \
+                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                      "pending" "Build is running"
                 - script: |
                     ./auto/clean-up || true
                 - script: |
