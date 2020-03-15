@@ -66,6 +66,8 @@ class Operation {
         error: error.toString()
       })
 
+      console.log(error)
+
       return new HTTPResponse({
         status: 500,
         body: { message: 'Unhandled error while executing the request' }
