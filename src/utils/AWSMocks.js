@@ -18,7 +18,7 @@ class AWSMock {
       return response('reject', result)
     }
 
-    const once = (type, result) => {
+    const once = (type) => {
       return function(result) {
         this.mockReturnValueOnce(type(result))
       }
@@ -50,7 +50,7 @@ class Kinesis {
 }
 
 class S3 {
-  listBucketes = AWSMock.mock()
+  listBuckets = AWSMock.mock()
   listObject = AWSMock.mock()
   getObject = AWSMock.mock()
   putObject = AWSMock.mock()
