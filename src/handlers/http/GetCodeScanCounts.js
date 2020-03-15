@@ -16,6 +16,26 @@ class GetCodeScanCounts extends GetTimeseries {
     }
   }
 
+  periodSpecifics(period) {
+    return {
+      hourly: {
+        period: 'hour',
+        select: knex.raw('extract(hour from "scanned_at") as hour'),
+        groupBy: 'extract(hour from "scanned_at")'
+      },
+      weekdaily: {
+        period: 'weekday',
+        select: knex.raw('extract(isodow from "scanned_at") as weekday'),
+        groupBy: 'extract(isodow from "scanned_at")'
+      },
+      daily: {
+        period: 'date',
+        select: knex.raw('TO_CHAR("scanned_at" :: DATE, \'yyyy-mm-dd\') as date'),
+        groupBy: 'TO_CHAR("scanned_at" :: DATE, \'yyyy-mm-dd\')'
+      }
+    }[period]
+  }
+
   resources() {
     return {
       resources: (async () => {
@@ -27,28 +47,9 @@ class GetCodeScanCounts extends GetTimeseries {
           code: this.args.code
         })
 
-        let select
-        let groupBy
-        let period
-
-        switch(this.args.period) {
-          case 'hourly':
-            period = 'hour'
-            select = knex.raw('extract(hour from "scanned_at") as ' + period)
-            groupBy = 'extract(' + period + ' from "scanned_at")'
-            break
-          case 'weekdaily':
-            period = 'weekday'
-            select = knex.raw('extract(isodow from "scanned_at") as ' + period)
-            groupBy = 'extract(isodow from "scanned_at")'
-            break
-
-          case 'daily':
-            period = 'date'
-            select = knex.raw('TO_CHAR("scanned_at" :: DATE, \'yyyy-mm-dd\') as ' + period)
-            groupBy = 'TO_CHAR("scanned_at" :: DATE, \'yyyy-mm-dd\')'
-            break
-        }
+        let {
+          select, groupBy, period
+        } = this.periodSpecifics(this.args.period)
 
         query.select(select)
         query.groupByRaw(groupBy)
