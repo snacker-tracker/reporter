@@ -4,10 +4,6 @@ import config from '../config/'
 import stream from '../services/stream'
 import streamhandler from '../services/streamhandlers'
 
-import express from 'express'
-const server = express()
-
-
 import KinesisIteratorFake from '../lib/streaming/KinesisIteratorFake'
 import KinesisConsumer from '../lib/streaming/KinesisConsumer'
 
@@ -19,13 +15,6 @@ const streamHandlersDependencyProvider = streamhandler(config, {
   prometheus: streamDependencies.prometheus,
   logger: streamDependencies.logger
 })
-
-server.get('/metrics', (req, res) => {
-  res.set('Content-Type', streamDependencies.prometheus.register.contentType)
-  res.end(streamDependencies.prometheus.register.metrics())
-})
-
-server.listen(config.port)
 
 let iterator = new KinesisIteratorFake()
 
