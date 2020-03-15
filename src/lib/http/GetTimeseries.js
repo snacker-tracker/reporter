@@ -34,73 +34,68 @@ class GetTimeseries extends Operation {
     })
   }
 
-  formatters() {
-    const fillers = {
-      daily(start, end) {
-        start = new Date(start)
-        end = new Date(end)
+  daily(start, end) {
+    start = new Date(start)
+    end = new Date(end)
 
-        const fill = []
+    const fill = []
 
-        for( let starting = start; starting <= end; starting.setTime( starting.getTime() + 1 * 86400000 ) ) {
-          fill.push(new Date(starting))
-        }
+    for( let starting = start; starting <= end; starting.setTime( starting.getTime() + 1 * 86400000 ) ) {
+      fill.push(new Date(starting))
+    }
 
-        return fill
-          .map( date => date.toISOString().split('T')[0])
-          .reduce( ( accumulator, current ) => {
-            accumulator[current] = 0
-            return accumulator
-          }, {})
-      },
+    return fill
+      .map( date => date.toISOString().split('T')[0])
+      .reduce( ( accumulator, current ) => {
+        accumulator[current] = 0
+        return accumulator
+      }, {})
+  }
 
-      hourly() {
-        const fill = {}
+  hourly() {
+    const fill = {}
 
-        for( let hour = 0; hour < 24; hour++) {
-          fill[hour] = 0
-        }
+    for( let hour = 0; hour < 24; hour++) {
+      fill[hour] = 0
+    }
 
-        return fill
-      },
+    return fill
+  }
 
-      weekdaily() {
-        return {
-          0: 0,
-          1: 0,
-          2: 0,
-          3: 0,
-          4: 0,
-          5: 0,
-          6: 0
-        }
-      },
-      weekly(start, end) {
-        start = start.split('-').map(parseInt)
-        end = end.split('-').map(parseInt)
 
-        const weeks = {}
+  weekdaily() {
+    return {
+      0: 0,
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+      6: 0
+    }
+  }
 
-        for(let year = start[0]; year <= end[0]; year++) {
-          let startWeek = 1
-          let endWeek = 52
-          if(year === start[0]) {
-            startWeek = start[1]
-          } else if (year === end[0]) {
-            startWeek = end[1]
-          }
+  weekly(start, end) {
+    start = start.split('-').map(parseInt)
+    end = end.split('-').map(parseInt)
 
-          for(let week = startWeek; week <= endWeek; week++) {
-            weeks[ [year, week].map( period => period.toString() ).join('-') ] = 0
-          }
-        }
+    const weeks = {}
 
-        return weeks
+    for(let year = start[0]; year <= end[0]; year++) {
+      let startWeek = 1
+      let endWeek = 52
+      if(year === start[0]) {
+        startWeek = start[1]
+      } else if (year === end[0]) {
+        startWeek = end[1]
+      }
+
+      for(let week = startWeek; week <= endWeek; week++) {
+        weeks[ [year, week].map( period => period.toString() ).join('-') ] = 0
       }
     }
 
-    return fillers
-
+    return weeks
   }
 
   periodToKey(period) {
@@ -131,7 +126,7 @@ class GetTimeseries extends Operation {
       times[times.length - 1]
     ]
 
-    const filled = this.formatters()[this.args.period](bounds[0], bounds[1])
+    const filled = this[this.args.period](bounds[0], bounds[1])
 
     const zipped = this.zip(results, filled, this.periodToKey(this.args.period))
 
