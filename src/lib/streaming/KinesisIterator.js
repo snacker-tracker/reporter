@@ -54,6 +54,10 @@ class KinesisIterator {
       Limit: limit,
     }).promise()
 
+    if(records.Records.length > 0) {
+      this.services.logger.debug('got records - ' + (records.MillisBehindLatest / 1000) + 'ms behind latest')
+    }
+
     return records
   }
 
@@ -68,12 +72,7 @@ class KinesisIterator {
           const {
             Records,
             NextShardIterator,
-            MillisBehindLatest
           } = await this._records(iterator, this.config.limit)
-
-          if(Records.length > 0) {
-            this.services.logger.debug('got records - ' + (MillisBehindLatest / 1000) + 'ms behind latest')
-          }
 
           for(const record of Records) {
             lastSeenSequenceNumber = record.SequenceNumber
@@ -81,23 +80,29 @@ class KinesisIterator {
             yield record
           }
 
-          // we should use this the next time
-          this.shardIterators[shardId] = NextShardIterator
-
-          // dont sleep if it looks like we're still going through backlog
-          if(Records.length < this.config.limit) {
-            await this.sleep(this.config.pollingDelay)
-          }
+          // remember where we were, and sleep if we need to
+          await this.commit(shardId, { Records, NextShardIterator })
         } catch(error) {
-          if(error.constructor.name === 'ExpiredIteratorException') {
-            await this.resetIteratorToLastSeenSequenceNumber(
-              this.stream, shardId, lastSeenSequenceNumber
-            )
-          } else {
-            throw error
-          }
+          await this._handleException(shardId, error, lastSeenSequenceNumber)
         }
       }
+    }
+  }
+
+  async commit(shardId, records) {
+    this.shardIterators[shardId] = records.NextShardIterator
+    if(records.Records.length < this.config.limit) {
+      await this.sleep(this.config.pollingDelay)
+    }
+  }
+
+  async _handleException(shardId, error, lastSeenSequenceNumber) {
+    if(error.constructor.name === 'ExpiredIteratorException') {
+      await this.resetIteratorToLastSeenSequenceNumber(
+        this.stream, shardId, lastSeenSequenceNumber
+      )
+    } else {
+      throw error
     }
   }
 
