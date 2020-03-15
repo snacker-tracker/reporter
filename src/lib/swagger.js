@@ -15,65 +15,30 @@ const setScheme = (swagger) => {
   return swagger
 }
 
+const response = (description) => {
+  return {
+    description,
+    content: {
+      'application/json': {
+        schema: {
+          '$ref': '#/components/schemas/ErrorResponse'
+        }
+      }
+    }
+  }
+}
+
 const add400Response = (swagger) => {
   for(let path in swagger.paths) {
     for(let verb in swagger.paths[path]) {
       if(verb != 'parameters') {
-        swagger.paths[path][verb].responses[400] = {
-          description: 'Client error, most likely invalid input',
-          content: {
-            'application/json': {
-              schema: {
-                '$ref': '#/components/schemas/ErrorResponse'
-              }
-            }
-          }
-        }
-
-        swagger.paths[path][verb].responses[401] = {
-          description: 'Unauthorized: This api requires authentication',
-          content: {
-            'application/json': {
-              schema: {
-                '$ref': '#/components/schemas/ErrorResponse'
-              }
-            }
-          }
-        }
-
-        swagger.paths[path][verb].responses[403] = {
-          description: 'Forbidden: You may not be allowed to do this',
-          content: {
-            'application/json': {
-              schema: {
-                '$ref': '#/components/schemas/ErrorResponse'
-              }
-            }
-          }
-        }
+        swagger.paths[path][verb].responses[400] = response('Client error, most likely invalid input')
+        swagger.paths[path][verb].responses[401] = response('Unauthorized: This api requires authentication')
+        swagger.paths[path][verb].responses[403] = response('Forbidden: You may not be allowed to do this')
+        swagger.paths[path][verb].responses[500] = response('Something went wrong on the backend. *Probably* not your fault')
 
         if(verb !== 'get') {
-          swagger.paths[path][verb].responses[409] = {
-            description: 'The request contains, or would create, a conflict (duplicate, probably)',
-            content: {
-              'application/json': {
-                schema: {
-                  '$ref': '#/components/schemas/ErrorResponse'
-                }
-              }
-            }
-          }
-        }
-
-        swagger.paths[path][verb].responses[500] = {
-          description: 'Something went wrong on the backend. *probably* not your fault',
-          content: {
-            'application/json': {
-              schema: {
-                '$ref': '#/components/schemas/ErrorResponse'
-              }
-            }
-          }
+          swagger.paths[path][verb].responses[409] = response('The request contains, or would create, a conflict (duplicate, probably)')
         }
       }
     }
