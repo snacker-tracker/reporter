@@ -36,7 +36,7 @@ class Operation {
     return {}
   }
 
-  async run(req) {
+  AuthN(req) {
     if(this.services.config) {
       if(this.services.config.auth.authn.enabled) {
         this.user = req.user
@@ -55,9 +55,18 @@ class Operation {
         }
       }
     }
+  }
 
-    await this.extract_params(req)
+  response(code, message) {
+    return new HTTPResponse({
+      status: code,
+      body: {
+        message
+      }
+    })
+  }
 
+  async prefetch(req) {
     try {
       await this.fetch(this.resources(req))
     } catch (error) {
@@ -66,14 +75,14 @@ class Operation {
         error: error.toString()
       })
 
-      console.log(error)
-
       return new HTTPResponse({
         status: 500,
         body: { message: 'Unhandled error while executing the request' }
       })
     }
+  }
 
+  async tryExecute() {
     try {
       return await this.execute()
     } catch (error) {
@@ -86,6 +95,20 @@ class Operation {
         body: { message: 'Unhandled error while executing the request' }
       })
     }
+  }
+
+  async run(req) {
+    if(this.AuthN(req)) {
+      return this.response(401, 'Unauthorized')
+    }
+
+    await this.extract_params(req)
+
+    if(await this.prefetch(req)) {
+      return this.response(500, 'Unhandled error while doing a pre-fetch of resources')
+    }
+
+    return await this.tryExecute()
   }
 
   async fetch(hash_of_promises) {
