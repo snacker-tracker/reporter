@@ -24,13 +24,12 @@ describe(PopulateProductDataFromInternet, () => {
     logger,
     productInfoStores: {
       snacker: new stores.SnackerTrackerInfoStore('https://some-url.com', { axios }),
-      tops: new stores.TopsCoThInfoStore({ axios }),
-      bigc: new stores.BigCInfoStore({ axios }),
-      off: new stores.OpenFoodFactsInfoStore({ axios }),
-      upcdb: new stores.UPCItemDBInfoStore({ axios })
+      tops: new stores.TopsCoThInfoStore('https://example.com', { axios }),
+      bigc: new stores.BigCInfoStore('https://example.com', { axios }),
+      off: new stores.OpenFoodFactsInfoStore('https://example.com', { axios }),
+      upcdb: new stores.UPCItemDBInfoStore('https://example.com', { axios })
     }
   }
-
 
   let event = {
     event: 'ScanCreated',

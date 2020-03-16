@@ -36,10 +36,10 @@ const streamhandlers = (config, services) => {
     log.setContext('handler', handler.name)
 
     const stores = {
-      bigc: new InfoStores.BigCInfoStore(),
-      upcdb: new InfoStores.UPCItemDBInfoStore(),
-      tops: new InfoStores.TopsCoThInfoStore(),
-      off: new InfoStores.OpenFoodFactsInfoStore(),
+      bigc: new InfoStores.BigCInfoStore('https://www.bigc.co.th/', { axios }),
+      upcdb: new InfoStores.UPCItemDBInfoStore('https://api.upcitemdb.com/', { axios }),
+      tops: new InfoStores.TopsCoThInfoStore('https://www.tops.co.th/', { axios }),
+      off: new InfoStores.OpenFoodFactsInfoStore('https://world.openfoodfacts.org/', { axios }),
       snacker: new InfoStores.SnackerTrackerInfoStore(config.reporter_base_url, {
         axios, tokenProvider
       })
