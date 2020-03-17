@@ -1,6 +1,6 @@
 import PopulateProductDataFromInternet from './PopulateProductDataFromInternet'
 import Logger from '../../lib/Logger'
-import stores from '../../lib/ProductInfoStores'
+import stores from '../../lib/stores/'
 
 describe(PopulateProductDataFromInternet, () => {
   let handler

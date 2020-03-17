@@ -1,4 +1,4 @@
-import stores from './ProductInfoStores'
+import stores from './index'
 import axios from 'axios'
 
 const Base = stores.ProductInfoStore

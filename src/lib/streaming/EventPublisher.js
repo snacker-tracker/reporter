@@ -8,7 +8,7 @@ class EventPublisher {
     this.services = services
   }
 
-  publish(event, payload, actor = null) {
+  getActor(actor) {
     let act
     if(actor) {
       act = {
@@ -21,24 +21,33 @@ class EventPublisher {
       }
     }
 
+    return act
+  }
+
+  getEvent(event, payload, actor) {
     let data = {
       id: uuid(),
       timestamp: new Date().toISOString(),
       version: process.env.APP_VERSION,
       event: event,
-      actor: act,
+      actor: this.getActor(actor),
       payload: payload
     }
 
+    return data
+  }
+
+  publish(event, payload, actor = null) {
+    let event_to_be_published = this.getEvent(event, payload, actor)
     const params = {
-      Data: JSON.stringify(data) + '\r\n',
+      Data: JSON.stringify(event_to_be_published) + '\r\n',
       PartitionKey: payload.id || uuid(),
       StreamName: this.stream_name
     }
 
     this.services.logger.info({
       message: 'wrote to the stream',
-      event: data
+      event: event_to_be_published
     })
 
     return this.kinesis_client.putRecord(params).promise()
