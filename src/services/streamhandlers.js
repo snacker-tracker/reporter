@@ -1,10 +1,7 @@
 import axios from 'axios'
 
-import prometheus from '../services/prometheus'
-
 import TokenProvider from '../lib/TokenProvider'
-import InfoStores from '../lib/ProductInfoStores'
-import { TimeSpentProxy } from '../lib/metrics/Proxies'
+import InfoStores from '../lib/stores/'
 
 import metrics from './metrics'
 
@@ -25,8 +22,6 @@ const streamhandlers = (config, services) => {
       axios
     }
   )
-
-  const store_time_spent = metrics.other.product_info_store_time_spent
 
   const dependencies = (event, handler) => {
     const log = new services.logger.constructor()
