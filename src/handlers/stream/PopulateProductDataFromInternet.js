@@ -99,7 +99,6 @@ class PopulateProductDataFromInternet extends EventHandler {
   }
 
   async download_picture(url) {
-    let img_response
     try {
       this.services.logger.info({ msg: 'Downloading picture', url })
       return await axios.get(url, { responseType: 'arraybuffer' })

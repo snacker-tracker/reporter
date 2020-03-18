@@ -1,11 +1,5 @@
 import GetOperation from './GetOperation'
 
-class TestEventHandler2 {
-  run = jest.fn()
-}
-
-const query = jest.fn().mockReturnThis
-
 const Query = {
   query: jest.fn().mockReturnThis(),
   findById: jest.fn().mockReturnThis()

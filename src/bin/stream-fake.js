@@ -16,8 +16,6 @@ const streamHandlersDependencyProvider = streamhandler(config, {
   logger: streamDependencies.logger
 })
 
-let iterator = new KinesisIteratorFake()
-
 const eventHandlerMapping = {
   ScanCreated: [
     PopulateProductDataFromInternet

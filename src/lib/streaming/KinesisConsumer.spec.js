@@ -1,10 +1,6 @@
 import KinesisConsumer from './KinesisConsumer'
 import KinesisIteratorFake from './KinesisIteratorFake'
 
-class TestEventHandler2 {
-  run = jest.fn()
-}
-
 const runMock = jest.fn()
 
 const TestEventHandler = jest.fn()
@@ -92,7 +88,7 @@ describe(KinesisConsumer, () => {
     loggerSpy.warn.mockReturnValue(true)
 
 
-    const dependencies = (event, handler) => {
+    const dependencies = () => {
       return {
         something: 'a fake dependency'
       }

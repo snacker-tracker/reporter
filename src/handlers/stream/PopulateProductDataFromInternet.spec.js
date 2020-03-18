@@ -1,5 +1,4 @@
 import PopulateProductDataFromInternet from './PopulateProductDataFromInternet'
-import Logger from '../../lib/Logger'
 import stores from '../../lib/stores/'
 
 describe(PopulateProductDataFromInternet, () => {
@@ -223,7 +222,7 @@ describe(PopulateProductDataFromInternet, () => {
   })
 
   afterEach( () => {
-    Object.entries(dependencies.productInfoStores).forEach(([key, store]) => {
+    Object.entries(dependencies.productInfoStores).forEach(([key]) => {
       storeSpies[key].mockRestore()
     })
 

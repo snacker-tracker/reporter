@@ -1,7 +1,5 @@
 import { Operation, HTTPResponse } from './Base'
 
-import knex from 'knex'
-
 class GetTimeseries extends Operation {
   static canBeCalledAnonymously = true
 
@@ -10,7 +8,7 @@ class GetTimeseries extends Operation {
     return item
   }
 
-  extract_params(req) {
+  extract_params() {
     throw new Error('Not Implemented')
   }
 
