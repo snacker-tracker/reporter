@@ -36,6 +36,7 @@ let openid_clients = new prom.Counter({
 const swagger_invalid_responses = new prom.Histogram({
   name: 'swagger_invalid_responses',
   help: 'number of responses that had one or more schema errors',
+  buckets: [],
   ...swagger,
   ...defaults
 })
@@ -43,6 +44,7 @@ const swagger_invalid_responses = new prom.Histogram({
 const swagger_response_errors = new prom.Histogram({
   name: 'swagger_response_errors',
   help: 'number of responses that had one or more schema errors',
+  buckets: [],
   ...swagger,
   ...defaults
 })
