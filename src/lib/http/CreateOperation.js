@@ -23,12 +23,7 @@ export default class CreateOperation extends Operation {
         .insertAndFetch(this.args.body)
     } catch (error) {
       if(error.code === '23505') {
-        return new HTTPResponse({
-          status: 409,
-          body: {
-            'message': 'Entity already exists or fails a uniqueness constraint'
-          }
-        })
+        return HTTPResponse.Conflict()
       } else {
         throw error
       }
@@ -40,9 +35,6 @@ export default class CreateOperation extends Operation {
       this.user
     )
 
-    return new HTTPResponse({
-      status: 201,
-      body: this.toHttpRepresentation(inserted)
-    })
+    return HTTPResponse.Created(this.toHttpRepresentation(inserted))
   }
 }

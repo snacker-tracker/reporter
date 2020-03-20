@@ -46,12 +46,7 @@ class CreateCodePicture extends Operation {
       )
     } catch(error) {
       this.services.logger.warn({ 'msg': 'Failed to upload picture', error })
-      return new HTTPResponse({
-        status: 500,
-        body: {
-          message: 'Failed to upload picture'
-        }
-      })
+      return HTTPResponse.ServerError('Failed to upload picture')
     }
 
     const picture = {
@@ -70,11 +65,7 @@ class CreateCodePicture extends Operation {
       this.user
     )
 
-
-    return new HTTPResponse({
-      status: 201,
-      body: picture
-    })
+    return HTTPResponse.Created(picture)
   }
 
 }

@@ -6,6 +6,47 @@ class HTTPResponse {
 
     Object.assign(this, rest)
   }
+
+  static ServerError(message) {
+    return this.Error(500, message)
+  }
+
+  static NotFound(message = 'Not Found') {
+    return this.Error(404, message)
+  }
+
+  static Forbidden(message = 'You may not be allowed to do this') {
+    return this.Error(403, message)
+  }
+
+  static Conflict(message = 'Entity already exists of fails a uniqueness constraint') {
+    return this.Error(409, message)
+  }
+
+  static Error(status, message) {
+    return new this({
+      status,
+      body: {
+        message
+      }
+    })
+  }
+
+  static Created(body, headers = {}) {
+    return this.OkBase(201, body, headers)
+  }
+
+  static Okay(body, headers = {}) {
+    return this.OkBase(200, body, headers)
+  }
+
+  static OkBase(status, body, headers = {}) {
+    return new this({
+      status,
+      body,
+      headers
+    })
+  }
 }
 
 class Operation {

@@ -20,14 +20,8 @@ export default class DeleteOperation extends Operation {
   }
 
   async execute() {
-
     if (this.resources.resource == null) {
-      return new HTTPResponse({
-        status: 404,
-        body: {
-          message: 'Not Found'
-        }
-      })
+      return HTTPResponse.NotFound()
     }
 
     this.args.include_meta = true
@@ -44,16 +38,9 @@ export default class DeleteOperation extends Operation {
         this.user
       )
 
-      return new HTTPResponse({
-        status: 201,
-        body: this.toHttpRepresentation(this.resources.resource)
-      })
-
+      return HTTPResponse.Created(this.toHttpRepresentation(this.resources.resource))
     } else {
-      return new HTTPResponse({
-        status: 403,
-        body: this.toHttpRepresentation(this.resources.resource)
-      })
+      return HTTPResponse.Forbidden(this.toHttpRepresentation(this.resources.resource))
     }
   }
 }

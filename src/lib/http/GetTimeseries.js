@@ -128,15 +128,11 @@ class GetTimeseries extends Operation {
 
     const zipped = this.zip(results, filled, this.periodToKey(this.args.period))
 
-
-    return new HTTPResponse({
-      status: 200,
-      body: {
-        pagination: {},
-        items: this.toHttpRepresentation(zipped.map( item => {
-          return this.toHttpRepresentation(item)
-        }))
-      }
+    return HTTPResponse.Okay({
+      pagination: {},
+      items: this.toHttpRepresentation(zipped.map( item => {
+        return this.toHttpRepresentation(item)
+      }))
     })
   }
 }

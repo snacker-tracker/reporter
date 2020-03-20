@@ -29,12 +29,9 @@ export default class ListOperation extends Operation {
   }
 
   async execute() {
-    return new HTTPResponse({
-      status: 200,
-      body: {
-        pagination: {},
-        items: this.resources.resources.map(item => { return this.toHttpRepresentation(item) })
-      }
+    return HTTPResponse.Okay({
+      pagination: {},
+      items: this.resources.resources.map(item => { return this.toHttpRepresentation(item) })
     })
   }
 }

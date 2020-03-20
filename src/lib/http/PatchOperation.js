@@ -30,12 +30,7 @@ export default class PatchOperation extends Operation {
       ).options({ operationId: this.constructor.name })
     } catch( error ) {
       if(error.code === '23505'){
-        return new HTTPResponse({
-          status: 409,
-          body: {
-            'message': 'Entity already exists or fails a uniqueness constraint'
-          }
-        })
+        return HTTPResponse.Conflict()
       } else {
         throw error
       }
@@ -51,9 +46,6 @@ export default class PatchOperation extends Operation {
       this.user
     )
 
-    return new HTTPResponse({
-      status: 201,
-      body: this.toHttpRepresentation(result)
-    })
+    return HTTPResponse.Created(this.toHttpRepresentation(result))
   }
 }

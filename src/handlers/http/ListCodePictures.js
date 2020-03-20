@@ -20,24 +20,16 @@ class ListCodePictures extends ListOperation {
 
   async execute() {
     if (this.resources.resource == null) {
-      return new HTTPResponse({
-        status: 404,
-        body: {
-          message: 'Not Found'
-        }
-      })
+      return HTTPResponse.NotFound()
     }
 
     this.args.include_meta = true
 
     const list = await this.services.image_repository.list(this.args.id)
 
-    return new HTTPResponse({
-      status: 200,
-      body: {
-        items: list.Contents.map((image) => { return this.toHttpRepresentation.apply(this,[image])}),
-        pagination: {}
-      }
+    return HTTPResponse.Okay({
+      items: list.Contents.map((image) => { return this.toHttpRepresentation.apply(this,[image])}),
+      pagination: {}
     })
   }
 
