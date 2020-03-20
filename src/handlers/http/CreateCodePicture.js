@@ -27,20 +27,21 @@ class CreateCodePicture extends Operation {
     }
   }
 
+  generatePictureFilename(hash) {
+    return ([
+      this.args.body.code, hash
+    ].join('/')
+    +
+    '.'
+    +
+    this.args.picture.mimetype.split('/')[1])
+  }
+
   async execute() {
     let hash = crypto.createHash('sha256').update(this.args.picture.buffer).digest('hex')
-
     try {
       await this.services.image_repository.put(
-        (
-          [
-            this.args.body.code, hash
-          ].join('/')
-          +
-          '.'
-          +
-          this.args.picture.mimetype.split('/')[1]
-        ),
+        this.generatePictureFilename(hash),
         this.args.picture.buffer
       )
     } catch(error) {
@@ -48,7 +49,7 @@ class CreateCodePicture extends Operation {
       return new HTTPResponse({
         status: 500,
         body: {
-          'message': 'Failed to save picture'
+          message: 'Failed to upload picture'
         }
       })
     }
