@@ -10,7 +10,7 @@ export default class Code extends Model {
   }
 
   static toHttpRepresentation(item) {
-    if(item.categories && item.categories.length > 0) {
+    if(typeof(item.categories) == 'string') {
       item.categories = item.categories.split('.')
     } else {
       item.categories = []
