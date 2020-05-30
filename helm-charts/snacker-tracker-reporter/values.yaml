@@ -21,9 +21,10 @@ service:
 ingress:
   enabled: false
   annotations:
-    certmanager.k8s.io/acme-challenge-type: dns01
-    certmanager.k8s.io/acme-dns01-provider: route53
-    certmanager.k8s.io/cluster-issuer: lets-encrypt-prod
+#    certmanager.k8s.io/acme-challenge-type: dns01
+#    certmanager.k8s.io/acme-dns01-provider: route53
+#    certmanager.k8s.io/cluster-issuer: lets-encrypt-prod
+    cert-manager.io/cluster-issuer: lets-encrypy-prod
   hosts:
     - host: chart-example.local
       paths: []
