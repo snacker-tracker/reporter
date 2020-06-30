@@ -136,8 +136,8 @@ pipelines:
       GO_AUTOMATION_USER: automaton
       GITHUB_AUTOMATION_USER: gocd-service-account
     secure_variables:
-      GO_AUTOMATION_PASSWORD: "AES:+heX4S6WsUXSqPxj5nNOoQ==:9jXtfK+GoUYDpS7mvGGWmA=="
-      GITHUB_AUTOMATION_PASSWORD: "AES:COGz3KIPEuFOsaCmbTHjlA==:6aivxs5PQyswiBSWgfZ8Q+1MxwKWnV14g5944GDXWMWwWfgBEmCqAX+rvwOnS54q"
+      GO_AUTOMATION_PASSWORD: "AES:ZC4bipsr97Xr4yZ8rGlhIg==:nk9ITxqqErVRKOWlyhS0L50GZX45IHepoNUy3BcJ/tapPijAP1l/hEHjYE85m1/Z"
+      GITHUB_AUTOMATION_PASSWORD: "AES:EwOyEBf7z5d8VzVua75pEg==:LZhYZmLP7OR2Vf+NwirNlTCYCmptgbSRRqD3kWjjYlXxxCeSZGYyX07ZIcgMpfhV"
 
     stages:
       - tests:
