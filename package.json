@@ -29,7 +29,7 @@
     "axios": "^0.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "express-jwt": "^5.3.1",
+    "express-jwt": "^6.0.0",
     "express-jwt-authz": "^2.3.1",
     "express-openapi": "^5.0.0",
     "express-prom-bundle": "^5.1.5",
