@@ -94,7 +94,7 @@ describe(PopulateProductDataFromInternet, () => {
     beforeEach( () => {
       storeSpies.snacker.mockRejectedValue('Not Found')
 
-      storeSpies.off.mockResolvedValue({ name: 'off product', categories: ['cat1', 'cat2'], pictures: ['url1'] })
+      storeSpies.off.mockResolvedValue({ name: 'off product', categories: ['cat1', 'cat2'], images: ['url1'] })
       storeSpies.tops.mockResolvedValue({ name: 'tops product' })
       storeSpies.bigc.mockResolvedValue({ name: 'bigc product' })
       storeSpies.upcdb.mockResolvedValue({ name: 'upcdb product' })
@@ -118,7 +118,7 @@ describe(PopulateProductDataFromInternet, () => {
       expect(spy).toHaveBeenCalledWith({
         tops: { name: 'tops product' },
         bigc: { name: 'bigc product' },
-        off: { name: 'off product', categories: ['cat1','cat2'], pictures: ['url1'] },
+        off: { name: 'off product', categories: ['cat1','cat2'], images: ['url1'] },
         upcdb: { name: 'upcdb product' }
       })
     })
@@ -172,16 +172,16 @@ describe(PopulateProductDataFromInternet, () => {
         })
       })
 
-      describe('pictures', () => {
-        it('returns all pictures', () => {
+      describe('images', () => {
+        it('returns all images', () => {
           const merged = handler.merge({
-            tops: { name: 'tops product', pictures: ['one'] },
-            bigc: { name: 'bigc product', pictures: ['two'] },
-            off: { name: 'off product', pictures: ['three', 'four'] },
-            upcdb: { name: 'upcdb product', pictures: ['five'] }
+            tops: { name: 'tops product', images: ['one'] },
+            bigc: { name: 'bigc product', images: ['two'] },
+            off: { name: 'off product', images: ['three', 'four'] },
+            upcdb: { name: 'upcdb product', images: ['five'] }
           })
 
-          expect(merged.pictures.length).toBe(5)
+          expect(merged.images.length).toBe(5)
         })
       })
     })
@@ -203,7 +203,7 @@ describe(PopulateProductDataFromInternet, () => {
         })
       })
 
-      describe('upload the pictures', () => {
+      describe('upload the images', () => {
         it('doesnt bother uploading if it downloading failed', async () => {
           download_picture.mockResolvedValue(false)
 
@@ -212,7 +212,7 @@ describe(PopulateProductDataFromInternet, () => {
           expect(post_spies.post_picture).not.toHaveBeenCalled()
         })
 
-        it('downloads and uploads pictures', async () => {
+        it('downloads and uploads images', async () => {
           await handler.run(event)
 
           expect(post_spies.post_picture).toHaveBeenCalled()

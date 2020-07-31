@@ -45,11 +45,11 @@ class PopulateProductDataFromInternet extends EventHandler {
       merged.categories = sources.off.categories || []
     }
 
-    const pictures = Object.values(sources).map((source) => {
-      return source.pictures ? source.pictures : []
+    const images = Object.values(sources).map((source) => {
+      return source.images ? source.images : []
     })
 
-    merged.pictures = [].concat.apply([], pictures)
+    merged.images = [].concat.apply([], images)
 
     return merged
   }
@@ -86,7 +86,7 @@ class PopulateProductDataFromInternet extends EventHandler {
       local = await this.services.productInfoStores.snacker.post(createPayload)
 
       if(product_info.images.length > 0) {
-        for(const image of product_info.pictures) {
+        for(const image of product_info.images) {
           const img_response = await this.download_picture(image)
           if(img_response) {
             await this.upload_picture(payload.code, img_response)
