@@ -15,10 +15,41 @@ class Logger {
     this.context = {}
   }
 
+  stringifyError(value) {
+    if (value instanceof Error) {
+      let error = {}
+
+      Object.getOwnPropertyNames(value).forEach(function (key) {
+        error[key] = value[key]
+      })
+
+      error.stack = error.stack.split('\n').map( s => s.trim() )
+
+      return error
+    }
+
+    return value
+  }
+
+  replaceErrors(message) {
+    for(const kv of Object.keys(message)) {
+      message[kv[0]] = this.stringifyError(kv[1])
+    }
+
+    return message
+  }
+
   _log(message, level) {
+    if(message instanceof Error) {
+      message = this.stringifyError(message)
+      message = { error: message }
+    }
+
     if (typeof (message) == 'string') {
       message = { message }
     }
+
+    message = this.replaceErrors(message)
 
     console.log(JSON.stringify({
       level,
