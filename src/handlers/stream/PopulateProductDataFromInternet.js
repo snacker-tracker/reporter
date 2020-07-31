@@ -85,7 +85,7 @@ class PopulateProductDataFromInternet extends EventHandler {
       this.services.logger.info({ createPayload })
       local = await this.services.productInfoStores.snacker.post(createPayload)
 
-      if(product_info.pictures.length > 0) {
+      if(product_info.images.length > 0) {
         for(const image of product_info.pictures) {
           const img_response = await this.download_picture(image)
           if(img_response) {
