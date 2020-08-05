@@ -15,7 +15,7 @@ const knex = {
 const swagger_operation_time_spent = new prom.Histogram({
   name: 'swagger_operation_time_spent',
   help: 'time spent in operations',
-  buckets: [0.01, 0.05, 0.1, 0.5, 1, 2.5],
+  buckets: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
   ...swagger,
   ...defaults
 })
@@ -68,6 +68,7 @@ const product_info_store_time_spent = new prom.Histogram({
   name: 'product_info_store_time_spent',
   help: 'time spent querying product information stores',
   labelNames: ['provider'],
+  buckets: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
   ...defaults
 })
 
