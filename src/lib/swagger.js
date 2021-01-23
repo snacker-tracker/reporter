@@ -61,7 +61,7 @@ const setResponseValidityHeader = (swagger) => {
             },
             'X-Swagger-Response-Error-Count': {
               schema: {
-                'type': 'number',
+                'type': 'integer',
               },
               'description': 'Number of schema errors counted in the response'
             }
