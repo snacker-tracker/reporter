@@ -323,6 +323,37 @@ pipelines:
                 fi
 
 
+  snacker-tracker-reporter-extra-tests:
+    group: snacker-tracker-reporter
+    label_template: "${upstream}"
+    lock_behavior: unlockWhenFinished
+    materials:
+      upstream:
+        pipeline: snacker-tracker-reporter-test
+        stage: dummy-stage
+      git-snacker-tracker-reporter:
+        plugin_configuration:
+          id: git.fb
+          version: 1.3.5
+        options:
+          url: https://github.com/snacker-tracker/reporter.git
+          branchwhitelist: master,test-*
+        destination: ./
+    environment_variables: {}
+    secure_variables:
+      STRYKER_DASHBOARD_API_KEY: "AES:I5Us0Kfhh6C0/17A5F2pCw==:3cH0smaOYjqSgRjs+u4bo2ZRpSOj4WWTJCa3pvoLDbVb4qXOKMMdobSwe2oXVX/W"
+    stages:
+      - mutation:
+          tasks:
+            - script: |
+                ./auto/mutation
+          tabs:
+            Mutation: ./reports/mutation/html/index.html
+          artifacts:
+            - test:
+                source: reports/
+                destination: ./reports/
+
   snacker-tracker-reporter-build:
     group: snacker-tracker-reporter
     label_template: "0.1.${COUNT}-${upstream}"

@@ -5,7 +5,7 @@ managed REST API which exposes the endpoints to drive the scanner and UI compone
 
 The API is documented in `src/swagger.yml`
 
-<a href="https://codeclimate.com/github/snacker-tracker/reporter/maintainability"><img src="https://api.codeclimate.com/v1/badges/653ebd9271d102bcb81c/maintainability" /></a>
+<a href="https://codeclimate.com/github/snacker-tracker/reporter/maintainability"><img src="https://api.codeclimate.com/v1/badges/653ebd9271d102bcb81c/maintainability" /></a> [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fsnacker-tracker%2Freporter%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/snacker-tracker/reporter/master)
 
 # Getting Started
 

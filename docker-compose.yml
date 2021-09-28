@@ -39,7 +39,7 @@ services:
       MINIO_SECRET_KEY: 1234567890
 
   bare: &bare
-    image: node:10
+    image: node:12
     working_dir: /app/
     command: yarn dev
     volumes:
@@ -61,6 +61,7 @@ services:
       KINESIS_ENDPOINT: http://kinesis:4567/
       KINESIS_STREAM: snack-stream
       S3_ENDPOINT: http://s3:9000
+      STRYKER_DASHBOARD_API_KEY: "${STRYKER_DASHBOARD_API_KEY}-invalid"
 
   full:
     <<: *bare

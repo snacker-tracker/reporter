@@ -53,6 +53,9 @@
     "eslint": "^6.8.0",
     "jest": "26.1.0",
     "nodemon": "^2.0.2",
-    "swagger-cli": "^4.0.2"
+    "swagger-cli": "^4.0.2",
+    "@stryker-mutator/core": "^5.4.0",
+    "@stryker-mutator/jest-runner": "^5.4.0",
+    "stryker-cli": "^1.0.2"
   }
 }
