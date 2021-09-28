@@ -347,6 +347,7 @@ pipelines:
           tasks:
             - script: |
                 ./auto/mutation
+                docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
           tabs:
             Mutation: ./reports/mutation/html/index.html
           artifacts:
