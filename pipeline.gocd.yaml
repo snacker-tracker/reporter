@@ -42,7 +42,6 @@ common:
 
         function finish {
           echo "in GOCD. Kill all containers"
-          ## Change ownership so that GoCD can clean up after itself
           docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
           ./auto/clean-up || true
         }
