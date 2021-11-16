@@ -25,7 +25,7 @@
     "src/database/migrations/**/**"
   ],
   "dependencies": {
-    "aws-sdk": "^2.559.0",
+    "aws-sdk": "^2.814.0",
     "axios": "^0.21.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
