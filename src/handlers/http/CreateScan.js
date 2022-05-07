@@ -2,7 +2,7 @@ import CreateOperation from '../../lib/http/CreateOperation'
 
 import Scan from '../../models/Scan'
 
-import uuid from 'uuid'
+import { v4 as uuid } from 'uuid'
 
 class CreateScan extends CreateOperation {
   static model = Scan
