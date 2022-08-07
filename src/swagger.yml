@@ -540,6 +540,8 @@ components:
           format: date-time
         code:
           $ref: "#/components/schemas/UPCCode"
+        location:
+          $ref: "#/components/schemas/ScannerLocation"
 
     ScanList:
       type: object
@@ -881,3 +883,8 @@ components:
     UPCCode:
       type: string
       format: upc
+
+    ScannerLocation:
+      type: string
+      description: |
+        The ID or location of the barcode scanner
