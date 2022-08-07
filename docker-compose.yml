@@ -39,7 +39,7 @@ services:
       MINIO_SECRET_KEY: 1234567890
 
   bare: &bare
-    image: node:12
+    image: node:16
     working_dir: /app/
     command: yarn dev
     volumes:
