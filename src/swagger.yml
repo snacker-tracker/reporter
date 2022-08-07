@@ -513,6 +513,7 @@ components:
       required:
         - id
         - code
+        - location
         - scanned_at
         - created_at
       properties:
@@ -534,6 +535,7 @@ components:
       additionalProperties: false
       required:
         - code
+        - location
       properties:
         scanned_at:
           type: string
