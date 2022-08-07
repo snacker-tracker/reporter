@@ -1810,7 +1810,14 @@ agent-base@6:
   dependencies:
     debug "4"
 
-ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.6, ajv@^6.5.2, ajv@^6.5.4, ajv@^6.5.5:
+ajv-formats@^2.0.2, ajv-formats@^2.1.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/ajv-formats/-/ajv-formats-2.1.1.tgz#6e669400659eb74973bbf2e33327180a0996b520"
+  integrity sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==
+  dependencies:
+    ajv "^8.0.0"
+
+ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.6, ajv@^6.5.5:
   version "6.12.6"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.6.tgz#baf5a62e802b07d977034586f8c3baf5adf26df4"
   integrity sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
@@ -1818,6 +1825,16 @@ ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.6, ajv@^6.5.2, ajv@^6.5.4, ajv@^6.5.5:
     fast-deep-equal "^3.1.1"
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.4.1"
+    uri-js "^4.2.2"
+
+ajv@^8.0.0, ajv@^8.1.0, ajv@^8.3.0, ajv@^8.4.0:
+  version "8.11.0"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.11.0.tgz#977e91dd96ca669f54a11e23e378e33b884a565f"
+  integrity sha512-wGgprdCvMalC0BztXvitD2hC04YffAvtsUn93JbGXYLAtCUO4xd17mCCZQxUOItiBwZvJScWo8NIvQMQ71rdpg==
+  dependencies:
+    fast-deep-equal "^3.1.1"
+    json-schema-traverse "^1.0.0"
+    require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
 ajv@~8.6.0:
@@ -3360,14 +3377,14 @@ express-normalize-query-params-middleware@^0.5.0:
   resolved "https://registry.yarnpkg.com/express-normalize-query-params-middleware/-/express-normalize-query-params-middleware-0.5.1.tgz#dbe1e8139aecb234fb6adb5c0059c75db9733d2a"
   integrity sha1-2+HoE5rssjT7attcAFnHXblzPSo=
 
-express-openapi@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/express-openapi/-/express-openapi-5.0.0.tgz#386313e3de7051998a642bbe7e360c82ed797967"
-  integrity sha512-tjAAjZQM6G08AcrMjr/49Zv+l8vt0+EzmaMtEIMC8k/x95JeEOO8EiBgSAokx27e8COhGxmXA7mvGfSfTSPNOQ==
+express-openapi@^12.0.1:
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/express-openapi/-/express-openapi-12.0.1.tgz#5286f0fee8fa3d7d044b087a0a6e5cc95f650880"
+  integrity sha512-qgxyOe97dnAU43VYq8EPNwJD0+Hza3ofXRJeaJ7GBAk9tIHTAKcDZWhqF1rQ6nihkcXrNLk9Assw7TVDpK6M/w==
   dependencies:
     express-normalize-query-params-middleware "^0.5.0"
-    openapi-framework "0.25.0"
-    openapi-types "1.3.5"
+    openapi-framework "^12.0.1"
+    openapi-types "^12.0.0"
 
 express-prom-bundle@^5.1.5:
   version "5.1.5"
@@ -3689,10 +3706,10 @@ fs-readdir-recursive@^1.1.0:
   resolved "https://registry.yarnpkg.com/fs-readdir-recursive/-/fs-readdir-recursive-1.1.0.tgz#e32fc030a2ccee44a6b5371308da54be0b397d27"
   integrity sha512-GNanXlVr2pf02+sPN40XN8HG+ePaNcvM0q5mZBd668Obwb0yD5GiUbZOFgwn8kGMY6I3mdyDJzieUy3PTYyTRA==
 
-fs-routes@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/fs-routes/-/fs-routes-2.0.0.tgz#946791d62b1e0bde5d3f219a8ac9d50d43c9a762"
-  integrity sha512-oITW9GoYFZwYWR2aMDdUvr6W9O5mtzSizIVEUdeCQaFD6+BylwPSEP2+ZFWv1UYpE9kiPS3Hb0knh2PmFJcj6A==
+fs-routes@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/fs-routes/-/fs-routes-12.0.0.tgz#efdb846d80d6336ba2db0dccb336e5280cdec450"
+  integrity sha512-ik1ezT+N8roNkp966PG/TMDd3aocLw+VmYTJnwOiAWIq3CI90FBOM79qmZPanz5gl671O7fu1wiWeqF5IxQslQ==
 
 fs.realpath@^1.0.0:
   version "1.0.0"
@@ -5912,91 +5929,93 @@ onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
-openapi-default-setter@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/openapi-default-setter/-/openapi-default-setter-2.1.0.tgz#29997e75b68d296a323d3883a9279404f05b4ed6"
-  integrity sha512-2ZNlX1B/J9Q/bsM/vZKh8alC0Pn04KtDGbMN30qLRu3GkaOJH3dDMKxqJzCpYj8BOAa8G3BEsQq6kqWzkEsM7A==
+openapi-default-setter@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/openapi-default-setter/-/openapi-default-setter-12.0.0.tgz#dae18420fe60316916e68462b537bab058a54059"
+  integrity sha512-MZXcmOcY2k9N1aJb6UL//2xkeLv1KZFe9JF/lGZzHyPbAr4aZ6cSmIuTeBg6K+rJw3EzkqX/gJ6x2tEQpeQGeQ==
   dependencies:
-    openapi-types "1.3.5"
+    openapi-types "^12.0.0"
 
-openapi-framework@0.25.0:
-  version "0.25.0"
-  resolved "https://registry.yarnpkg.com/openapi-framework/-/openapi-framework-0.25.0.tgz#19d0b8dc79bad527a169b20b07fb33a5f475f68e"
-  integrity sha512-zQdgzBIVJ+1zAXcYMCklBaS5ozA2GfMzTk2oUt2Mirzq+3/AN2az0FbReVltzg7XYgYwradXkHwloc3CzMQ0ug==
+openapi-framework@^12.0.1:
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/openapi-framework/-/openapi-framework-12.0.1.tgz#61c93e4846f0c07bcba3eea22328bfe402f68678"
+  integrity sha512-9ovvvtG/k3OzG14rdfbRZ0RMg2W5G0WeVU7FEiBKnF3xS4g+Beyhf+IzheuDXsfdct7sC1YwItX98kgT+W7FBw==
   dependencies:
     difunc "0.0.4"
-    fs-routes "2.0.0"
+    fs-routes "^12.0.0"
     glob "*"
     is-dir "^1.0.0"
     js-yaml "^3.10.0"
-    openapi-default-setter "2.1.0"
-    openapi-request-coercer "2.3.0"
-    openapi-request-validator "4.1.0"
-    openapi-response-validator "4.0.0"
-    openapi-schema-validator "3.0.3"
-    openapi-security-handler "2.0.4"
-    openapi-types "1.3.5"
+    openapi-default-setter "^12.0.0"
+    openapi-request-coercer "^12.0.0"
+    openapi-request-validator "^12.0.0"
+    openapi-response-validator "^12.0.0"
+    openapi-schema-validator "^12.0.0"
+    openapi-security-handler "^12.0.0"
+    openapi-types "^12.0.0"
     ts-log "^2.1.4"
 
-openapi-jsonschema-parameters@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/openapi-jsonschema-parameters/-/openapi-jsonschema-parameters-1.2.0.tgz#3f029ae164d74ab32dfe17d56649674d5482dab8"
-  integrity sha512-i2vBBFiRbOwYSvt5OG9hayJ7WUe/nl9Y151Ki1QtHb8M0zdYs2wkDhywVJnapq4/gPlrD1vmSVsYDrAjcBRJTQ==
+openapi-jsonschema-parameters@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/openapi-jsonschema-parameters/-/openapi-jsonschema-parameters-12.0.0.tgz#25e0ad6741fb1507eedd2f36ff790564cbdd4891"
+  integrity sha512-OqPabvo3qEUpgG2blD+CqAUNC+/RNYsUKEqY3vSAu2syxrabRNxtaagLhA5WdieVQPLFuOlSX13TFUu8R/+kbA==
   dependencies:
-    openapi-types "1.3.5"
+    openapi-types "^12.0.0"
 
-openapi-request-coercer@2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/openapi-request-coercer/-/openapi-request-coercer-2.3.0.tgz#2f756ed027251fb857ade9a116356d59613cce0b"
-  integrity sha512-oLrxgYOS3CE+ystqeZEBlpxiuQy6Q5HNLMLj9ciMGdJL7x73NedVWkEU00RJ8acjqZJEm73IYMRhQ0D4De14/A==
+openapi-request-coercer@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/openapi-request-coercer/-/openapi-request-coercer-12.0.0.tgz#ce5093a89aaf0f38528de58f7b601289dfba0b86"
+  integrity sha512-iWgPUfyrGT5C6MNYnL61YJygwymqwVF57K6Ny9nZC41E14JaC+Wxbw1Q5XsNDi8Q+PolmYO2108RxStrk9wKyA==
   dependencies:
-    openapi-types "1.3.4"
+    openapi-types "^12.0.0"
+    ts-log "^2.1.4"
 
-openapi-request-validator@4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/openapi-request-validator/-/openapi-request-validator-4.1.0.tgz#029db76a5b3e75ac9314b391e625e997c0049b3e"
-  integrity sha512-YIBVmIlbbBIpJFNpmD6BMUdeSrxlLZ8h959VPLbvjPOTBeLHcsZY28ngC4sfLu9nnmWCTj74MQyA0djOvBzanQ==
+openapi-request-validator@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/openapi-request-validator/-/openapi-request-validator-12.0.0.tgz#f5323969b0f9a7e633598c3ead91a606f8f6bcf4"
+  integrity sha512-z0K3fRViKbamg80RJgNLzLZik2QBvXVfHgtpK4nGlTQ7qgn06PApFzF1Arc4Fb3aAB26BFBQGzjrojT58XjA3A==
   dependencies:
-    ajv "^6.5.4"
+    ajv "^8.3.0"
+    ajv-formats "^2.1.0"
     content-type "^1.0.4"
-    openapi-jsonschema-parameters "1.2.0"
-    openapi-types "1.3.5"
+    openapi-jsonschema-parameters "^12.0.0"
+    openapi-types "^12.0.0"
     ts-log "^2.1.4"
 
-openapi-response-validator@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/openapi-response-validator/-/openapi-response-validator-4.0.0.tgz#76a246a5d1194ea27e594fc0710c49d4bac5b8f7"
-  integrity sha512-bIG8bpHT/vE+Dtz4aVyfQnweXtUdvxvJf5/D6Uu98UGf3T42Ez940ctwnlmDCQxTPqdu0yLFbMoiNf/A3jYCIg==
+openapi-response-validator@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/openapi-response-validator/-/openapi-response-validator-12.0.0.tgz#5bbe4c015b33a636572786de63a61b0782dc7894"
+  integrity sha512-02zzantcJFYBeBeDJVLLNUushxMYkdM4tD9+V1BM7U/witfEc++IX0C/GRuEa1KJ/TTLvnzsXbyR/o/9DipUKg==
   dependencies:
-    ajv "^6.5.4"
-    openapi-types "1.3.5"
+    ajv "^8.4.0"
+    openapi-types "^12.0.0"
 
-openapi-schema-validator@3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/openapi-schema-validator/-/openapi-schema-validator-3.0.3.tgz#42bd1a20746bbe4457244963d27d519bfd083769"
-  integrity sha512-KKpeNEvAmpy6B2JCfyrM4yWjL6vggDCVbBoR8Yfkj0Jltc6PCW+dBbcg+1yrTCuDv80qBQJ6w0ejA71DlOFegA==
+openapi-schema-validator@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/openapi-schema-validator/-/openapi-schema-validator-12.0.0.tgz#c5ebd357970fa5c515f77368598e81f31001b5be"
+  integrity sha512-dtQ5iCiCluL/SXmd5LWqfPXvN/WbVJeCp+3+exF6BHBN3fry5tNAhFllZICYHQ2kTfQxrfwbQcy0fqaw9wOb+w==
   dependencies:
-    ajv "^6.5.2"
+    ajv "^8.1.0"
+    ajv-formats "^2.0.2"
     lodash.merge "^4.6.1"
-    openapi-types "1.3.4"
-    swagger-schema-official "2.0.0-bab6bed"
+    openapi-types "^12.0.0"
 
-openapi-security-handler@2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/openapi-security-handler/-/openapi-security-handler-2.0.4.tgz#f26f10504601581c8463b433d846b5ec4992d301"
-  integrity sha512-blz/UftEqYQLAByuEVITePUI9hV5Rd91CEK8yrsKDUaf3zk6cmIMafJ2qvagHqjXRRtL7fOqvsSKIeFrai+HfQ==
+openapi-security-handler@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/openapi-security-handler/-/openapi-security-handler-12.0.0.tgz#682f7bca0df44f9806fb7fa5db832ac64bce1d8c"
+  integrity sha512-NojR4n39tSl1rKw6/7rPP/abkUoTrqwV0EqoO5zdyy9KuEtbO9PHSNU3hdxp5H36pZolw2euouFNy00xvdd8hw==
   dependencies:
-    openapi-types "1.3.4"
+    openapi-types "^12.0.0"
 
-openapi-types@1.3.4:
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/openapi-types/-/openapi-types-1.3.4.tgz#e8c65be38d3b7d48fa84aa3d488d17505d3e30cd"
-  integrity sha512-h8rADpW3k/wepLdERKF0VKMAPdoFYNQCLGPmc/f8sgQ2dxUy+7sY4WAX2XDUDjhKTjbJVbxxofLkzy7f1/tE4g==
-
-openapi-types@1.3.5, openapi-types@^1.3.5:
+openapi-types@^1.3.5:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/openapi-types/-/openapi-types-1.3.5.tgz#6718cfbc857fe6c6f1471f65b32bdebb9c10ce40"
   integrity sha512-11oi4zYorsgvg5yBarZplAqbpev5HkuVNPlZaPTknPDzAynq+lnJdXAmruGWP0s+dNYZS7bjM+xrTpJw7184Fg==
+
+openapi-types@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/openapi-types/-/openapi-types-12.0.0.tgz#458a99d048f9eae1c067e15d56a8bfb3726041f1"
+  integrity sha512-6Wd9k8nmGQHgCbehZCP6wwWcfXcvinhybUTBatuhjRsCxUIujuYFZc9QnGeae75CyHASewBtxs0HX/qwREReUw==
 
 optionator@^0.8.1, optionator@^0.8.3:
   version "0.8.3"
@@ -7325,11 +7344,6 @@ swagger-cli@^4.0.2:
   integrity sha512-XzKVHMDGlmiK+dgTxRSX7SSbG5KDsU4RS9eX3VSBw6ZPfW1aWYAbo2FuhArnsFMiz4/0KXJ8D/Lkii7xeSXviw==
   dependencies:
     "@apidevtools/swagger-cli" "4.0.2"
-
-swagger-schema-official@2.0.0-bab6bed:
-  version "2.0.0-bab6bed"
-  resolved "https://registry.yarnpkg.com/swagger-schema-official/-/swagger-schema-official-2.0.0-bab6bed.tgz#70070468d6d2977ca5237b2e519ca7d06a2ea3fd"
-  integrity sha1-cAcEaNbSl3ylI3suUZyn0Gouo/0=
 
 symbol-tree@^3.2.4:
   version "3.2.4"
