@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid'
 
 class CreateScan extends CreateOperation {
   static model = Scan
-  static canBeCalledAnonymously = true
+  static canBeCalledAnonymously = false
 
   async extract_params(req) {
     const now = new Date().toISOString()
