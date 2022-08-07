@@ -5,7 +5,7 @@ common:
       script: |
         set -e
 
-        helm upgrade --install --wait --timeout 300 \
+        helm upgrade --install --wait --timeout 300s \
           --namespace ${PROJECT}-$K8S_NAMESPACE \
           ${CHART_NAME}-$K8S_NAMESPACE \
           ./chart/${CHART_NAME}-*.tgz \
