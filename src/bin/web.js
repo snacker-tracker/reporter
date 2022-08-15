@@ -31,6 +31,8 @@ app.use(async (req, res, next) => {
 
 const injector = dependencies(Config, {})
 
+const services = injector({},{})
+
 middlewares(app, {
   config: Config,
   spec: swaggerDoc,
@@ -49,6 +51,14 @@ initialize({
   app,
   apiDoc: swaggerDoc,
   operations: handlers,
+  errorMiddleware: (err, req, res, next) => {
+      if('status' in err) {
+          services.logger.warn({message: "Unhandled error", err})
+          res.status(err.status).json(err)
+      } else {
+        next(err)
+      }
+  },
   consumesMiddleware: {
     'application/json': bodyParser.json(),
     'application/x-www-form-urlencoded': bodyParser.urlencoded(),
