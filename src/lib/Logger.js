@@ -45,12 +45,11 @@ class Logger {
       message = { error: message }
     }
 
-    if (typeof (message) == 'string') {
+    if (typeof message == 'string') {
       message = { message }
     }
 
     message = this.replaceErrors(message)
-
     console.log(JSON.stringify({
       level,
       ...this.context,
