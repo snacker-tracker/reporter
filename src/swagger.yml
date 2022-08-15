@@ -522,6 +522,8 @@ components:
           format: uuid
         code:
           $ref: "#/components/schemas/UPCCode"
+        location:
+          $ref: "#/components/schemas/ScannerLocation"
         scanned_at:
           type: string
           format: date-time
