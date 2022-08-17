@@ -14,7 +14,7 @@ export default class DeleteOperation extends Operation {
   resources() {
     return {
       resource: (async () => {
-        return this.constructor.model.query().findById(this.args.id).options({ operationId: this.constructor.name })
+          return this.constructor.model.query().findById(this.args.id).options({ operationId: this.constructor.name, logger: this.services.logger })
       })()
     }
   }

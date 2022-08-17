@@ -27,7 +27,7 @@ export default class PatchOperation extends Operation {
       result = await this.constructor.model.query().patchAndFetchById(
         this.getId(),
         patch
-      ).options({ operationId: this.constructor.name })
+      ).options({ operationId: this.constructor.name, logger: this.services.logger })
     } catch( error ) {
       if(error.code === '23505'){
         return HTTPResponse.Conflict()

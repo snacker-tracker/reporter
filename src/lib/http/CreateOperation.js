@@ -19,7 +19,7 @@ export default class CreateOperation extends Operation {
     let inserted
     try {
       inserted = await this.constructor.model.query()
-        .options({ operationId: this.constructor.name })
+        .options({ operationId: this.constructor.name, logger: this.services.logger })
         .insertAndFetch(this.args.body)
     } catch (error) {
       if(error.code === '23505') {

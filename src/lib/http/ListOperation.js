@@ -16,7 +16,10 @@ export default class ListOperation extends Operation {
       resources: (() => {
         let query = this.constructor.model.query()
 
-        query.options({ 'operationId': this.constructor.name })
+        query.options({
+            'operationId': this.constructor.name,
+            logger: this.services.logger
+        })
 
         query.skipUndefined()
         query.offset(this.args.offset)
