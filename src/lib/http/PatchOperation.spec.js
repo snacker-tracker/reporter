@@ -89,11 +89,10 @@ describe(PatchOperation, () => {
           }),
           expect.objectContaining({
             name: 'options',
-            args: [
-              { 'operationId': 'ExampleOperation' }
-            ]
+            args: expect.arrayContaining([
+              expect.objectContaining({ 'operationId': 'ExampleOperation' })
+            ])
           })
-
         ])
       )
     })

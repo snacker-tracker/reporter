@@ -4,12 +4,14 @@ import Scan from '../../models/Scan'
 
 class DeleteScan extends DeleteOperation {
   static model = Scan
-  static canBeCalledAnonymously = false
+  static canBeCalledAnonymously = true
 
   extract_params(req) {
+    const user = req.user
+
     this.args = {
-      sub: req.user.sub,
-      id: req.params.productId
+      ...(user && 'sub' in user ? { sub: user.sub } : {}),
+      id: req.params.scanId
     }
   }
 

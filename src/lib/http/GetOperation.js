@@ -2,14 +2,11 @@ import { Operation, HTTPResponse } from './Base'
 
 export default class GetOperation extends Operation {
   resources() {
-    const query = this.constructor.model.query()
-    query.options({
+    return {
+      resource: this.constructor.model.query().options({
         'operationId': this.constructor.name,
         logger: this.services.logger
-    })
-
-    return {
-      resource: query.findById(this.args.id)
+      }).findById(this.args.id)
     }
   }
 

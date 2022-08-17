@@ -27,7 +27,7 @@ class Logger {
 
       return error
     } else {
-        return value
+      return value
     }
   }
 

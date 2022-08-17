@@ -17,8 +17,8 @@ export default class ListOperation extends Operation {
         let query = this.constructor.model.query()
 
         query.options({
-            'operationId': this.constructor.name,
-            logger: this.services.logger
+          'operationId': this.constructor.name,
+          logger: this.services.logger
         })
 
         query.skipUndefined()

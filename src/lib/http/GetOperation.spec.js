@@ -2,7 +2,8 @@ import GetOperation from './GetOperation'
 
 const Query = {
   query: jest.fn().mockReturnThis(),
-  findById: jest.fn().mockReturnThis()
+  findById: jest.fn().mockReturnThis(),
+  options: jest.fn().mockReturnThis()
 }
 
 const Model = {
