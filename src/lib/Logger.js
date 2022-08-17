@@ -26,13 +26,13 @@ class Logger {
       error.stack = error.stack.split('\n').map( s => s.trim() )
 
       return error
+    } else {
+        return value
     }
-
-    return value
   }
 
   replaceErrors(message) {
-    for(const kv of Object.keys(message)) {
+    for(const kv of Object.entries(message)) {
       message[kv[0]] = this.stringifyError(kv[1])
     }
 
@@ -50,6 +50,7 @@ class Logger {
     }
 
     message = this.replaceErrors(message)
+
     console.log(JSON.stringify({
       level,
       ...this.context,
