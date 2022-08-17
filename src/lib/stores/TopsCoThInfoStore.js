@@ -4,12 +4,14 @@ class TopsCoThInfoStore extends ProductInfoStore {
   build_get_request(code) {
     return {
       method: 'get',
-      url: 'api/search/suggestions',
+      url: '/v2/api/search/products',
       params: {
-        query: code
+        query: code,
+        sort: 'ranking_desc'
       },
       headers: {
-        'x-store-code': 'tops_sa_432_th'
+        'x-store-code': 'tops_sa_432_th',
+        'cookie': 'lang=en_US'
       }
     }
   }
@@ -27,25 +29,35 @@ class TopsCoThInfoStore extends ProductInfoStore {
 
   getBase(code, response) {
     const searching_for_code = code
-    const data = response.data.filter( item => {
-      return item.sku == searching_for_code
+    const data = response.data.items.filter( item => {
+      return item.related_skus.includes(searching_for_code)
     })[0]
 
     if(data === undefined) {
       return false
     }
 
-    return data
+    if(data.children_product && data.children_product.sku == searching_for_code) {
+      return data.children_product
+    } else {
+      return data
+    }
+
   }
 
   getName(data) {
-    return data.title
+    try {
+      return data.extension_attributes.gtm_data.product_name_en
+    }
+    catch {
+      return data.name
+    }
   }
 
   getImages(data) {
     if(data.image) {
       return [
-        'https://backend.tops.co.th/media/catalog/product/' + data.image
+        'https://backend.tops.co.th/media/catalog/product' + data.image
       ]
     } else {
       return []

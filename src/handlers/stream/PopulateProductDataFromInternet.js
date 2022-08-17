@@ -89,7 +89,7 @@ class PopulateProductDataFromInternet extends EventHandler {
         for(const image of product_info.images) {
           const img_response = await this.download_picture(image)
           if(img_response) {
-            await this.upload_picture(payload.code, img_response)
+            await this.upload_picture(payload.code, img_response.data)
           }
         }
       }
