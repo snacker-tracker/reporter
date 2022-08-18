@@ -86,16 +86,28 @@ class Operation {
       }
 
       if(this.services.config.auth.authz.enabled) {
-        if(!req.user && !this.constructor.canBeCalledAnonymously) {
-          return new HTTPResponse({
-            status: 401,
-            body: {
-              message: 'Unauthorized'
-            }
-          })
-        }
+        return req.user == false && this.constructor.canBeCalledAnonymously == false
       }
     }
+  }
+
+  AuthZ(req) {
+    if(req.user && !this.constructor.canBeCalledAnonymously) {
+        this.services.logger.info("hello")
+        const perms = req.user.permissions
+            .map( p => p.split(':') )
+            .filter( p => p[0] == this.services.config.oauth.audience )
+            .map( p => p[1] )
+
+        console.log(perms, this.constructor.name)
+        console.log(this.constructor.name in perms)
+
+        if(!perms.includes(this.constructor.name)) {
+          return true
+        }
+    }
+
+    return false
   }
 
   response(code, message) {
@@ -111,10 +123,15 @@ class Operation {
     try {
       await this.fetch(this.resources(req))
     } catch (error) {
-      this.services.logger.warn({
-        message: 'Exception thrown while doing a pre-fetch of resoures',
-        error: error.toString()
-      })
+      if(this.services.logger) {
+        this.services.logger.warn({
+          message: 'Exception thrown while doing a pre-fetch of resoures',
+          error: error.toString()
+        })
+      } else {
+        console.log('lol wut')
+        console.log(error)
+      }
 
       return new HTTPResponse({
         status: 500,
@@ -141,6 +158,15 @@ class Operation {
   async run(req) {
     if(this.AuthN(req)) {
       return this.response(401, 'Unauthorized')
+    }
+
+    if(this.AuthZ(req)) {
+      return new HTTPResponse({
+        status: 403,
+        body: {
+          message: 'Unpermissioned'
+        }
+      })
     }
 
     await this.extract_params(req)
