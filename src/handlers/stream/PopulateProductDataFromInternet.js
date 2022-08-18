@@ -83,15 +83,26 @@ class PopulateProductDataFromInternet extends EventHandler {
       }
 
       this.services.logger.info({ createPayload })
-      local = await this.services.productInfoStores.snacker.post(createPayload)
 
-      if(product_info.images.length > 0) {
-        for(const image of product_info.images) {
-          const img_response = await this.download_picture(image)
-          if(img_response) {
-            await this.upload_picture(payload.code, img_response.data)
+      try {
+          local = await this.services.productInfoStores.snacker.post(createPayload)
+
+          if(product_info.images.length > 0) {
+            for(const image of product_info.images) {
+                try {
+                  const img_response = await this.download_picture(image)
+                  if(img_response) {
+                    await this.upload_picture(payload.code, img_response.data)
+                  }
+                } catch(error) {
+                    this.services.logger.warn("Caught exception while processing an image")
+                    this.services.logger.warn(error)
+                }
+            }
           }
-        }
+      } catch(error) {
+        this.services.logger.warn("Caught exception while processing an code")
+        this.services.logger.warn(error)
       }
     }
 
