@@ -32,11 +32,14 @@ services:
       - minio
       - server
       - /mnt/data
+      - "--console-address"
+      - ":9001"
     ports:
-      - 9000
+      - 9000:9000
+      - 9001:9001
     environment:
-      MINIO_ACCESS_KEY: 1234567890
-      MINIO_SECRET_KEY: 1234567890
+      MINIO_ROOT_USER: 1234567890
+      MINIO_ROOT_PASSWORD: 1234567890
 
   bare: &bare
     image: node:16
