@@ -4,7 +4,7 @@ import Scan from '../../models/Scan'
 
 class DeleteScan extends DeleteOperation {
   static model = Scan
-  static canBeCalledAnonymously = true
+  static canBeCalledAnonymously = false
 
   extract_params(req) {
     const user = req.user
