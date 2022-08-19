@@ -85,9 +85,7 @@ class Operation {
         this.user = false
       }
 
-      if(this.services.config.auth.authz.enabled) {
-        return req.user == false && this.constructor.canBeCalledAnonymously == false
-      }
+      return (req.user == false || req.user == null) && this.constructor.canBeCalledAnonymously == false
     }
   }
 
@@ -98,9 +96,6 @@ class Operation {
             .map( p => p.split(':') )
             .filter( p => p[0] == this.services.config.oauth.audience )
             .map( p => p[1] )
-
-        console.log(perms, this.constructor.name)
-        console.log(this.constructor.name in perms)
 
         if(!perms.includes(this.constructor.name)) {
           return true
@@ -128,9 +123,6 @@ class Operation {
           message: 'Exception thrown while doing a pre-fetch of resoures',
           error: error.toString()
         })
-      } else {
-        console.log('lol wut')
-        console.log(error)
       }
 
       return new HTTPResponse({

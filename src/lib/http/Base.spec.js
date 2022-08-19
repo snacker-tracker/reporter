@@ -1,12 +1,26 @@
-import { Operation } from './Base'
+import { HTTPResponse, Operation } from './Base'
 import logger from '../../services/logger'
 
 class ExampleAuthenticatedOperation extends Operation {
   static canBeCalledAnonymously = false
+
+  execute() {
+    return HTTPResponse.Okay(this.toHttpRepresentation(this.resources.resource))
+  }
+
 }
+
+class UnimplementedOperation extends Operation {
+  static canBeCalledAnonymously = true
+}
+
 
 class ExampleOperation extends Operation {
   static canBeCalledAnonymously = true
+
+  execute() {
+    return HTTPResponse.Okay(this.toHttpRepresentation(this.resources.resource))
+  }
 }
 
 describe(Operation, () => {
@@ -47,6 +61,7 @@ describe(Operation, () => {
 
       operation = new ExampleAuthenticatedOperation({ logger, config })
       const response = await operation.run(request, {})
+
       expect(response.constructor.name).toBe('HTTPResponse')
       expect(response.status).toBe(401)
     })
@@ -72,6 +87,19 @@ describe(Operation, () => {
     })
 
     it('the base class returns a 501 - Not Implemented', async () => {
+      const config = {
+        auth: {
+          authn: {
+            enabled: true
+          },
+          authz: {
+            enabled: true
+          }
+        }
+      }
+
+      const operation = new UnimplementedOperation({ logger, config })
+
       const response = await operation.run(request, {})
       expect(response.constructor.name).toBe('HTTPResponse')
       expect(response.status).toBe(501)
