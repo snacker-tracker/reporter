@@ -91,15 +91,15 @@ class Operation {
 
   AuthZ(req) {
     if(req.user && !this.constructor.canBeCalledAnonymously) {
-        this.services.logger.info("hello")
-        const perms = req.user.permissions
-            .map( p => p.split(':') )
-            .filter( p => p[0] == this.services.config.oauth.audience )
-            .map( p => p[1] )
+      this.services.logger.info('hello')
+      const perms = req.user.permissions
+        .map( p => p.split(':') )
+        .filter( p => p[0] == this.services.config.oauth.audience )
+        .map( p => p[1] )
 
-        if(!perms.includes(this.constructor.name)) {
-          return true
-        }
+      if(!perms.includes(this.constructor.name)) {
+        return true
+      }
     }
 
     return false
@@ -156,7 +156,7 @@ class Operation {
       return new HTTPResponse({
         status: 403,
         body: {
-            message: 'Forbidden: You can\' do this'
+          message: 'Forbidden: You can\' do this'
         }
       })
     }
