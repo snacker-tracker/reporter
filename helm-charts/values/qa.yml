@@ -25,7 +25,7 @@ config:
     USE_SWAGGER_VALIDATION: "true"
     DATABASE_HOST: snacker-tracker-reporter-qa-postgresql.snacker-tracker-qa.svc.cluster.local
     DATABASE_NAME: snacker-tracker-reporter-qa
-    DATABASE_USERNAME: postgres
+    DATABASE_USERNAME: snacker-tracker-reporter-qa
     KINESIS_ENDPOINT: "http://kinesalite.aws.svc.cluster.local"
     S3_ENDPOINT: "https://s3.aws.k8s.fscker.org"
     AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE"

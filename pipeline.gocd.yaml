@@ -5,12 +5,12 @@ common:
       script: |
         set -e
 
-        helm upgrade --install --wait --timeout 300s \
-          --namespace ${PROJECT}-$K8S_NAMESPACE \
-          ${CHART_NAME}-$K8S_NAMESPACE \
+        helm upgrade --debug --install --wait --timeout 300s \
+          --namespace ${PROJECT}-${K8S_NAMESPACE} \
+          ${CHART_NAME}-${K8S_NAMESPACE} \
           ./chart/${CHART_NAME}-*.tgz \
           --values ./chart/${K8S_NAMESPACE}.yml \
-          --set postgresql.global.auth.password="${DATABASE_PASSWORD}" \
+          --set postgresql.global.postgresql.auth.password="${DATABASE_PASSWORD}" \
           --set config.secrets.DATABASE_PASSWORD="${DATABASE_PASSWORD}" \
           --set config.secrets.OAUTH_CLIENT_SECRET="${OAUTH_CLIENT_SECRET}" \
           --set config.secrets.AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
@@ -32,9 +32,9 @@ common:
           -e ENVIRONMENT_NAME=${K8S_NAMESPACE} \
           -e DEBUG="knex:query" \
           ${REGISTRY}/${IMAGE}:${GO_PIPELINE_LABEL} \
-          yarn knex \
-          --knexfile ./src/database/knexfile.js \
-          migrate:latest
+            yarn knex \
+              --knexfile ./src/database/knexfile.js \
+              migrate:latest
 
     restore: &restore
       script: |
@@ -48,19 +48,27 @@ common:
 
         trap finish EXIT
 
-        ## ./prod-backup/backup/backup.sql
-        ## psql -U username -h localhost -d postgres -c "DROP DATABASE \"$DATABASE\";"
         docker run \
-        -e PGPASSWORD="$DATABASE_PASSWORD" \
-        -v `pwd`/prod-backup:/mnt/ \
-        -w /mnt/backup/ \
-         postgres:11 psql --host=$DATABASE_HOST --dbname=$DATABASE_NAME --username=$DATABASE_USERNAME -c "DROP TABLE IF EXISTS \"codes\"; DROP TABLE IF EXISTS \"scans\"; DROP TABLE IF EXISTS \"knex_migrations\"; DROP TABLE IF EXISTS \"knex_migrations_lock\""
+          -e PGPASSWORD="$DATABASE_PASSWORD" \
+          -v `pwd`/prod-backup:/mnt/ \
+          -w /mnt/backup/ \
+          postgres:14 \
+            psql \
+            --host=$DATABASE_HOST \
+            --dbname=$DATABASE_NAME \
+            --username=$DATABASE_USERNAME \
+            -c "DROP TABLE IF EXISTS \"codes\"; DROP TABLE IF EXISTS \"scans\"; DROP TABLE IF EXISTS \"knex_migrations\"; DROP TABLE IF EXISTS \"knex_migrations_lock\""
 
         docker run \
         -e PGPASSWORD="$DATABASE_PASSWORD" \
-        -v `pwd`/prod-backup:/mnt/ \
-        -w /mnt/backup/ \
-         postgres:11 psql --host=$DATABASE_HOST --dbname=$DATABASE_NAME --username=$DATABASE_USERNAME -f /mnt/backup/backup.sql
+          -v `pwd`/prod-backup:/mnt/ \
+          -w /mnt/backup/ \
+          postgres:14 \
+            psql \
+            --host=$DATABASE_HOST \
+            --dbname=$DATABASE_NAME \
+            --username=$DATABASE_USERNAME \
+            -f /mnt/backup/backup.sql
 
     seed: &seed
       script: |
@@ -79,9 +87,9 @@ common:
           -e ENVIRONMENT_NAME=${K8S_NAMESPACE} \
           -e DEBUG="knex:query" \
           ${REGISTRY}/${IMAGE}:${GO_PIPELINE_LABEL} \
-          yarn knex \
-          --knexfile ./src/database/knexfile.js \
-          seed:run
+            yarn knex \
+            --knexfile ./src/database/knexfile.js \
+            seed:run
 
     backup: &backup
       script: |
@@ -102,7 +110,7 @@ common:
         -e PGPASSWORD="$DATABASE_PASSWORD" \
         -v `pwd`/backup:/mnt/backup/ \
         -w /mnt/backup/ \
-         postgres:11 pg_dump --no-owner --no-acl --host=$DATABASE_HOST --username=$DATABASE_USERNAME --dbname=$DATABASE_NAME -f /mnt/backup/backup.sql
+         postgres:14 pg_dump --no-owner --no-acl --host=$DATABASE_HOST --username=$DATABASE_USERNAME --dbname=$DATABASE_NAME -f /mnt/backup/backup.sql
 
          ls -lh backup/
 
@@ -358,7 +366,7 @@ pipelines:
         destination: ./
 
     environment_variables:
-      # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
+      REGISTRY: ghcr.io
       IMAGE: snacker-tracker/reporter
       CHART_NAME: snacker-tracker-reporter
       PROJECT: snacker-tracker
@@ -379,6 +387,7 @@ pipelines:
                       --label go-pipeline-stage=${GO_STAGE_NAME} \
                       --label go-pipeline-stage-counter=${GO_STAGE_COUNTER} \
                       --label go-pipeline-job=${GO_JOB_NAME} \
+                      --label org.opencontainers.image.source="https://github.com/snacker-tracker/reporter" \
                       --build-arg APP_VERSION=${GO_PIPELINE_LABEL} \
                       .
 
@@ -392,7 +401,6 @@ pipelines:
                     set -e
 
                     helm lint helm-charts/${CHART_NAME}
-
                     helm package --version "$(echo $GO_PIPELINE_LABEL | awk -F '-' '{print $1}')" --app-version $GO_PIPELINE_LABEL ./helm-charts/${CHART_NAME}
               artifacts:
                 - build:
@@ -449,27 +457,27 @@ pipelines:
         destination: ./
 
     environment_variables:
-      # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
+      REGISTRY: ghcr.io
       IMAGE: snacker-tracker/reporter
       CHART_NAME: snacker-tracker-reporter
       DATABASE_HOST: "snacker-tracker-reporter-qa-postgresql.snacker-tracker-qa.svc.cluster.local"
       DATABASE_NAME: snacker-tracker-reporter-qa
-      DATABASE_USERNAME: postgres
+      DATABASE_USERNAME: snacker-tracker-reporter-qa
       K8S_NAMESPACE: qa
       PROJECT: snacker-tracker
       AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE"
     secure_variables:
       AWS_SECRET_ACCESS_KEY: "AES:g74vDh1HTQFqdAlqW2rP/Q==:B9nSUROo8qWoBMIm5J0OhaWudYJht77jQns73Y8FbMg="
-      DATABASE_PASSWORD: "AES:rNlEqosakEETBNcpKbgQ1w==:Q5hv6qI+YtViR2tlIaJ5YA=="
+      DATABASE_PASSWORD: "AES:70+xmRG2ccXLh+2fD0TM7w==:PxXh1byqsJX5bC4D97yVVw=="
     stages:
       - backup-prod-data:
           jobs:
             backup:
               environment_variables:
-                DATABASE_HOST: "snacker-tracker-reporter-prod-postgresql.snacker-tracker-prod.svc.cluster.local"
-                DATABASE_NAME: snacker-tracker-reporter-prod
-                DATABASE_USERNAME: postgres
                 K8S_NAMESPACE: prod
+                DATABASE_HOST: "snacker-tracker-reporter-prod-postgresql.snacker-tracker-prod.svc.cluster.local"
+                DATABASE_USERNAME: snacker-tracker-reporter-prod
+                DATABASE_NAME: snacker-tracker-reporter-prod
               secure_variables:
                 DATABASE_PASSWORD: "AES:rNlEqosakEETBNcpKbgQ1w==:Q5hv6qI+YtViR2tlIaJ5YA=="
               tasks:
@@ -563,7 +571,7 @@ pipelines:
       CHART_NAME: snacker-tracker-reporter
       DATABASE_HOST: "snacker-tracker-reporter-prod-postgresql.snacker-tracker-prod.svc.cluster.local"
       DATABASE_NAME: snacker-tracker-reporter-prod
-      DATABASE_USERNAME: postgres
+      DATABASE_USERNAME: snacker-tracker-reporter-prod
       K8S_NAMESPACE: prod
       PROJECT: snacker-tracker
     secure_variables:
