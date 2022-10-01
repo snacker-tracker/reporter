@@ -416,7 +416,7 @@ pipelines:
       PROJECT: snacker-tracker
     secure_variables:
       DATABASE_PASSWORD: "AES:rNlEqosakEETBNcpKbgQ1w==:Q5hv6qI+YtViR2tlIaJ5YA=="
-      AWS_SECRET_ACCESS_KEY: "AES:1dYj157kEATATvr4K33klw==:MXMbQNIMTwuzTEtvziws8Ce9vNJrgJ6brLPhxXxiyHw="
+      AWS_SECRET_ACCESS_KEY: "AES:g74vDh1HTQFqdAlqW2rP/Q==:B9nSUROo8qWoBMIm5J0OhaWudYJht77jQns73Y8FbMg="
       OAUTH_CLIENT_SECRET: "AES:xIOnyJEmtP05oANb7A4prA==:ykzRozzBmxWaGADz+tVv/m+rDKQW9TXzsrtEnDp6liSnzDpGeEeWpJC86Ojz5d2gJt53SfMvv5At+ejLGG1Mf+AGkSz8EGuV0C/U0YyctaE="
     stages:
       - deploy:
@@ -459,8 +459,8 @@ pipelines:
       PROJECT: snacker-tracker
       AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE"
     secure_variables:
+      AWS_SECRET_ACCESS_KEY: "AES:g74vDh1HTQFqdAlqW2rP/Q==:B9nSUROo8qWoBMIm5J0OhaWudYJht77jQns73Y8FbMg="
       DATABASE_PASSWORD: "AES:rNlEqosakEETBNcpKbgQ1w==:Q5hv6qI+YtViR2tlIaJ5YA=="
-      AWS_SECRET_ACCESS_KEY: "AES:sD7ZqSU5xDUGEz6lwCBCOQ==:ujFaho4OGe60fY7+2OfOjeY/u5m3E2aYmlgS24PSP2GDWBEBvSug6D9NA/i+7qGl"
     stages:
       - backup-prod-data:
           jobs:
@@ -523,7 +523,7 @@ pipelines:
       PROJECT: snacker-tracker
     secure_variables:
       DATABASE_PASSWORD: "AES:rNlEqosakEETBNcpKbgQ1w==:Q5hv6qI+YtViR2tlIaJ5YA=="
-      AWS_SECRET_ACCESS_KEY: "AES:1dYj157kEATATvr4K33klw==:MXMbQNIMTwuzTEtvziws8Ce9vNJrgJ6brLPhxXxiyHw="
+      AWS_SECRET_ACCESS_KEY: "AES:g74vDh1HTQFqdAlqW2rP/Q==:B9nSUROo8qWoBMIm5J0OhaWudYJht77jQns73Y8FbMg="
       OAUTH_CLIENT_SECRET: "AES:X1sqOygm0ncOBOPGFEhSOw==:8VYE8IfQofEny+xgKkUGvEyiDlJaNftE/fpaMaKa0jNp/bk3wFEnjSi4cCy2wDOkMIZBo8K51VVdNXqHS2zGoYFUfx+2eSsXAc3zxJIonPs="
     stages:
       - deploy:
