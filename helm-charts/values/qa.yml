@@ -8,10 +8,15 @@ ingress:
     - secretName: reporter-snacker-tracker-qa-k8s-fscker-org
       hosts:
         - reporter.snacker-tracker.qa.k8s.fscker.org
+
 postgresql:
-  enabled: true
-  postgresqlPassword: "undefined"
-  postgresqlDatabase: "snacker-tracker-reporter-qa"
+  global:
+    postgresql:
+      auth:
+        database: snacker-tracker-reporter-qa
+        username: snacker-tracker-reporter-qa
+        password: UNDEFINED
+
 
 config:
   env:

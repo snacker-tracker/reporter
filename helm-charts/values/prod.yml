@@ -8,10 +8,14 @@ ingress:
     - secretName: reporter-snacker-tracker-prod-k8s-fscker-org-tls
       hosts:
         - reporter.snacker-tracker.prod.k8s.fscker.org
+
 postgresql:
-  enabled: true
-  postgresqlPassword: "undefined"
-  postgresqlDatabase: "snacker-tracker-reporter-prod"
+  global:
+    postgresql:
+      auth:
+        database: snacker-tracker-reporter-prod
+        username: snacker-tracker-reporter-prod
+        password: UNDEFINED
 
 config:
   env:
@@ -20,7 +24,7 @@ config:
     USE_SWAGGER_VALIDATION: "true"
     DATABASE_HOST: snacker-tracker-reporter-prod-postgresql.snacker-tracker-prod.svc.cluster.local
     DATABASE_NAME: snacker-tracker-reporter-prod
-    DATABASE_USERNAME: postgres
+    DATABASE_USERNAME: snacker-tracker-reporter-prod
     KINESIS_ENDPOINT: "http://kinesalite.aws.svc.cluster.local"
     S3_ENDPOINT: "https://s3.aws.k8s.fscker.org"
     AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE"

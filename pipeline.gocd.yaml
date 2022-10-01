@@ -10,7 +10,7 @@ common:
           ${CHART_NAME}-$K8S_NAMESPACE \
           ./chart/${CHART_NAME}-*.tgz \
           --values ./chart/${K8S_NAMESPACE}.yml \
-          --set postgresql.postgresqlPassword="${DATABASE_PASSWORD}" \
+          --set postgresql.global.auth.password="${DATABASE_PASSWORD}" \
           --set config.secrets.DATABASE_PASSWORD="${DATABASE_PASSWORD}" \
           --set config.secrets.OAUTH_CLIENT_SECRET="${OAUTH_CLIENT_SECRET}" \
           --set config.secrets.AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
@@ -126,16 +126,10 @@ pipelines:
         destination: ./
 
     environment_variables:
-      # REGISTRY: VALUE PASSED DOWN FROM THE AGENT ITSELF
+      REGISTRY: ghcr.io
       IMAGE: snacker-tracker/reporter
       CHART_NAME: snacker-tracker-reporter
       PROJECT: snacker-tracker
-      GO_AUTOMATION_USER: automaton
-      GITHUB_AUTOMATION_USER: gocd-service-account
-    secure_variables:
-      GO_AUTOMATION_PASSWORD: "AES:ZC4bipsr97Xr4yZ8rGlhIg==:nk9ITxqqErVRKOWlyhS0L50GZX45IHepoNUy3BcJ/tapPijAP1l/hEHjYE85m1/Z"
-      GITHUB_AUTOMATION_PASSWORD: "AES:EwOyEBf7z5d8VzVua75pEg==:LZhYZmLP7OR2Vf+NwirNlTCYCmptgbSRRqD3kWjjYlXxxCeSZGYyX07ZIcgMpfhV"
-
     stages:
       - tests:
           jobs:
@@ -429,9 +423,9 @@ pipelines:
       CHART_NAME: snacker-tracker-reporter
       PROJECT: snacker-tracker
     secure_variables:
-      DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
-      AWS_SECRET_ACCESS_KEY: "AES:sD7ZqSU5xDUGEz6lwCBCOQ==:ujFaho4OGe60fY7+2OfOjeY/u5m3E2aYmlgS24PSP2GDWBEBvSug6D9NA/i+7qGl"
-      OAUTH_CLIENT_SECRET: "AES:2KEgFgvsaHh+AAVMqiiVmw==:D0/G7yDH8uLiSuP9EKYQE5wB2MqeSYdn+eVMS9LWx1E5frpbJ6sYYlpWB7YFzsa/tc03vf2LAGs+mRsYUL3XMeU4iZx78ZPBZ3iCLs9dJYM="
+      DATABASE_PASSWORD: "AES:rNlEqosakEETBNcpKbgQ1w==:Q5hv6qI+YtViR2tlIaJ5YA=="
+      AWS_SECRET_ACCESS_KEY: "AES:1dYj157kEATATvr4K33klw==:MXMbQNIMTwuzTEtvziws8Ce9vNJrgJ6brLPhxXxiyHw="
+      OAUTH_CLIENT_SECRET: "ztvaOnCsA0UcbywRXAPg1AbB9NgKo4pSjkYaG3yJeJqDW2_Cgk5OdWsOPOtHvAQy"
     stages:
       - deploy:
           jobs:
@@ -473,7 +467,7 @@ pipelines:
       PROJECT: snacker-tracker
       AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE"
     secure_variables:
-      DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
+      DATABASE_PASSWORD: "AES:rNlEqosakEETBNcpKbgQ1w==:Q5hv6qI+YtViR2tlIaJ5YA=="
       AWS_SECRET_ACCESS_KEY: "AES:sD7ZqSU5xDUGEz6lwCBCOQ==:ujFaho4OGe60fY7+2OfOjeY/u5m3E2aYmlgS24PSP2GDWBEBvSug6D9NA/i+7qGl"
     stages:
       - backup-prod-data:
@@ -485,7 +479,7 @@ pipelines:
                 DATABASE_USERNAME: postgres
                 K8S_NAMESPACE: prod
               secure_variables:
-                DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
+                DATABASE_PASSWORD: "AES:rNlEqosakEETBNcpKbgQ1w==:Q5hv6qI+YtViR2tlIaJ5YA=="
               tasks:
                 - *backup
               artifacts:
@@ -536,9 +530,9 @@ pipelines:
       CHART_NAME: snacker-tracker-reporter
       PROJECT: snacker-tracker
     secure_variables:
-      DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
-      AWS_SECRET_ACCESS_KEY: "AES:sD7ZqSU5xDUGEz6lwCBCOQ==:ujFaho4OGe60fY7+2OfOjeY/u5m3E2aYmlgS24PSP2GDWBEBvSug6D9NA/i+7qGl"
-      OAUTH_CLIENT_SECRET: "AES:hpy0VQN7CbWpqLHeYSp3gg==:NWJ8+UVYpQxFoe2knRxqdLMXHOMHmo8fELcvQTT+T0xqn6yHgI2b+3TCtSLRlN4QhO6NELivcBrjVxJL47evz8No2hFke7y4eBQJGTp9LiM="
+      DATABASE_PASSWORD: "AES:rNlEqosakEETBNcpKbgQ1w==:Q5hv6qI+YtViR2tlIaJ5YA=="
+      AWS_SECRET_ACCESS_KEY: "AES:1dYj157kEATATvr4K33klw==:MXMbQNIMTwuzTEtvziws8Ce9vNJrgJ6brLPhxXxiyHw="
+      OAUTH_CLIENT_SECRET: "ztvaOnCsA0UcbywRXAPg1AbB9NgKo4pSjkYaG3yJeJqDW2_Cgk5OdWsOPOtHvAQy"
     stages:
       - deploy:
           approval:
@@ -581,7 +575,7 @@ pipelines:
       K8S_NAMESPACE: prod
       PROJECT: snacker-tracker
     secure_variables:
-      DATABASE_PASSWORD: "AES:18jhrqGd0n44Gyb4Enbxww==:caltQWdr90nZA2ePrxQOuA=="
+      DATABASE_PASSWORD: "AES:rNlEqosakEETBNcpKbgQ1w==:Q5hv6qI+YtViR2tlIaJ5YA=="
 
     stages:
       - migrate:

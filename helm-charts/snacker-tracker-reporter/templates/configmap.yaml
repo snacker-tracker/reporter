@@ -4,7 +4,7 @@ metadata:
   name: {{ include "snacker-tracker-reporter.fullname" . }}
   labels:
     # NON-DEFAULT: We also care about knowing the version of the app.
-    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
 {{ include "snacker-tracker-reporter.labels" . | indent 4 }}
 data:
 {{- range $key, $value := .Values.config.env }}
