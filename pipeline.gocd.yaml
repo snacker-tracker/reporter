@@ -566,7 +566,7 @@ pipelines:
         destination: ./
 
     environment_variables:
-      REGISTRY: "registry.k8s.fscker.org"
+      REGISTRY: "git.k8s.fscker.org"
       IMAGE: snacker-tracker/reporter
       CHART_NAME: snacker-tracker-reporter
       DATABASE_HOST: "snacker-tracker-reporter-prod-postgresql.snacker-tracker-prod.svc.cluster.local"
