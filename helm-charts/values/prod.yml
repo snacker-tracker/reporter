@@ -1,5 +1,7 @@
 ingress:
   enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/whitelist-source-range: "0.0.0.0/0"
   hosts:
     - host: reporter.snacker-tracker.prod.k8s.fscker.org
       paths:
