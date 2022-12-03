@@ -97,10 +97,10 @@ describe(PatchOperation, () => {
       )
     })
 
-    it('responds a 201 on success', async () => {
+    it('responds a 200 on success', async () => {
       const response = await operation.run(request, null)
 
-      expect(response.status).toBe(201)
+      expect(response.status).toBe(200)
     })
 
     it('responds with the inserted object on success', async () => {

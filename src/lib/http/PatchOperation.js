@@ -46,6 +46,6 @@ export default class PatchOperation extends Operation {
       this.user
     )
 
-    return HTTPResponse.Created(this.toHttpRepresentation(result))
+    return HTTPResponse.Okay(this.toHttpRepresentation(result))
   }
 }
