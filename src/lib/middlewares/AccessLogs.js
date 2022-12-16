@@ -41,9 +41,11 @@ class AccessLogs extends Middleware {
     if(res.req.user) {
       event.request.user = res.req.user
 
-      this.options.metrics.swagger.openid_clients.labels(
-        res.req.operationDoc.operationId, res.req.user.azp
-      ).inc()
+      if(res.req.operationDoc) {
+          this.options.metrics.swagger.openid_clients.labels(
+            res.req.operationDoc.operationId, res.req.user.azp
+          ).inc()
+      }
     }
 
     this.options.logger.info(event)
