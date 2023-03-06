@@ -300,6 +300,44 @@ pipelines:
 
                     exit $EXIT_CODE
 
+            spectral-swagger:
+              tasks:
+                - script: |
+                    github-commit-status \
+                      snacker-tracker/reporter \
+                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                      "pending" "Build is running"
+                - script: |
+                    ./auto/clean-up || true
+                - script: |
+                    function finish {
+                      EXIT_CODE=$?
+                      set +e
+
+                      docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
+
+                      ./auto/clean-up || true
+
+                       [[ $EXIT_CODE = 0 ]] && GH_STATUS="success" || GH_STATUS="failure"
+
+                      github-commit-status \
+                        snacker-tracker/reporter \
+                        ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+                        $GH_STATUS "${GH_STATUS_DESCRIPTION}"
+
+                      exit $EXIT_CODE
+                    }
+
+                    trap finish EXIT
+
+                    ./auto/spectral-lint
+                    EXIT_CODE=$?
+
+                    [[ $EXIT_CODE = 0 ]] && GH_STATUS_DESCRIPTION="Swager is VALID" || GH_STATUS_DESCRIPTION="Swagger is INVALID"
+
+                    exit $EXIT_CODE
+
+
       - dummy-stage:
           tasks:
             - script: |
