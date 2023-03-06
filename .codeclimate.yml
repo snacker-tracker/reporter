@@ -1,5 +1,0 @@
-## other configuration excluded from example...
-exclude_patterns:
-- "spectral/functions/*.js"
-  src/database/migrations/**.js
-  **/node_modules/
