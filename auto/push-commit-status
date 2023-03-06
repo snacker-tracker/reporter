@@ -1,4 +1,5 @@
-#/usr/bin/env bash -x
+#!/usr/bin/env bash
+
 REPO="${1}"
 COMMIT_HASH="${2}"
 STATUS="${3}"
@@ -18,5 +19,5 @@ EOF
 
 curl -H "Authorization: token ${GITHUB_AUTOMATION_PASSWORD}" \
   -H 'Content-Type: application/json' \
-  https://api.github.com/repos/${REPO}/statuses/${COMMIT_HASH} \
+  "https://api.github.com/repos/${REPO}/statuses/${COMMIT_HASH}" \
   -d "${PAYLOAD}"

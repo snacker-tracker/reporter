@@ -337,6 +337,10 @@ pipelines:
 
                     exit $EXIT_CODE
 
+            shellcheck:
+              tasks:
+                - script: |
+                    docker run -v "$(pwd):/app/" -w /app/ koalaman/shellcheck-alpine shellcheck ./auto/*
 
       - dummy-stage:
           tasks:

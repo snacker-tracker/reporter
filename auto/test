@@ -2,4 +2,4 @@
 
 # export SERVICE="full"
 
-./auto/yarn test ${@} --forceExit
+./auto/yarn test "${@}" --forceExit

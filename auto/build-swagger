@@ -3,28 +3,28 @@
 export SWAGGER_PATH="${1-src/swagger.yml}"
 
 
-export GO_PIPELINE_LABEL=${GO_PIPELINE_LABEL-0.0.1-snapshot}
+export GO_PIPELINE_LABEL="${GO_PIPELINE_LABEL-0.0.1-snapshot}"
 
 # Dereference the basic types (eg, string, number, etc)
-./auto/yarn swagger:deref $SWAGGER_PATH ./swagger.derefed.yml
+./auto/yarn swagger:deref "$SWAGGER_PATH" ./swagger.derefed.yml
 
 #cat swagger.derefed.yml | yq -y ".info.version|=\"$GO_PIPELINE_LABEL\"" > swagger-with-version.yml
 #mv swagger-with-version.yml swagger.derefed.yml
 
 rm -rf swagger
-mkdir swagger &2> /dev/null || true
+mkdir -p swagger
 
 # Generate the client, for JS, using ES6 and promises
-docker run -u $(id -u) -v `pwd`:/app/ \
+docker run -u "$(id -u)" -v "$(pwd):/app/" \
   openapitools/openapi-generator-cli generate \
   -i /app/swagger.derefed.yml \
   -g javascript \
   -o /app/swagger/ \
-  --additional-properties=usePromises=true,appVersion=${GO_PIPELINE_LABEL},projectVersion=${GO_PIPELINE_LABEL}
+  --additional-properties="usePromises=true,appVersion=${GO_PIPELINE_LABEL},projectVersion=${GO_PIPELINE_LABEL}"
 
 
 # Build the package, and change the entrypoint to the plain js (so we can run it after its installed)
-docker run -u $(id -u) -w /app/swagger/ -v `pwd`/swagger/:/app/swagger node:10 yarn install
-docker run -u $(id -u) -w /app/swagger/ -v `pwd`/swagger/:/app/swagger node:10 ./node_modules/.bin/babel -d ./dist/ --copy --source-maps --ignore ./node_modules/ ./src
-cat swagger/package.json | jq '.main |= "dist/index.js"' > /tmp/package.json
+docker run -u "$(id -u)" -w /app/swagger/ -v "$(pwd)/swagger/:/app/swagger" node:10 yarn install
+docker run -u "$(id -u)" -w /app/swagger/ -v "$(pwd)/swagger/:/app/swagger" node:10 ./node_modules/.bin/babel -d ./dist/ --copy --source-maps --ignore ./node_modules/ ./src
+jq '.main |= "dist/index.js"' < swagger/package.json > /tmp/package.json
 mv /tmp/package.json ./swagger/

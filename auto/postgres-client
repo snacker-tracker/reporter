@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
-export PG_PORT="$(docker-compose port pg 5432 | awk -F ':' '{ print $2 }')"
+PG_PORT="$(docker-compose port pg 5432 | awk -F ':' '{ print $2 }')"
 
-psql --host=0.0.0.0 --port=$PG_PORT snacker-tracker-reporter-default snacker-tracker-reporter
+export PG_PORT
+
+psql --host=0.0.0.0 --port="$PG_PORT" snacker-tracker-reporter-default snacker-tracker-reporter

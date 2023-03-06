@@ -19,4 +19,4 @@ docker volume create yarn-cache > /dev/null || true
 
 docker-compose run --rm bare yarn install
 
-docker-compose run -e STRYKER_DASHBOARD_API_KEY -e ENVIRONMENT_NAME=${ENVIRONMENT_NAME-dev} --rm --use-aliases --service-ports ${SERVICE-bare} ${@}
+docker-compose run -e STRYKER_DASHBOARD_API_KEY -e ENVIRONMENT_NAME="${ENVIRONMENT_NAME-dev}" --rm --use-aliases --service-ports "${SERVICE-bare}" "${@}"
