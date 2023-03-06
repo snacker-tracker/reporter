@@ -93,9 +93,9 @@ class Operation {
     if(req.user && !this.constructor.canBeCalledAnonymously) {
       this.services.logger.info('hello')
       const perms = req.user.permissions
-        .map( p => p.split(':') )
-        .filter( p => p[0] == this.services.config.oauth.audience )
-        .map( p => p[1] )
+        .map( perm => perm.split(':') )
+        .filter( perm => perm[0] == this.services.config.oauth.audience )
+        .map( perm => perm[1] )
 
       if(!perms.includes(this.constructor.name)) {
         return true

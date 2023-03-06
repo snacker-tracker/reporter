@@ -1,6 +1,6 @@
 
 const operation_to_handler = (operationId, operation, dependencies) => {
-  return [async (req, res, next) => {
+  return [async (req, res) => {
     const deps = dependencies(operation, req)
     const cmd = new operation(deps)
 

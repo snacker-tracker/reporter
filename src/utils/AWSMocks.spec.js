@@ -22,15 +22,15 @@ describe(Kinesis, () => {
   })
 
   it('reports the called arguments', async () => {
-    const k = new Kinesis()
+    const kinesis = new Kinesis()
 
-    k.listShards.mockResolvedValue('resolved value')
+    kinesis.listShards.mockResolvedValue('resolved value')
 
     const listShardsArgument = 'blah'
 
-    await k.listShards(listShardsArgument).promise()
+    await kinesis.listShards(listShardsArgument).promise()
 
-    expect(k.listShards).toHaveBeenCalledWith(listShardsArgument)
+    expect(kinesis.listShards).toHaveBeenCalledWith(listShardsArgument)
   })
 
   describe('concurrency', () => {

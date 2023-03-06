@@ -2,7 +2,9 @@ import * as middlewares from '../lib/middlewares/'
 
 const register = (app, { config, spec, services }) => {
   const register = services.prometheus.register
-  Object.entries(services.metrics.swagger).forEach( ([key, value]) => {
+
+  // eslint-disable-next-line   no-unused-vars
+  Object.entries(services.metrics.swagger).forEach( ([_, value]) => {
     register.registerMetric(value)
   })
 

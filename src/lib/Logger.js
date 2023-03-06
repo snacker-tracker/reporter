@@ -23,7 +23,7 @@ class Logger {
         error[key] = value[key]
       })
 
-      error.stack = error.stack.split('\n').map( s => s.trim() )
+      error.stack = error.stack.split('\n').map( line => line.trim() )
 
       return error
     } else {
