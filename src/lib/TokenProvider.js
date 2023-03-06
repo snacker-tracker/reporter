@@ -31,7 +31,9 @@ class TokenProvider {
       })
 
       this.cache = {
-        expiry: new Date() + ( 1000 * response.data.expires_in ),
+        expiry: new Date(
+          new Date().getTime() + (1000 * response.data.expires_in * 0.9)
+        ),
         token: response.data.access_token
       }
 

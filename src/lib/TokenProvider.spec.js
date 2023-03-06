@@ -128,48 +128,38 @@ describe(TokenProvider, () => {
       expect(token).toBe('the-first-token')
     })
 
-    it('caches tokens', async () => {
-      await tokenProvider.getToken()
-      const token = await tokenProvider.getToken()
-      expect(token).toBe('the-first-token')
+    it('returns a cached token if it has one already', async () => {
+      const firstToken = await tokenProvider.getToken()
+      const secondToken = await tokenProvider.getToken()
+
+      expect(axios.post).toHaveBeenCalledTimes(1)
+      expect(secondToken).toBe(firstToken)
     })
 
     describe('cache expiry', () => {
-      it('gets a new token if we never had one', async () => {
-        tokenProvider.cache = {
-          token: false
-        }
-        await tokenProvider.getToken()
-        const token = await tokenProvider.getToken()
-        expect(token).toBe('the-first-token')
+      it('gives us the cached token if expiry is in the future', async () => {
+        const firstToken = await tokenProvider.getToken()
+
+        tokenProvider.cache.expiry = new Date((new Date()).getTime() + 1000)
+
+        const secondToken = await tokenProvider.getToken()
+
+        expect(firstToken).toBe('the-first-token')
+        expect(axios.post).toHaveBeenCalledTimes(1)
       })
 
-      it('gets a new token if expired', async () => {
-        tokenProvider.cache = {
-          token: 'an-expired-token',
-          expiry: new Date() - 10000
-        }
+      it('gets a new token if the cached one expired', async () => {
+        const firstToken = await tokenProvider.getToken()
 
-        await tokenProvider.getToken()
-        const token = await tokenProvider.getToken()
-        expect(token).toBe('the-first-token')
-        expect(axios.post).toHaveBeenCalled()
+        tokenProvider.cache.expiry = new Date((new Date()).getTime() - 1000)
+
+        const secondToken = await tokenProvider.getToken()
+
+        expect(firstToken).toBe('the-first-token')
+        expect(secondToken).toBe('default-token')
+
+        expect(axios.post).toHaveBeenCalledTimes(2)
       })
-
-      it('gets a new token if expired', async () => {
-        tokenProvider.cache = {
-          token: 'the-first-token',
-          expiry: new Date() + 10000
-        }
-
-        await tokenProvider.getToken()
-        const token = await tokenProvider.getToken()
-        expect(token).toBe('the-first-token')
-        expect(axios.post).not.toHaveBeenCalled()
-      })
-
-
     })
-
   })
 })
