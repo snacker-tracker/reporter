@@ -3,6 +3,13 @@ info:
   version: 0.0.1
   title: Snacker-Tracker-Reporter
   description: Tracking the snacks at the office
+  contact:
+    name: Laz Mac
+    email: leprechaun@gmail.com
+    url: https://github.com/leprechaun
+  license:
+    name: GNU General Public License v3.0
+    url: https://choosealicense.com/licenses/gpl-3.0/
 
 servers:
   - url: /v1
@@ -14,17 +21,26 @@ tags:
   - name: codes
     description: >
       Code management
+  - name: stats
+    description: >
+      Get statistics about scans and codes
+  - name: categories
+    description: >
+      Information about the categories of products in the system
 
 paths:
   /stats/scan-counts:
     get:
       operationId: GetGlobalScanCounts
+      description: |
+        Gets the number of scans that happen per time period
       tags:
         - stats
       parameters:
         - in: query
           name: period
           required: false
+          description: Specify the time period over which to aggregate statistics
           schema:
             type: string
             default: daily
@@ -48,14 +64,18 @@ paths:
       operationId: GetCodeScanCounts
       tags:
         - stats
+      description: |
+        Gets the number of scans per time period for a specific code
       parameters:
         - in: path
           name: code
           required: true
+          description: The code for which you are requesting stats
           schema:
             $ref: "#/components/schemas/UPCCode"
         - in: query
           name: period
+          description: Specify the time period over which to aggregate statistics
           required: false
           schema:
             type: string
@@ -76,28 +96,34 @@ paths:
   /stats/top-scans:
     get:
       operationId: GetTopScans
+      description: |
+        Get the list of top N most popular scanned codes
       tags:
         - stats
       parameters:
         - in: query
           name: limit
+          description: Specify how many records should be returned
           schema:
             type: integer
             format: int64
             default: 100
         - in: query
           name: offset
+          description: Specify at which point to start paginating
           schema:
             type: integer
             format: int64
             default: 0
         - in: query
+          description: Specify a start/from date for statistics
           name: from_date
           schema:
             type: string
             format: date-time
         - in: query
           name: to_date
+          description: Specify an end/to date for statistics
           schema:
             type: string
             format: date-time
@@ -114,23 +140,28 @@ paths:
   /codes:
     get:
       operationId: ListCodes
+      description: |
+        List codes known by the system, with sorting, filtering, and pagination
       tags:
         - codes
       parameters:
         - in: query
           name: limit
+          description: Specify how many records should be returned
           schema:
             type: integer
             format: int64
             default: 100
         - in: query
           name: offset
+          description: Specify at which point to start paginating
           schema:
             type: integer
             format: int64
             default: 0
         - in: query
           name: categories
+          description: Specify the categories of the code being returned
           required: false
           schema:
             $ref: "#/components/schemas/Category"
@@ -146,6 +177,8 @@ paths:
 
     post:
       operationId: CreateCode
+      description: |
+        Create a code for a known product with it's attributes
       tags:
         - codes
       requestBody:
@@ -184,11 +217,14 @@ paths:
   /codes/{code}:
     get:
       operationId: GetCode
+      description: |
+        Get a specific code and it's attributes
       tags:
         - codes
       parameters:
         - in: path
           name: code
+          description: The code for which to get data
           required: true
           schema:
             $ref: "#/components/schemas/UPCCode"
@@ -211,11 +247,13 @@ paths:
 
     patch:
       operationId: PatchCode
+      description: Update a code with a new set of attributes
       tags:
         - codes
       parameters:
         - in: path
           name: code
+          description: The code for which to update date
           required: true
           schema:
             $ref: "#/components/schemas/UPCCode"
@@ -250,12 +288,15 @@ paths:
   /codes/{code}/pictures:
     get:
       operationId: ListCodePictures
+      description: |
+        List the pictures that have been uploaded for this code
       tags:
         - codes
       parameters:
         - in: path
           required: true
           name: code
+          description: The code for which to list pictures
           schema:
             $ref: "#/components/schemas/UPCCode"
       responses:
@@ -276,11 +317,14 @@ paths:
 
     post:
       operationId: CreateCodePicture
+      description: |
+        Upload a picture for a known product code
       tags:
         - codes
       parameters:
         - in: path
           name: code
+          description: The code for which to upload a picture
           required: true
           schema:
             $ref: "#/components/schemas/UPCCode"
@@ -319,17 +363,21 @@ paths:
   /scans:
     get:
       operationId: ListScans
+      description: |
+        List all scans, with sorting by date-created, and pagination
       tags:
         - scans
       parameters:
         - in: query
           name: limit
+          description: Specify how many records should be returned
           schema:
             type: integer
             format: int64
             default: 100
         - in: query
           name: offset
+          description: Specify at which point to start paginating
           schema:
             type: integer
             format: int64
@@ -345,6 +393,8 @@ paths:
 
     post:
       operationId: CreateScan
+      description: |
+        Create a new scan record for a product code
       tags:
         - scans
       requestBody:
@@ -383,12 +433,15 @@ paths:
   /scans/{scanId}:
     parameters:
       - name: scanId
+        description: Specify the ID of the desired scan
         in: path
         required: true
         schema:
           type: string
     get:
       operationId: GetScan
+      description: |
+        Get one specific scan by ID
       tags:
         - scans
       responses:
@@ -409,6 +462,8 @@ paths:
 
     delete:
       operationId: DeleteScan
+      description: |
+        Delete a specific scan record from the system
       tags:
         - scans
       responses:
@@ -423,31 +478,37 @@ paths:
   /categories:
     get:
       operationId: ListCategories
+      description: |
+        List categories known to the system, with sorting, filtering, and pagination
       tags:
         - categories
       parameters:
         - in: query
           name: limit
+          description: Specify how many records should be returned
           schema:
             type: integer
             format: int64
             default: 100
         - in: query
           name: offset
+          description: Specify at which point to start paginating
           schema:
             type: integer
             format: int64
             default: 0
         - in: query
           name: parent
+          description: Specify this node as a parent for all listed categories
           schema:
             type: string
         - in: query
           name: contains
+          description: Filter categories by names containing this string
           schema:
             type: string
       responses:
-        200:
+        "200":
           description: |
             List of categories
           content:
@@ -478,7 +539,6 @@ components:
       properties:
         message:
           type: string
-
 
     CategoriesList:
       type: object
@@ -780,109 +840,6 @@ components:
         code:
           $ref: "#/components/schemas/UPCCode"
 
-    EventWrapper:
-      type: object
-      required:
-        - id
-        - timestamp
-        - version
-        - event
-        - actor
-      properties:
-        id:
-          $ref: "#/components/schemas/EventId"
-        timestamp:
-          $ref: "#/components/schemas/EventTimestamp"
-        version:
-          $ref: "#/components/schemas/EventVersion"
-        event:
-          $ref: "#/components/schemas/EventEvent"
-        actor:
-          $ref: "#/components/schemas/EventActor"
-
-    EventId:
-      type: string
-      format: uuid
-
-    EventTimestamp:
-      type: string
-      format: date-time
-
-    EventVersion:
-      type: string
-      format: semver
-      description: |
-        A valid sem-ver string (eg, version of the backend)
-
-    EventEvent:
-      type: string
-
-    EventActor:
-      type: object
-      required:
-        - sub
-      properties:
-        sub:
-          type: string
-        issuer:
-          type: string
-          format: uri
-
-    ScanCreatedEvent:
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/EventWrapper"
-      required:
-        - payload
-      properties:
-        payload:
-          $ref: "#/components/schemas/Scan"
-        event:
-          type: string
-          enum:
-            - ScanCreated
-
-    CodeCreatedEvent:
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/EventWrapper"
-      required:
-        - payload
-      properties:
-        payload:
-          $ref: "#/components/schemas/Code"
-        event:
-          type: string
-          enum:
-            - CodeCreated
-
-    CodePatchedEvent:
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/EventWrapper"
-      required:
-        - payload
-      properties:
-        payload:
-          $ref: "#/components/schemas/Code"
-        event:
-          type: string
-          enum:
-            - CodePatched
-
-    CodePictureCreatedEvent:
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/EventWrapper"
-      required:
-        - payload
-      properties:
-        payload:
-          $ref: "#/components/schemas/CodePicture"
-        event:
-          type: string
-          enum:
-            - CodeCreated
 
     UPCCode:
       type: string
@@ -892,3 +849,107 @@ components:
       type: string
       description: |
         The ID or location of the barcode scanner
+
+#   EventWrapper:
+#     type: object
+#     required:
+#       - id
+#       - timestamp
+#       - version
+#       - event
+#       - actor
+#     properties:
+#       id:
+#         $ref: "#/components/schemas/EventId"
+#       timestamp:
+#         $ref: "#/components/schemas/EventTimestamp"
+#       version:
+#         $ref: "#/components/schemas/EventVersion"
+#       event:
+#         $ref: "#/components/schemas/EventEvent"
+#       actor:
+#         $ref: "#/components/schemas/EventActor"
+
+#   ScanCreatedEvent:
+#     type: object
+#     allOf:
+#       - $ref: "#/components/schemas/EventWrapper"
+#     required:
+#       - payload
+#     properties:
+#       payload:
+#         $ref: "#/components/schemas/Scan"
+#       event:
+#         type: string
+#         enum:
+#           - ScanCreated
+
+#   CodeCreatedEvent:
+#     type: object
+#     allOf:
+#       - $ref: "#/components/schemas/EventWrapper"
+#     required:
+#       - payload
+#     properties:
+#       payload:
+#         $ref: "#/components/schemas/Code"
+#       event:
+#         type: string
+#         enum:
+#           - CodeCreated
+
+#   CodePatchedEvent:
+#     type: object
+#     allOf:
+#       - $ref: "#/components/schemas/EventWrapper"
+#     required:
+#       - payload
+#     properties:
+#       payload:
+#         $ref: "#/components/schemas/Code"
+#       event:
+#         type: string
+#         enum:
+#           - CodePatched
+
+#   CodePictureCreatedEvent:
+#     type: object
+#     allOf:
+#       - $ref: "#/components/schemas/EventWrapper"
+#     required:
+#       - payload
+#     properties:
+#       payload:
+#         $ref: "#/components/schemas/CodePicture"
+#       event:
+#         type: string
+#         enum:
+#           - CodeCreated
+
+#   EventId:
+#     type: string
+#     format: uuid
+
+#   EventTimestamp:
+#     type: string
+#     format: date-time
+
+#   EventVersion:
+#     type: string
+#     format: semver
+#     description: |
+#       A valid sem-ver string (eg, version of the backend)
+
+#   EventEvent:
+#     type: string
+
+#   EventActor:
+#     type: object
+#     required:
+#       - sub
+#     properties:
+#       sub:
+#         type: string
+#       issuer:
+#         type: string
+#         format: uri
