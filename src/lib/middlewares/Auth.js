@@ -1,4 +1,4 @@
-import jwt from 'express-jwt'
+import { expressjwt } from 'express-jwt'
 import jwksRsa from 'jwks-rsa'
 
 import Middleware from './Middleware'
@@ -10,7 +10,7 @@ class Auth extends Middleware {
   }
 
   configure(config) {
-    this.check = jwt({
+    this.check = expressjwt({
       credentialsRequired: false,
       secret: jwksRsa.expressJwtSecret({
         cache: true,
