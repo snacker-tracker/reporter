@@ -591,7 +591,6 @@ components:
           type: string
           format: date-time
 
-
     CreateScanPayload:
       type: object
       additionalProperties: false

@@ -32,3 +32,14 @@ rules:
       function: pattern
       functionOptions:
         notMatch: "/^body$/"
+
+  object-properties-snake-case:
+    description: All object properties MOST be snake_case
+    severity: error
+    recommended: true
+    message: "{{property}} MUST follow snake_case"
+    given: $..[?(@.type == 'object')].properties[?(@.type != 'array' && !@.oneOf )].~
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z]+(_[a-z]+)*$"
