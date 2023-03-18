@@ -85,14 +85,14 @@ class Operation {
         this.user = false
       }
 
-      return (req.user == false || req.user == null) && this.constructor.canBeCalledAnonymously == false
+      return (req.auth == false || req.auth == null) && this.constructor.canBeCalledAnonymously == false
     }
   }
 
   AuthZ(req) {
     if(req.user && !this.constructor.canBeCalledAnonymously) {
       this.services.logger.info('hello')
-      const perms = req.user.permissions
+      const perms = req.auth.permissions
         .map( perm => perm.split(':') )
         .filter( perm => perm[0] == this.services.config.oauth.audience )
         .map( perm => perm[1] )
