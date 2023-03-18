@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -e
+
+export REPORTER_BASE_URL="reporter.snacker-tracker.${K8S_NAMESPACE}.k8s.fscker.org"
+
+TOKEN_RESPONSE=$(curl --request POST \
+--url "https://${ISSUER_DOMAIN}/oauth/token" \
+--header 'content-type: application/json' \
+--data "{\"client_id\":\"${CLIENT_ID}\",\"client_secret\":\"${CLIENT_SECRET}\",\"audience\":\"snacker-tracker-reporter\",\"grant_type\":\"client_credentials\"}")
+
+TOKEN="$(echo "${TOKEN_RESPONSE}" | jq -r .access_token)"
+
+curl --fail "https://${REPORTER_BASE_URL}/v1/scans/" \
+    -H 'Content-Type: application/json' \
+    -H "Authorization: Bearer ${TOKEN}" \
+    -d '{"code":"123123123","location":"ci-server"}'

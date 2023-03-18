@@ -1,6 +1,12 @@
 format_version: 2
 common:
   tasks:
+    post-deploy-auth-test: &post_deploy_auth_test
+      script: |
+        set -e
+
+        ./auto/post-deploy-test
+
     deploy: &deploy
       script: |
         set -e
@@ -480,6 +486,37 @@ pipelines:
                     source: chart/
                     destination: ./
                 - *deploy
+
+  snacker-tracker-reporter-post-deploy-test-qa:
+    group: snacker-tracker-reporter
+    label_template: "${upstream}"
+    lock_behavior: unlockWhenFinished
+    materials:
+      upstream:
+        pipeline: snacker-tracker-reporter-deploy-qa
+        stage: deploy
+      git-snacker-tracker-reporter:
+        plugin_configuration:
+          id: git.fb
+          version: 1.3.5
+        options:
+          url: https://github.com/snacker-tracker/reporter.git
+          branchwhitelist: master,test-*
+        destination: ./
+    environment_variables:
+      K8S_NAMESPACE: qa
+      CHART_NAME: snacker-tracker-reporter
+      PROJECT: snacker-tracker
+      CLIENT_ID: "FA42LhBt1gcHZ9nghaQUhV0v07WMCogr"
+      ISSUER_DOMAIN: "fscker-public-qa.eu.auth0.com"
+    secure_variables:
+      OAUTH_CLIENT_SECRET: "AES:irQX10C5In2/EFOikkW4hQ==:sZuDgJqQQ9cY4IG0xFynag1HpBOGTQ5mytKNpzARt7NdQJ+T+CBH69ImETjN1HqaViW8L1rs9J3BC1txRVU+DikY23+8x+6x539dAlPe5cU="
+    stages:
+      - deploy:
+          jobs:
+            helm-upgrade:
+              tasks:
+                - *post_deploy_auth_test
 
   snacker-tracker-reporter-deploy-qa-seed:
     group: snacker-tracker-reporter
