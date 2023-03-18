@@ -510,11 +510,11 @@ pipelines:
       CLIENT_ID: "FA42LhBt1gcHZ9nghaQUhV0v07WMCogr"
       ISSUER_DOMAIN: "fscker-public-qa.eu.auth0.com"
     secure_variables:
-      OAUTH_CLIENT_SECRET: "AES:irQX10C5In2/EFOikkW4hQ==:sZuDgJqQQ9cY4IG0xFynag1HpBOGTQ5mytKNpzARt7NdQJ+T+CBH69ImETjN1HqaViW8L1rs9J3BC1txRVU+DikY23+8x+6x539dAlPe5cU="
+      CLIENT_SECRET: "AES:W1sQOooCpGCj1mrFYupPOQ==:sS7ovjaFyWqzkRtfrvCMVNJ3g1HfpfQJ+08N4QjQcdgeDY+csVk/pC+rrQZEW4d8tDD/QRAkRf53nnDXaOZf8URrQL4Nktb8mNcLSkqs9eg="
     stages:
-      - deploy:
+      - post-deploy-test:
           jobs:
-            helm-upgrade:
+            post-deploy-test:
               tasks:
                 - *post_deploy_auth_test
 
@@ -604,6 +604,9 @@ pipelines:
       upstream:
         pipeline: snacker-tracker-reporter-deploy-qa
         stage: deploy
+      post-deploy-test:
+        pipeline: snacker-tracker-reporter-post-deploy-test-qa
+        stage: post-deploy-test
     environment_variables:
       K8S_NAMESPACE: prod
       CHART_NAME: snacker-tracker-reporter
