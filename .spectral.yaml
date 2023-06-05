@@ -16,7 +16,7 @@ rules:
     description: All YAML/JSON definitions MUST follow PascalCase
     severity: error
     recommended: true
-    message: "{{property}} MUST follow PascalCase"
+    message: "Shared definition '{{property}}' MUST follow PascalCase"
     given: $.components.schemas[*]~
     then:
       function: pattern
@@ -37,7 +37,7 @@ rules:
     description: All object properties MOST be snake_case
     severity: error
     recommended: true
-    message: "{{property}} MUST follow snake_case"
+    message: "Object property '{{property}}' MUST follow snake_case"
     given: $..[?(@.type == 'object')].properties[?(@.type != 'array' && !@.oneOf )].~
     then:
       function: pattern
