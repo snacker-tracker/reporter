@@ -10,23 +10,25 @@ class Auth extends Middleware {
   }
 
   configure(config) {
+    const secret = jwksRsa.expressJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: `https://${config.issuer}/.well-known/jwks.json`
+    })
+
     this.check = expressjwt({
       credentialsRequired: false,
-      secret: jwksRsa.expressJwtSecret({
-        cache: true,
-        rateLimit: true,
-        jwksRequestsPerMinute: 5,
-        jwksUri: `https://${config.issuer}/.well-known/jwks.json`
-      }),
 
+      secret,
       audience: `${config.audience}`,
       issuer: `https://${config.issuer}/`,
       algorithms: ['RS256']
     })
   }
 
-  handler(req, res, next) {
-    this.check(req, res, next)
+  async handler(req, res, next) {
+    await this.check(req, res, next)
   }
 }
 
