@@ -1,7 +1,7 @@
 import GetTimeseries from '../../lib/http/GetTimeseries'
 import Scan from '../../models/Scan'
 
-import knex from 'knex'
+import { raw } from 'objection'
 
 class GetCodeScanCounts extends GetTimeseries {
   static model = Scan
@@ -17,23 +17,26 @@ class GetCodeScanCounts extends GetTimeseries {
   }
 
   periodSpecifics(period) {
-    return {
+      console.log('here', raw)
+    const options = {
       hourly: {
         period: 'hour',
-        select: knex.raw('extract(hour from "scanned_at") as hour'),
+        select: raw('extract(hour from "scanned_at") as hour'),
         groupBy: 'extract(hour from "scanned_at")'
       },
       weekdaily: {
         period: 'weekday',
-        select: knex.raw('extract(isodow from "scanned_at") as weekday'),
+        select: raw('extract(isodow from "scanned_at") as weekday'),
         groupBy: 'extract(isodow from "scanned_at")'
       },
       daily: {
         period: 'date',
-        select: knex.raw('TO_CHAR("scanned_at" :: DATE, \'yyyy-mm-dd\') as date'),
+        select: raw('TO_CHAR("scanned_at" :: DATE, \'yyyy-mm-dd\') as date'),
         groupBy: 'TO_CHAR("scanned_at" :: DATE, \'yyyy-mm-dd\')'
       }
-    }[period]
+    }
+
+    return options[period]
   }
 
   resources() {
@@ -47,7 +50,7 @@ class GetCodeScanCounts extends GetTimeseries {
           code: this.args.code
         })
 
-        let {
+        const {
           select, groupBy, period
         } = this.periodSpecifics(this.args.period)
 
