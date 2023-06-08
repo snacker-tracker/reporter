@@ -1,4 +1,4 @@
-import glob from 'glob'
+import { glob } from 'glob'
 const files = glob.sync('*.js', {
   cwd: __dirname,
 })

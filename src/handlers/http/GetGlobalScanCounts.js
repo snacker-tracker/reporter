@@ -1,7 +1,7 @@
 import GetTimeseries from '../../lib/http/GetTimeseries'
 import Scan from '../../models/Scan'
 
-import knex from 'knex'
+import { raw } from 'objection'
 
 class GetGlobalScanCounts extends GetTimeseries {
   static model = Scan
@@ -30,25 +30,25 @@ class GetGlobalScanCounts extends GetTimeseries {
         switch(this.args.period) {
           case 'hourly':
             period = 'hour'
-            select = knex.raw('extract(hour from "scanned_at") as ' + period)
+            select = raw('extract(hour from "scanned_at") as ' + period)
             groupBy = 'extract(' + period + ' from "scanned_at")'
             break
 
           case 'weekly':
             period = 'week'
-            select = knex.raw('to_char(scanned_at, \'IYYY-IW\') as week')
+            select = raw('to_char(scanned_at, \'IYYY-IW\') as week')
             groupBy = 'to_char(scanned_at, \'IYYY-IW\')'
             break
 
           case 'weekdaily':
             period = 'weekday'
-            select = knex.raw('extract(isodow from "scanned_at") as ' + period)
+            select = raw('extract(isodow from "scanned_at") as ' + period)
             groupBy = 'extract(isodow from "scanned_at")'
             break
 
           case 'daily':
             period = 'date'
-            select = knex.raw('TO_CHAR("scanned_at" :: DATE, \'yyyy-mm-dd\') as ' + period)
+            select = raw('TO_CHAR("scanned_at" :: DATE, \'yyyy-mm-dd\') as ' + period)
             groupBy = 'TO_CHAR("scanned_at" :: DATE, \'yyyy-mm-dd\')'
             break
         }

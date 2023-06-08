@@ -22,7 +22,7 @@ const swaggerDoc = getSwaggerDocument(
 
 let app = express()
 
-app.use(async (req, res, next) => {
+app.use(async (req, _, next) => {
   req.locals = {
     startTime: new Date()
   }
@@ -51,7 +51,7 @@ initialize({
   app,
   apiDoc: swaggerDoc,
   operations: handlers,
-  errorMiddleware: (err, req, res, next) => {
+  errorMiddleware: (err, _, res, next) => {
     if('status' in err) {
       services.logger.warn({ message: 'Unhandled error', err })
       res.status(err.status).json(err)

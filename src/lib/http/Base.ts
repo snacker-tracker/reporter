@@ -1,13 +1,33 @@
-class HTTPResponse {
-  constructor({ status, body, headers = {}, ...rest }) {
-    this.status = status
-    this.headers = headers
-    this.body = body
+import { Response, NextFunction } from "express"
+import { OpenAPI } from "openapi-types"
 
-    Object.assign(this, rest)
+type ExtendedRequest = OpenAPI.Request & {
+    user?: any,
+    auth?: any
+}
+
+type HTTPStatus = 200 | 201 | 202 | 204 | 301 | 302 | 304 | 400 | 401 | 403 | 404 | 405 | 409 | 410 | 422 | 500 | 501
+
+type HTTPHeaders = {
+    [key: string]: string
+}
+
+class HTTPResponse {
+  status: HTTPStatus
+  headers: HTTPHeaders
+  body: object
+
+  constructor(args: {
+      status: HTTPStatus,
+      body: object,
+      headers?: HTTPHeaders,
+  }) {
+    this.status = args.status,
+    this.headers = args.headers
+    this.body = args.body
   }
 
-  static ServerError(message) {
+  static ServerError(message: string = "Server Error") {
     return this.Error(500, message)
   }
 
@@ -23,7 +43,7 @@ class HTTPResponse {
     return this.Error(409, message)
   }
 
-  static Error(status, message) {
+  static Error(status: HTTPStatus, message: string) {
     return new this({
       status,
       body: {
@@ -32,15 +52,15 @@ class HTTPResponse {
     })
   }
 
-  static Created(body, headers = {}) {
+  static Created(body: object, headers = {}) {
     return this.OkBase(201, body, headers)
   }
 
-  static Okay(body, headers = {}) {
+  static Okay(body: object, headers: HTTPHeaders = {}) {
     return this.OkBase(200, body, headers)
   }
 
-  static OkBase(status, body, headers = {}) {
+  static OkBase(status: HTTPStatus, body: object = {}, headers: HTTPHeaders = {}) {
     return new this({
       status,
       body,
@@ -50,17 +70,22 @@ class HTTPResponse {
 }
 
 class Operation {
+  services: { [key: string]: any }
+  args: {}
+  user: {}
+  //resources: Promise<{[key: string]: Promise<any> }>
+
   constructor(services = {}) {
     this.services = services
   }
 
-  static canBeCalledAnonymously = true
+  static canBeCalledAnonymously: boolean = true
 
-  async extract_params() {
+  async extract_params(req: ExtendedRequest) {
     this.args = {}
   }
 
-  toHttpRepresentation(item) {
+  toHttpRepresentation(item: {}) {
     return item
   }
 
@@ -77,7 +102,7 @@ class Operation {
     return {}
   }
 
-  AuthN(req) {
+  AuthN(req: ExtendedRequest) {
     if(this.services.config) {
       if(this.services.config.auth.authn.enabled) {
         this.user = req.user
@@ -85,12 +110,12 @@ class Operation {
         this.user = false
       }
 
-      return (req.auth == false || req.auth == null) && this.constructor.canBeCalledAnonymously == false
+      return (req.auth == false || req.auth == null) && (this.constructor as typeof Operation ).canBeCalledAnonymously == false
     }
   }
 
-  AuthZ(req) {
-    if(req.user && !this.constructor.canBeCalledAnonymously) {
+  AuthZ(req: ExtendedRequest) {
+    if(req.user && !(this.constructor as typeof Operation).canBeCalledAnonymously) {
       this.services.logger.info('hello')
       const perms = req.auth.permissions
         .map( perm => perm.split(':') )
@@ -105,7 +130,7 @@ class Operation {
     return false
   }
 
-  response(code, message) {
+  response(code: HTTPStatus, message: string) {
     return new HTTPResponse({
       status: code,
       body: {
@@ -114,9 +139,16 @@ class Operation {
     })
   }
 
-  async prefetch(req) {
+  async fetch(hash_of_promises: Promise<{ [key: string]: Promise<any> }> ) {
+    for (let [key, promise] of Object.entries(await hash_of_promises)) {
+      const response = await promise
+      this.resources[key] = response
+    }
+  }
+
+  async prefetch(req: ExtendedRequest) {
     try {
-      await this.fetch(this.resources(req))
+      await this.fetch(this.resources())
     } catch (error) {
       if(this.services.logger) {
         this.services.logger.warn({
@@ -147,7 +179,7 @@ class Operation {
     }
   }
 
-  async run(req) {
+  async run(req: Request): Promise<HTTPResponse> {
     if(this.AuthN(req)) {
       return this.response(401, 'Unauthorized')
     }
@@ -156,7 +188,7 @@ class Operation {
       return new HTTPResponse({
         status: 403,
         body: {
-          message: 'Forbidden: You can\' do this'
+          message: 'Forbidden: You can\'t do this'
         }
       })
     }
@@ -170,12 +202,6 @@ class Operation {
     return await this.tryExecute()
   }
 
-  async fetch(hash_of_promises) {
-    for (let [key, promise] of Object.entries(await hash_of_promises)) {
-      const response = await promise
-      this.resources[key] = response
-    }
-  }
 }
 
 export {
