@@ -42,7 +42,7 @@ services:
       MINIO_ROOT_PASSWORD: 1234567890
 
   bare: &bare
-    image: node:18
+    image: node:20
     working_dir: /app/
     command: yarn dev
     volumes:

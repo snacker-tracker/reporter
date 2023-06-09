@@ -2,4 +2,4 @@
 
 set -e
 
-./auto/dev-environment ./node_modules/.bin/spectral lint ./src/swagger.yml
+./auto/dev-environment yarn spectral lint ./src/swagger.yml

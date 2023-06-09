@@ -1,4 +1,4 @@
-FROM node:18 AS builder
+FROM node:20 AS builder
 
 RUN mkdir /app/
 WORKDIR /app/
@@ -13,7 +13,7 @@ COPY src ./src/
 RUN yarn build
 COPY src/swagger.yml dist/swagger.yml
 
-FROM node:18 AS runner
+FROM node:20 AS runner
 
 WORKDIR /app
 
