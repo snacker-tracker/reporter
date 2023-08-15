@@ -136,7 +136,7 @@ pipelines:
           version: 1.3.5
         options:
           url: https://github.com/snacker-tracker/reporter.git
-          branchwhitelist: master,test-*
+          branchwhitelist: master, test-*, renovate/*, dependabot/*
         destination: ./
 
     environment_variables:
@@ -144,6 +144,8 @@ pipelines:
       IMAGE: snacker-tracker/reporter
       CHART_NAME: snacker-tracker-reporter
       PROJECT: snacker-tracker
+    secure_variables:
+      GOCD_ACCESS_TOKEN: "AES:zlFeMNUVUnIx8wNZpRuacg==:QBRzmWKLzUjT0si94mnB+mxrKokPh9uRcw1RAFm+/FUVnpZlHR7Y38XdfdGNV9IY"
     stages:
       - tests:
           jobs:
@@ -356,13 +358,13 @@ pipelines:
                 export GIT_BRANCH="${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_CURRENT_BRANCH}"
 
                 if [ "$GIT_BRANCH" != "master" ]; then
-                  curl "${GO_SERVER_URL}/api/stages/${GO_PIPELINE_NAME}/${GO_STAGE_NAME}/cancel" \
-                    -u "${GO_AUTOMATION_USER}:${GO_AUTOMATION_PASSWORD}" \
-                    -H 'Confirm: true' \
+                  curl "${GO_SERVER_URL}/api/stages/${GO_PIPELINE_NAME}/${GO_PIPELINE_COUNTER}/${GO_STAGE_NAME}/${GO_STAGE_COUNTER}/cancel" \
+                    -H "Authorization: Bearer ${GOCD_ACCESS_TOKEN}" \
+                    -H 'Accept: application/vnd.go.cd.v3+json' \
+                    -H 'X-GoCD-Confirm: true' \
                     -X POST \
                     -k
                 fi
-
 
   snacker-tracker-reporter-extra-tests:
     group: snacker-tracker-reporter
@@ -378,7 +380,7 @@ pipelines:
           version: 1.3.5
         options:
           url: https://github.com/snacker-tracker/reporter.git
-          branchwhitelist: master,test-*
+          branchwhitelist: master, test-*, renovate/*, dependabot/*
         destination: ./
     environment_variables: {}
     secure_variables:
