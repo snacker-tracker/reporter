@@ -389,7 +389,7 @@ pipelines:
                     docker run -v "$(pwd):/app/" -w /app/ koalaman/shellcheck-alpine shellcheck ./auto/*
 
                     EXIT_CODE=$?
-                    [[ $EXIT_CODE = 0 ]] && GH_STATUS_DESCRIPTION="Swager is VALID" || GH_STATUS_DESCRIPTION="Swagger is INVALID"
+                    [[ $EXIT_CODE = 0 ]] && GH_STATUS_DESCRIPTION="Shellcheck is happy" || GH_STATUS_DESCRIPTION="Shellcheck failed"
                     exit $EXIT_CODE
 
       - dummy-stage:
