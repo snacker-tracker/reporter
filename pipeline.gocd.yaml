@@ -228,18 +228,68 @@ pipelines:
     stages:
       - tests:
           jobs:
-            tests:
+            lint:
               tasks:
                 - *notify_running
                 - script: |
-                    echo -- Hello World
+                    set -e
 
-                    exit 1
+                    ./auto/lint
                 - *notify_failure
                 - *notify_success
                 - *chown
                 - *cleanup
 
+            tests:
+              tasks:
+                - *notify_running
+                - script: |
+                    set -e
+
+                    ./auto/yarn test:ci
+                - *notify_failure
+                - *notify_success
+                - *chown
+                - *cleanup
+              artifacts:
+                - test:
+                    source: coverage/
+
+            validate-swagger:
+              tasks:
+                - *notify_running
+                - script: |
+                    set -e
+
+                    ./auto/validate-swagger
+                - *notify_failure
+                - *notify_success
+                - *chown
+                - *cleanup
+
+            lint-swagger:
+              tasks:
+                - *notify_running
+                - script: |
+                    set -e
+
+                    ./auto/spectral-lint
+                - *notify_failure
+                - *notify_success
+                - *chown
+                - *cleanup
+
+            shellcheck:
+              tasks:
+                - *notify_running
+                - script: |
+                    set -e
+
+                    docker run -v "$(pwd):/app/" -w /app/ koalaman/shellcheck-alpine shellcheck ./auto/*
+                - *notify_failure
+                - *notify_success
+                - *chown
+                - *cleanup
 
   snacker-tracker-reporter-test:
     group: snacker-tracker-reporter
