@@ -8,7 +8,7 @@ common:
           script: |
             github-commit-status \
               snacker-tracker/reporter \
-              ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+              ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_BRANCH_LABEL} \
               "failure" "Task Failed"
         configuration:
           id: script-executor
@@ -21,7 +21,7 @@ common:
           script: |
             github-commit-status \
               snacker-tracker/reporter \
-              ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+              ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_BRANCH_LABEL} \
               "success" "Task Succeeded"
         configuration:
           id: script-executor
@@ -31,7 +31,7 @@ common:
       script: |
         github-commit-status \
           snacker-tracker/reporter \
-          ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+          ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_BRANCH_LABEL} \
           "pending" "Task is running"
 
     chown: &chown
