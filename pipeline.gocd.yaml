@@ -4,6 +4,7 @@ common:
 
     notify-failure: &notify_failure
       plugin:
+        run_if: failed
         options:
           script: |
             github-commit-status \
@@ -16,7 +17,7 @@ common:
 
     notify-success: &notify_success
       plugin:
-        run_if
+        run_if: passed
         options:
           script: |
             github-commit-status \
@@ -34,13 +35,25 @@ common:
           ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
           "pending" "Task is running"
 
-    chown: &chown
-      script: |
-        docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount
+    cleanup: &cleanup
+      plugin:
+        run_if: any
+        options:
+          script: |
+            ./auto/cleanup || true
+        configuration:
+          id: script-executor
+          version: 1
 
     cleanup: &cleanup
-      script: |
-        ./auto/cleanup || true
+      plugin:
+        run_if: any
+        options:
+          script: |
+            docker run -v `pwd`:/tmp/mount alpine chown -R $(id -u):$(id -g) /tmp/mount || true
+        configuration:
+          id: script-executor
+          version: 1
 
     post-deploy-auth-test: &post_deploy_auth_test
       script: |
