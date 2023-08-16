@@ -10,7 +10,7 @@ common:
             echo -- Failed
             github-commit-status \
               snacker-tracker/reporter \
-              ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+              ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_BRANCH_LABEL} \
               "failure" "Task Failed"
         configuration:
           id: script-executor
@@ -24,7 +24,7 @@ common:
             echo -- Passed
             github-commit-status \
               snacker-tracker/reporter \
-              ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+              ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_BRANCH_LABEL} \
               "success" "Task Succeeded"
         configuration:
           id: script-executor
@@ -35,7 +35,7 @@ common:
         echo -- Running
         github-commit-status \
           snacker-tracker/reporter \
-          ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
+          ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_BRANCH_LABEL} \
           "pending" "Task is running"
 
     cleanup: &cleanup
@@ -43,7 +43,7 @@ common:
         run_if: any
         options:
           script: |
-            ./auto/cleanup || true
+            ./auto/clean-up || true
         configuration:
           id: script-executor
           version: 1
