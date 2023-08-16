@@ -47,4 +47,4 @@ To do so, add a class in `./src/operations` which should at a minimum extend the
 
 Write operations should also emit an event into the stream.
 
-BUMP
+BUMP 2
