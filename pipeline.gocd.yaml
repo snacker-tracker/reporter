@@ -235,10 +235,10 @@ pipelines:
                     echo -- Hello World
 
                     exit 0
-                - *chown
-                - *cleanup
                 - *notify_failure
                 - *notify_success
+                - *chown
+                - *cleanup
 
 
   snacker-tracker-reporter-test:
