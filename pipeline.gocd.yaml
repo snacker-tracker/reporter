@@ -48,7 +48,7 @@ common:
           id: script-executor
           version: 1
 
-    cleanup: &cleanup
+    chown: &chown
       plugin:
         run_if: any
         options:
