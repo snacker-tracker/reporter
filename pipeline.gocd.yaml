@@ -7,6 +7,7 @@ common:
         run_if: failed
         options:
           script: |
+            echo -- Failed
             github-commit-status \
               snacker-tracker/reporter \
               ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
@@ -20,6 +21,7 @@ common:
         run_if: passed
         options:
           script: |
+            echo -- Passed
             github-commit-status \
               snacker-tracker/reporter \
               ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
@@ -30,6 +32,7 @@ common:
 
     notify-running: &notify_running
       script: |
+        echo -- Running
         github-commit-status \
           snacker-tracker/reporter \
           ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
