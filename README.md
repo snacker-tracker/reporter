@@ -46,3 +46,5 @@ Swagger is authoritative. It validates requests coming in, and responses going o
 To do so, add a class in `./src/operations` which should at a minimum extend the `Operation` class, which responds an `HTTPResponse` object. Take a look at [operation_to_handler](./src/lib/operation_to_handler.js) to see what kind of magic happens behind the scenes.
 
 Write operations should also emit an event into the stream.
+
+BUMP
