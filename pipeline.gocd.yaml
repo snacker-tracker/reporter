@@ -291,6 +291,44 @@ pipelines:
                 - *chown
                 - *cleanup
 
+            helm-lint:
+              tasks:
+                - *notify_running
+                - script: |
+                    set -e
+
+                    helm lint helm-charts/${CHART_NAME}
+                - *notify_failure
+                - *notify_success
+                - *chown
+                - *cleanup
+
+      - test-build:
+          jobs:
+            build-docker:
+              tasks:
+                - *notify_running
+                - script: |
+                    set -e
+
+                    docker build .
+                - *notify_failure
+                - *notify_success
+                - *chown
+                - *cleanup
+
+            helm-package:
+              tasks:
+                - *notify_running
+                - script: |
+                    set -e
+
+                    helm lint helm-charts/${CHART_NAME}
+                - *notify_failure
+                - *notify_success
+                - *chown
+                - *cleanup
+
   snacker-tracker-reporter-test:
     group: snacker-tracker-reporter
     label_template: "${git-snacker-tracker-reporter[:8]}"
