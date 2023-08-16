@@ -225,6 +225,7 @@ pipelines:
 
     environment_variables:
       PROJECT: snacker-tracker
+      CHART_NAME: snacker-tracker-reporter
     stages:
       - tests:
           jobs:
