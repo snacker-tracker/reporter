@@ -148,6 +148,34 @@ common:
 
 
 pipelines:
+  snacker-tracker-reporter-branch:
+    group: snacker-tracker-reporter
+    label_template: "${git-snacker-tracker-reporter[:8]}"
+    lock_behavior: none
+    timer:
+      spec: "* * * * * ? */15"
+      only_on_changes: yes
+    materials:
+      git-snacker-tracker-reporter:
+        plugin_configuration:
+          id: git.fb
+          version: 1.3.5
+        options:
+          url: https://github.com/snacker-tracker/reporter.git
+          branchwhitelist: "**"
+          branchblacklist: master
+        destination: ./
+
+    environment_variables:
+      PROJECT: snacker-tracker
+    stages:
+      - tests:
+          jobs:
+            tests:
+              tasks:
+                - script: |
+                    echo -- Hello World
+
   snacker-tracker-reporter-test:
     group: snacker-tracker-reporter
     label_template: "${git-snacker-tracker-reporter[:8]}"
