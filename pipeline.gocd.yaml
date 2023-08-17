@@ -58,12 +58,6 @@ common:
           id: script-executor
           version: 1
 
-    post-deploy-auth-test: &post_deploy_auth_test
-      script: |
-        set -e
-
-        ./auto/post-deploy-test
-
     deploy: &deploy
       script: |
         set -e
@@ -303,6 +297,37 @@ pipelines:
                 - *notify_success
                 - *chown
                 - *cleanup
+
+      - test-run:
+          jobs:
+            build-docker:
+              tasks:
+                - *notify_running
+                - script: |
+                    set -e
+
+                    docker-compose -f ./docker-compose.e2e.yml up
+
+                    ./wait-for-server.sh http://localhost:5000/v1/scans
+
+                    ./auto/post-deploy-test http://localhost:5000
+                - *notify_failure
+                - *notify_success
+                - *chown
+                - *cleanup
+
+            helm-package:
+              tasks:
+                - *notify_running
+                - script: |
+                    set -e
+
+                    helm lint helm-charts/${CHART_NAME}
+                - *notify_failure
+                - *notify_success
+                - *chown
+                - *cleanup
+
 
   snacker-tracker-reporter-test:
     group: snacker-tracker-reporter
@@ -744,7 +769,10 @@ pipelines:
             post-deploy-test:
               tasks:
                 - *notify_running
-                - *post_deploy_auth_test
+                - script: |
+                    set -e
+
+                    ./auto/post-deploy-test https://reporter.snacker-tracker.qa.k8s.fscker.org
                 - *notify_failure
                 - *notify_success
                 - *chown
@@ -793,6 +821,8 @@ pipelines:
                 DATABASE_PASSWORD: "AES:rNlEqosakEETBNcpKbgQ1w==:Q5hv6qI+YtViR2tlIaJ5YA=="
               tasks:
                 - *backup
+                - *chown
+                - *cleanup
               artifacts:
                 - build:
                     source: backup
@@ -814,8 +844,6 @@ pipelines:
           jobs:
             migrate:
               tasks:
-                - script: |
-                    find ./
                 - *migrate
 
       - sync-pictures:
