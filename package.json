@@ -17,6 +17,8 @@
     "test:ci": "jest --coverage src",
     "lint": "eslint src",
     "audit": "yarn audit",
+    "migrate": "env && sleep 5 && yarn knex --knexfile ./src/database/knexfile.js migrate:latest",
+    "migrate-and-run": "yarn migrate && yarn start-web",
     "knex": "./node_modules/.bin/babel-node ./node_modules/.bin/knex",
     "swagger:deref": "./node_modules/.bin/babel-node ./scripts/swagger-dereference.js",
     "cucumber": "./node_modules/.bin/babel-node ./node_modules/.bin/cucumber-js"
