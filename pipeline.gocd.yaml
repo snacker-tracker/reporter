@@ -310,7 +310,7 @@ pipelines:
                 - script: |
                     set -e
 
-                    docker-compose -f ./docker-compose.e2e.yml up
+                    docker-compose -f ./docker-compose.e2e.yml up -d
 
                     ./wait-for-server.sh http://localhost:5000/v1/scans
 
@@ -366,7 +366,7 @@ pipelines:
                 - script: |
                     set -e
 
-                    docker-compose -d -f ./docker-compose.e2e.yml up
+                    docker-compose -f ./docker-compose.e2e.yml up -d
 
                     ./wait-for-server.sh http://localhost:5000/v1/scans
 
