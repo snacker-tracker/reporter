@@ -344,7 +344,7 @@ pipelines:
           version: 1.3.5
         options:
           url: https://github.com/snacker-tracker/reporter.git
-          branchwhitelist: master, test-*, renovate/*, dependabot/**
+          branchwhitelist: master
         destination: ./
 
     environment_variables:
@@ -631,7 +631,7 @@ pipelines:
           version: 1.3.5
         options:
           url: https://github.com/snacker-tracker/reporter.git
-          branchwhitelist: master, test-*, renovate/*, dependabot/**
+          branchwhitelist: master
         destination: ./
     environment_variables: {}
     secure_variables:
@@ -663,7 +663,7 @@ pipelines:
           version: 1.3.5
         options:
           url: https://github.com/snacker-tracker/reporter.git
-          branchwhitelist: master, test-*, renovate/*, dependabot/**
+          branchwhitelist: master
         destination: ./
 
     environment_variables:
@@ -754,7 +754,7 @@ pipelines:
           version: 1.3.5
         options:
           url: https://github.com/snacker-tracker/reporter.git
-          branchwhitelist: master, test-*, renovate/*, dependabot/**
+          branchwhitelist: master
         destination: ./
     environment_variables:
       K8S_NAMESPACE: qa
@@ -790,7 +790,7 @@ pipelines:
           version: 1.3.5
         options:
           url: https://github.com/snacker-tracker/reporter.git
-          branchwhitelist: master, test-*, renovate/*, dependabot/**
+          branchwhitelist: master
         destination: ./
 
     environment_variables:
@@ -902,7 +902,7 @@ pipelines:
           version: 1.3.5
         options:
           url: https://github.com/snacker-tracker/reporter.git
-          branchwhitelist: master, test-*, renovate/*, dependabot/**
+          branchwhitelist: master
         destination: ./
 
     environment_variables:
