@@ -18,4 +18,4 @@ CREATE_SCAN_RESPONSE=$(curl --fail "${REPORTER_BASE_URL}/v1/scans/" \
 
 echo $CREATE_SCAN_RESPONSE | jq .
 
-curl $REPORTER_BASE_URL/v1/scans | jq .
+curl "$REPORTER_BASE_URL/v1/scans" | jq .
