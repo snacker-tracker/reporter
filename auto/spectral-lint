@@ -3,4 +3,4 @@
 set -e
 
 #./auto/dev-environment ./node_modules/.bin/spectral lint ./src/swagger.yml
-docker run -v `pwd`:/app/ -w /app/ stoplight/spectral lint -vvv ./src/swagger.yml
+docker run -v "$(pwd):/app/" -w /app/ stoplight/spectral lint -vvv ./src/swagger.yml
