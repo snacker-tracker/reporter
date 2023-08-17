@@ -355,8 +355,11 @@ pipelines:
       IMAGE: snacker-tracker/reporter
       CHART_NAME: snacker-tracker-reporter
       PROJECT: snacker-tracker
+      ISSUER_DOMAIN: "fscker-public-qa.eu.auth0.com"
+      CLIENT_ID: "FA42LhBt1gcHZ9nghaQUhV0v07WMCogr"
     secure_variables:
       GOCD_ACCESS_TOKEN: "AES:zlFeMNUVUnIx8wNZpRuacg==:QBRzmWKLzUjT0si94mnB+mxrKokPh9uRcw1RAFm+/FUVnpZlHR7Y38XdfdGNV9IY"
+      CLIENT_SECRET: "AES:W1sQOooCpGCj1mrFYupPOQ==:sS7ovjaFyWqzkRtfrvCMVNJ3g1HfpfQJ+08N4QjQcdgeDY+csVk/pC+rrQZEW4d8tDD/QRAkRf53nnDXaOZf8URrQL4Nktb8mNcLSkqs9eg="
     stages:
       - test-run:
           jobs:
