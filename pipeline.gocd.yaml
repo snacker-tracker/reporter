@@ -201,17 +201,6 @@ pipelines:
     stages:
       - tests:
           jobs:
-            lint:
-              tasks:
-                - *notify_running
-                - script: |
-                    set -e
-
-                    ./auto/lint
-                - *notify_failure
-                - *notify_success
-                - *chown
-                - *cleanup
 
             tests:
               tasks:
@@ -240,6 +229,18 @@ pipelines:
                 - *chown
                 - *cleanup
 
+            lint-code:
+              tasks:
+                - *notify_running
+                - script: |
+                    set -e
+
+                    ./auto/lint
+                - *notify_failure
+                - *notify_success
+                - *chown
+                - *cleanup
+
             lint-swagger:
               tasks:
                 - *notify_running
@@ -247,6 +248,18 @@ pipelines:
                     set -e
 
                     ./auto/spectral-lint
+                - *notify_failure
+                - *notify_success
+                - *chown
+                - *cleanup
+
+            lint-helm:
+              tasks:
+                - *notify_running
+                - script: |
+                    set -e
+
+                    helm lint helm-charts/${CHART_NAME}
                 - *notify_failure
                 - *notify_success
                 - *chown
@@ -264,17 +277,6 @@ pipelines:
                 - *chown
                 - *cleanup
 
-            helm-lint:
-              tasks:
-                - *notify_running
-                - script: |
-                    set -e
-
-                    helm lint helm-charts/${CHART_NAME}
-                - *notify_failure
-                - *notify_success
-                - *chown
-                - *cleanup
 
       - test-build:
           jobs:
@@ -304,7 +306,7 @@ pipelines:
 
       - test-run:
           jobs:
-            build-docker:
+            smoke-test:
               tasks:
                 - *notify_running
                 - script: |
