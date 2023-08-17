@@ -16,6 +16,6 @@ CREATE_SCAN_RESPONSE=$(curl --fail "${REPORTER_BASE_URL}/v1/scans/" \
     -H "Authorization: Bearer ${TOKEN}" \
     -d '{"code":"123123123","location":"ci-server"}')
 
-echo $CREATE_SCAN_RESPONSE | jq .
+echo "$CREATE_SCAN_RESPONSE" | jq .
 
-curl "$REPORTER_BASE_URL/v1/scans" | jq .
+curl "${REPORTER_BASE_URL}/v1/scans" | jq .
