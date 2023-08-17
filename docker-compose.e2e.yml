@@ -1,0 +1,81 @@
+version: "3.6"
+
+services:
+  kinesis:
+    image: leprechaun/kinesalite
+    ports:
+      - 4567:4567
+  pg:
+    image: postgres:11
+    environment:
+      POSTGRES_USER: snacker-tracker-reporter
+      POSTGRES_PASSWORD: super-secure
+      POSTGRES_DB: snacker-tracker-reporter-default
+    ports:
+      - 5432:5432
+    volumes:
+      - ./backup/:/mnt/backups/
+
+  s3:
+    image: minio/minio
+    volumes:
+      - minio-data:/mnt/data
+    command:
+      - minio
+      - server
+      - /mnt/data
+      - "--console-address"
+      - ":9001"
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ROOT_USER: 1234567890
+      MINIO_ROOT_PASSWORD: 1234567890
+
+  create_stream:
+    image: amazon/aws-cli
+    depends_on:
+      - kinesis
+      - s3
+    environment:
+      AWS_ACCESS_KEY_ID: 1234567890
+      AWS_SECRET_ACCESS_KEY: 1234567890
+    command: |
+      --region local --endpoint http://kinesis:4567 kinesis create-stream --stream-name snack-stream --shard-count 1
+
+
+  full:
+    build: ./
+    environment:
+      APP_VERSION: 0.1.0-snapshot
+      ENVIRONMENT_NAME: default
+      USE_SWAGGER_VALIDATION: "true"
+      DEBUG: knex:query
+      PORT: 5000
+      DATABASE_HOST: ${DATABASE_HOST-pg}
+      DATABASE_NAME: ${DATABASE_NAME-snacker-tracker-reporter-default}
+      DATABASE_USERNAME: ${DATABASE_USERNAME-snacker-tracker-reporter}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD-super-secure}
+      AWS_ACCESS_KEY_ID: 1234567890
+      AWS_SECRET_ACCESS_KEY: 1234567890
+      KINESIS_ENDPOINT: http://kinesis:4567/
+      KINESIS_STREAM: snack-stream
+      S3_ENDPOINT: http://s3:9000
+      STRYKER_DASHBOARD_API_KEY: "${STRYKER_DASHBOARD_API_KEY}-invalid"
+    ports:
+      - 5000:5000
+    command: yarn migrate-and-run
+    depends_on:
+      - pg
+      - kinesis
+      - s3
+
+volumes:
+  node_modules: {}
+  minio-data: {}
+  yarn-cache: {
+    external: true
+  }
+
+networks: {}
