@@ -769,13 +769,12 @@ pipelines:
           jobs:
             post-deploy-test:
               tasks:
-                - script: |
-                    github-commit-status \
-                      snacker-tracker/reporter \
-                      ${GO_SCM_GIT_SNACKER_TRACKER_REPORTER_LABEL} \
-                      "pending" "Build is running"
-
+                - *notify_running
                 - *post_deploy_auth_test
+                - *notify_failure
+                - *notify_success
+                - *chown
+                - *cleanup
 
   snacker-tracker-reporter-deploy-qa-seed:
     group: snacker-tracker-reporter
