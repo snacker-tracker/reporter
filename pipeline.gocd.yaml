@@ -194,6 +194,10 @@ pipelines:
     environment_variables:
       PROJECT: snacker-tracker
       CHART_NAME: snacker-tracker-reporter
+      CLIENT_ID: "FA42LhBt1gcHZ9nghaQUhV0v07WMCogr"
+      ISSUER_DOMAIN: "fscker-public-qa.eu.auth0.com"
+    secure_variables:
+      CLIENT_SECRET: "AES:W1sQOooCpGCj1mrFYupPOQ==:sS7ovjaFyWqzkRtfrvCMVNJ3g1HfpfQJ+08N4QjQcdgeDY+csVk/pC+rrQZEW4d8tDD/QRAkRf53nnDXaOZf8URrQL4Nktb8mNcLSkqs9eg="
     stages:
       - tests:
           jobs:
