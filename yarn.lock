@@ -4637,9 +4637,9 @@ expect@^26.6.2:
     jest-regex-util "^26.0.0"
 
 express-jwt-authz@^2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/express-jwt-authz/-/express-jwt-authz-2.3.1.tgz#b23e5b93646700acf3564a2e33479ae3e217614f"
-  integrity sha512-cChqAjXe8E3KDe4XbmkpYpk/vQdy4s3n1ccxVgij+2F0rS86hiOQvTrYnHBc1jZstqpGrOzLgHMByh046fKgyQ==
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/express-jwt-authz/-/express-jwt-authz-2.4.1.tgz#405b303b3479ad3e862878ac0c08be191040c8e5"
+  integrity sha512-ruH86e2NvWicG9maStztyAyBJV0E8RsInXUm6Kuc/9pDtVJmJw3qigv1MEVs5bH+aksZuxocYZdz+N1V/9F+Dg==
 
 express-jwt@^8.4:
   version "8.4.1"
