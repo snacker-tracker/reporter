@@ -43,7 +43,7 @@
     "pg": "^8.0.3",
     "prom-client": "^11.5.3",
     "swagger-client": "^3.18.5",
-    "yaml": "^1.7.2"
+    "yaml": "^2.0.0"
   },
   "devDependencies": {
     "@apisyouwonthate/style-guide": "^1.4.0",
