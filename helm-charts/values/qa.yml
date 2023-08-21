@@ -4,15 +4,14 @@ ingress:
     - host: reporter.snacker-tracker.qa.k8s.fscker.org
       paths:
         - /
-    - host: api.snacker-tracker-qa.fscker.org
+    - host: snacker-tracker-api-qa.fscker.org
       paths:
-        - /api
+        - /
   tls:
     - secretName: reporter-snacker-tracker-qa-k8s-fscker-org
       hosts:
         - reporter.snacker-tracker.qa.k8s.fscker.org
-        - api.snacker-tracker-qa.fscker.org
-
+        - snacker-tracker-api-qa.fscker.org
 postgresql:
   global:
     postgresql:
