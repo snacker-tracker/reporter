@@ -6,15 +6,10 @@ ingress:
     - host: reporter.snacker-tracker.prod.k8s.fscker.org
       paths:
         - /
-    - host: snacker-tracker.fscker.org
-      paths:
-        - /api
   tls:
     - secretName: reporter-snacker-tracker-prod-k8s-fscker-org-tls
       hosts:
         - reporter.snacker-tracker.prod.k8s.fscker.org
-        - snacker-tracker.fscker.org
-
 postgresql:
   global:
     postgresql:
