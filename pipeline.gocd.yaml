@@ -522,9 +522,11 @@ pipelines:
               tasks:
                 - script: |
                     set -e
+                    export CHART_VERSION="$(echo $GO_PIPELINE_LABEL | awk -F '-' '{print $1}')"
 
                     helm lint helm-charts/${CHART_NAME}
-                    helm package --version "$(echo $GO_PIPELINE_LABEL | awk -F '-' '{print $1}')" --app-version $GO_PIPELINE_LABEL ./helm-charts/${CHART_NAME}
+                    helm package --version "${CHART_VERSION}" --app-version $GO_PIPELINE_LABEL ./helm-charts/${CHART_NAME}
+                    helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://ghcr.io/snacker-tracker/charts
               artifacts:
                 - build:
                     source: snacker-tracker-reporter-*.tgz
