@@ -1,6 +1,8 @@
 import AWS from 'aws-sdk'
 import prometheus from 'prom-client'
 
+AWS.config.logger = console
+
 import Logger from '../lib/Logger'
 import metrics from './metrics'
 import EventPublisher from '../lib/streaming/EventPublisher'
