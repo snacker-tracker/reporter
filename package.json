@@ -28,7 +28,7 @@
   ],
   "dependencies": {
     "aws-sdk": "^2.814.0",
-    "axios": "^0.27.0",
+    "axios": "^1.0.0",
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "express-jwt": "^8.4",
