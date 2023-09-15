@@ -198,6 +198,7 @@ pipelines:
       ISSUER_DOMAIN: "fscker-public-qa.eu.auth0.com"
     secure_variables:
       CLIENT_SECRET: "AES:W1sQOooCpGCj1mrFYupPOQ==:sS7ovjaFyWqzkRtfrvCMVNJ3g1HfpfQJ+08N4QjQcdgeDY+csVk/pC+rrQZEW4d8tDD/QRAkRf53nnDXaOZf8URrQL4Nktb8mNcLSkqs9eg="
+      CC_TEST_REPORTER_ID: "AES:A+/Erpnj0JOe1GbECfDGOQ==:j+RdXtVLNExpWQGfFdX1s4VOSPrL7jklRJg02RvV81u+ucIjNOFkAXdNUyJ/9jCo/GjCI068pzvQEu/jk3bDbZOhBx9QJnWf0PC8k+6Rf2Y="
     stages:
       - tests:
           jobs:
@@ -207,7 +208,9 @@ pipelines:
                 - script: |
                     set -e
 
+                    ./auto/code-climate-reporter before-build
                     ./auto/yarn test:ci
+                    ./auto/code-climate-reporter after-build
                 - *notify_failure
                 - *notify_success
                 - *chown

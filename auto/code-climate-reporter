@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [ -f /tmp/cc-reporter ]; then
+  echo "cc-reporter already present"
+else
+  echo "cc-reporter not present"
+  curl -o /tmp/cc-reporter -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+  chmod 755 /tmp/cc-reporter
+fi
+
+/tmp/cc-reporter ${@}
