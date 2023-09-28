@@ -98,3 +98,5 @@ Content-Type: application/octet-stream
 
 
 GET {{ host }}/v1/scans?limit=1
+
+HTTP 200
