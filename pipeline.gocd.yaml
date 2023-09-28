@@ -338,7 +338,7 @@ pipelines:
                     DOCKER_NETWORK="--network snacker-tracker-reporter_default"
 
                     ./auto/hurl \
-                      --variable host=http://localhost:5000 \
+                      --variable host=http://snacker-tracker-reporter_full_1:5000 \
                       --variable oidc_issuer=https://${ISSUER_DOMAIN} \
                       --variable oidc_audience=snacker-tracker-reporter \
                       --variable oidc_client_id=$CLIENT_ID \
