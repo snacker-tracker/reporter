@@ -2,5 +2,5 @@
 
 set -e
 
-# shellcheck disable=SC2068
+# shellcheck disable=SC2068,SC2086
 docker run --rm ${DOCKER_NETWORK} -v "$(pwd):/app/" -w /app/ ghcr.io/orange-opensource/hurl:latest ${@}
