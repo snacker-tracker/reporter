@@ -56,7 +56,7 @@ jsonpath "$.id" != null
 POST {{ host }}/v1/codes/{{ code }}/pictures/
 Authorization: Bearer {{ access_token }}
 [MultipartFormData]
-file: file,features/winnie-the-pooh.jpg; image/jpeg
+file: file,winnie-the-pooh.jpg; image/jpeg
 
 HTTP 201
 Content-Type: application/json; charset=utf-8
