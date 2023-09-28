@@ -53,6 +53,21 @@ jsonpath "$.location" == "test:hurl"
 jsonpath "$.id" != null
 
 
+# Create the CODE
+POST {{ host }}/v1/codes
+Authorization: Bearer {{ access_token }}
+{
+    "code": "{{ code }}",
+    "name": "Test Code {{ code }}",
+    "categories": ["test", "automated-test"]
+}
+
+HTTP 201
+[Asserts]
+jsonpath "$.code" == "{{ code }}"
+jsonpath "$.name" == "Test Code {{ code }}"
+
+
 POST {{ host }}/v1/codes/{{ code }}/pictures/
 Authorization: Bearer {{ access_token }}
 [MultipartFormData]
@@ -65,7 +80,7 @@ jsonpath "$.id" != null
 [Captures]
 picture_id: jsonpath "$['id']"
 
-GET {{ host }}/v1/codes/123123123/pictures/
+GET {{ host }}/v1/codes/{{ code }}/pictures/
 
 HTTP 200
 [Asserts]
