@@ -92,11 +92,6 @@ created_picture_url: jsonpath "$['items'][0]['url']"
 
 GET {{ created_picture_url }}
 
-HTTP 200
-Content-Type: application/octet-stream
-# This should be image/jpeg instead
-
-
 GET {{ host }}/v1/scans?limit=1
 
 HTTP 200
