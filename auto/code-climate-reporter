@@ -8,4 +8,5 @@ else
   chmod 755 /tmp/cc-reporter
 fi
 
+# shellcheck disable=SC2068
 /tmp/cc-reporter ${@}
