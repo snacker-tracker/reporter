@@ -339,7 +339,7 @@ pipelines:
                     export DOCKER_NETWORK="--network ${BASENAME}_default"
 
                     ./auto/hurl \
-                      --variable host=http://snacker-tracker-reporter_full_1:5000 \
+                      --variable host=http://$BASENAME_full_1:5000 \
                       --variable oidc_issuer=https://${ISSUER_DOMAIN} \
                       --variable oidc_audience=snacker-tracker-reporter \
                       --variable oidc_client_id=$CLIENT_ID \
