@@ -267,7 +267,7 @@ pipelines:
                 - *chown
                 - *cleanup
 
-            shellcheck:
+            lint-scripts:
               tasks:
                 - *notify_running
                 - script: |
@@ -442,7 +442,7 @@ pipelines:
                 - *chown
                 - *cleanup
 
-            shellcheck:
+            lint-scripts:
               tasks:
                 - *notify_running
                 - script: |
