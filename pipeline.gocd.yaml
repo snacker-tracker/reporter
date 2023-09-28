@@ -335,7 +335,8 @@ pipelines:
 
                     CODE="123$(date +%s000)"
 
-                    DOCKER_NETWORK="--network snacker-tracker-reporter_default"
+                    BASENAME=$(basename "$(pwd)")
+                    DOCKER_NETWORK="--network ${BASENAME}_default"
 
                     ./auto/hurl \
                       --variable host=http://snacker-tracker-reporter_full_1:5000 \
