@@ -194,10 +194,10 @@ pipelines:
     environment_variables:
       PROJECT: snacker-tracker
       CHART_NAME: snacker-tracker-reporter
-      CLIENT_ID: "FA42LhBt1gcHZ9nghaQUhV0v07WMCogr"
+      CLIENT_ID: "xLwm03MYmhQfJXwJceYI7adSby0qZywG"
       ISSUER_DOMAIN: "fscker-public-qa.eu.auth0.com"
     secure_variables:
-      CLIENT_SECRET: "AES:W1sQOooCpGCj1mrFYupPOQ==:sS7ovjaFyWqzkRtfrvCMVNJ3g1HfpfQJ+08N4QjQcdgeDY+csVk/pC+rrQZEW4d8tDD/QRAkRf53nnDXaOZf8URrQL4Nktb8mNcLSkqs9eg="
+      CLIENT_SECRET: "AES:+aOHW6jjOW+lMI6CZQkg0Q==:NKXxZ9e4GSMpbtYLZHc8139Xn9miCiKcOBbMRXvk6va85QZ7yruZ90zxQFIggSpbr9EzTKcMKSlqIQJYRPeualwwIpnYJJWPowtlEd6Tsno="
       CC_TEST_REPORTER_ID: "AES:A+/Erpnj0JOe1GbECfDGOQ==:j+RdXtVLNExpWQGfFdX1s4VOSPrL7jklRJg02RvV81u+ucIjNOFkAXdNUyJ/9jCo/GjCI068pzvQEu/jk3bDbZOhBx9QJnWf0PC8k+6Rf2Y="
     stages:
       - tests:
@@ -616,10 +616,10 @@ pipelines:
       K8S_NAMESPACE: qa
       CHART_NAME: snacker-tracker-reporter
       PROJECT: snacker-tracker
-      CLIENT_ID: "FA42LhBt1gcHZ9nghaQUhV0v07WMCogr"
+      CLIENT_ID: "xLwm03MYmhQfJXwJceYI7adSby0qZywG"
       ISSUER_DOMAIN: "fscker-public-qa.eu.auth0.com"
     secure_variables:
-      CLIENT_SECRET: "AES:W1sQOooCpGCj1mrFYupPOQ==:sS7ovjaFyWqzkRtfrvCMVNJ3g1HfpfQJ+08N4QjQcdgeDY+csVk/pC+rrQZEW4d8tDD/QRAkRf53nnDXaOZf8URrQL4Nktb8mNcLSkqs9eg="
+      CLIENT_SECRET: "AES:+aOHW6jjOW+lMI6CZQkg0Q==:NKXxZ9e4GSMpbtYLZHc8139Xn9miCiKcOBbMRXvk6va85QZ7yruZ90zxQFIggSpbr9EzTKcMKSlqIQJYRPeualwwIpnYJJWPowtlEd6Tsno="
     stages:
       - post-deploy-test:
           jobs:
