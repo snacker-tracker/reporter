@@ -33,6 +33,18 @@ services:
       MINIO_ROOT_USER: 1234567890
       MINIO_ROOT_PASSWORD: 1234567890
 
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - s3
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://s3:9000 1234567890 1234567890;
+      /usr/bin/mc mb myminio/snacker-tracker-default;
+      /usr/bin/mc policy set public myminio/snacker-tracker-default;
+      exit 0;
+      "
+
   create_stream:
     image: amazon/aws-cli
     depends_on:

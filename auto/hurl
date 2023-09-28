@@ -3,4 +3,4 @@
 set -e
 
 # shellcheck disable=SC2068
-docker run --rm -v "$(pwd):/app/" -w /app/ ghcr.io/orange-opensource/hurl:latest ${@}
+docker run --rm ${DOCKER_NETWORK} -v "$(pwd):/app/" -w /app/ ghcr.io/orange-opensource/hurl:latest ${@}

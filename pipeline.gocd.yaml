@@ -335,6 +335,8 @@ pipelines:
 
                     CODE="123$(date +%s000)"
 
+                    DOCKER_NETWORK="--network snacker-tracker-reporter_default"
+
                     ./auto/hurl \
                       --variable host=http://localhost:5000 \
                       --variable oidc_issuer=https://${ISSUER_DOMAIN} \
