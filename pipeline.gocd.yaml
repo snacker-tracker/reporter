@@ -324,6 +324,28 @@ pipelines:
                 - *chown
                 - *cleanup
 
+            hurl-test:
+              tasks:
+                - *notify_running
+                - script: |
+                    set -e
+
+                    docker-compose -f ./docker-compose.e2e.yml up -d
+                    ./wait-for-server.sh http://localhost:5000/v1/scans
+
+                    ./auto/hurl \
+                      --variable host=http://localhost:5000 \
+                      --variable oidc_issuer=https://${ISSUER_DOMAIN} \
+                      --variable oidc_audience=snacker-tracker-reporter \
+                      --variable oidc_client_id=$CLIENT_ID \
+                      --variable oidc_client_secret=$CLIENT_SECRET \
+                      ./features/flow.hurl
+                - *notify_failure
+                - *notify_success
+                - *chown
+                - *cleanup
+
+
   snacker-tracker-reporter-test:
     group: snacker-tracker-reporter
     label_template: "${git-snacker-tracker-reporter[:8]}"

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
+
+# shellcheck disable=SC2068
+docker run --rm -v `pwd`:/app/ -w /app/ ghcr.io/orange-opensource/hurl:latest ${@}
