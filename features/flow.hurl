@@ -21,7 +21,7 @@ HTTP 200
 # Create code! But fail because we don't have $.location
 POST {{host}}/v1/scans
 {
-    "code": "123123123"
+    "code": "{{ code }}"
 }
 
 HTTP 400
@@ -30,7 +30,7 @@ HTTP 400
 # Create code! And fail on account of authentication
 POST {{ host }}/v1/scans
 {
-    "code": "123123123",
+    "code": "{{ code }}",
     "location": "test:hurl"
 }
 
@@ -41,22 +41,22 @@ HTTP 401
 POST {{ host }}/v1/scans
 Authorization: Bearer {{ access_token }}
 {
-    "code": "123123123",
+    "code": "{{ code }}",
     "location": "test:hurl"
 }
 
 HTTP 201
 [Asserts]
 header "Content-Type" contains "utf-8"
-jsonpath "$.code" == "123123123"
+jsonpath "$.code" == "{{ code }}"
 jsonpath "$.location" == "test:hurl"
 jsonpath "$.id" != null
 
 
-POST {{ host }}/v1/codes/123123123/pictures/
+POST {{ host }}/v1/codes/{{ code }}/pictures/
 Authorization: Bearer {{ access_token }}
 [MultipartFormData]
-file: file,winnie-the-pooh.jpg; image/jpeg
+file: file,features/winnie-the-pooh.jpg; image/jpeg
 
 HTTP 201
 Content-Type: application/json; charset=utf-8

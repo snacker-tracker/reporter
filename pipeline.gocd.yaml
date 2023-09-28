@@ -634,12 +634,15 @@ pipelines:
                 - script: |
                     set -e
 
+                    CODE="123$(date +%s000)"
+
                     ./auto/hurl \
                       --variable host=https://reporter.snacker-tracker.qa.k8s.fscker.org \
                       --variable oidc_issuer=https://${ISSUER_DOMAIN} \
                       --variable oidc_audience=snacker-tracker-reporter \
                       --variable oidc_client_id=$CLIENT_ID \
                       --variable oidc_client_secret=$CLIENT_SECRET \
+                      --variable code=${CODE} \
                       ./features/flow.hurl
                 - *notify_failure
                 - *notify_success
