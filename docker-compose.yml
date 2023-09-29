@@ -6,7 +6,7 @@ services:
     ports:
       - 4567:4567
   pg:
-    image: postgres:15
+    image: postgres:16
     environment:
       POSTGRES_USER: snacker-tracker-reporter
       POSTGRES_PASSWORD: super-secure
