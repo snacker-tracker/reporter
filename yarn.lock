@@ -6368,9 +6368,9 @@ object.getownpropertydescriptors@^2.0.3:
     safe-array-concat "^1.0.0"
 
 objection@^3.0.0:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/objection/-/objection-3.1.1.tgz#b744d4ff13c01863d6edec773f1315c964442510"
-  integrity sha512-v8dqQrFwZm9gRN3ZF4abF+hL6Jm5EbcUjOxVDan0lheOev0sggGGHBP8jgesZ68I0XXBjDFjGXCjTPZsWDu49A==
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/objection/-/objection-3.1.2.tgz#2adb46ec0e18165156c296f31f8bb2df34cfa585"
+  integrity sha512-V8YwRWz+DFbB9JS/m7TBLhRPVAFK/VX7yV3ZDAMkfUG9qYHLRyG/K4ZS0acKtGPWtRdVrCuN4qM1VkH3PuJ5Lg==
   dependencies:
     ajv "^8.6.2"
     ajv-formats "^2.1.1"
