@@ -37,7 +37,7 @@
     "express-prom-bundle": "^6.0.0",
     "jmespath": "^0.16.0",
     "jwks-rsa": "^3.0.0",
-    "knex": "^2",
+    "knex": "^3.0.0",
     "multer": "^1.4.5-lts.1",
     "objection": "^3.0.0",
     "pg": "^8.0.3",
