@@ -2584,11 +2584,11 @@
   integrity sha512-u95svzDlTysU5xecFNTgfFG5RUWu1A9P0VzgpcIiGZA9iraHOdSzcxMxQ55DyeRaGCSxQi7LxXDI4rzq/MYfdg==
 
 "@types/ramda@~0.29.3":
-  version "0.29.5"
-  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.29.5.tgz#0fafcf623f764d9ce086aa43ccedf6304b411cc7"
-  integrity sha512-oBBdRfoZoCl/aBIpBbct/uUHAbJ5i7vSOHK83SvH2Qr9ermYITRNKnEYgGJlnkagUY2cu8L2//Jq7o1355Go5A==
+  version "0.29.6"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.29.6.tgz#67af9b362da5d18316c8181fc13a0f3eeb17db55"
+  integrity sha512-4XQ9hYQhCwOxfkoTsIPvDVXc75fY5+MLQHUpExX6ByvU1q+0vOYRLSjWAt1IydkE1hOuhwMH6KvV/9rhzgrvRw==
   dependencies:
-    types-ramda "^0.29.4"
+    types-ramda "^0.29.5"
 
 "@types/range-parser@*":
   version "1.2.5"
@@ -6054,9 +6054,9 @@ no-case@^3.0.4:
     tslib "^2.0.3"
 
 node-abi@^3.3.0:
-  version "3.47.0"
-  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-3.47.0.tgz#6cbfa2916805ae25c2b7156ca640131632eb05e8"
-  integrity sha512-2s6B2CWZM//kPgwnuI0KrYwNjfdByE25zvAaEpq9IH4zcNsarH8Ihu/UuX6XMPEogDAxkuUFeZn60pXNHAqn3A==
+  version "3.49.0"
+  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-3.49.0.tgz#b0267a615f58939886ddb8324bfbe21bfc0482a9"
+  integrity sha512-ji8IK8VT2zAQv9BeOqwnpuvJnCivxPCe2HNiPe8P1z1SDhqEFpm7GqctqTWkujb8mLfZ1PWDrjMeiq6l9TN7fA==
   dependencies:
     semver "^7.3.5"
 
@@ -6748,9 +6748,9 @@ ramda-adjunct@^4.0.0, ramda-adjunct@^4.1.1:
   integrity sha512-BnCGsZybQZMDGram9y7RiryoRHS5uwx8YeGuUeDKuZuvK38XO6JJfmK85BwRWAKFA6pZ5nZBO/HBFtExVaf31w==
 
 ramda@~0.29.0:
-  version "0.29.0"
-  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.29.0.tgz#fbbb67a740a754c8a4cbb41e2a6e0eb8507f55fb"
-  integrity sha512-BBea6L67bYLtdbOqfp8f58fPMqEwx0doL+pAi8TZyp2YWz8R9G8z9x75CZI8W+ftqhFHCpEX2cRnUUXK130iKA==
+  version "0.29.1"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.29.1.tgz#408a6165b9555b7ba2fc62555804b6c5a2eca196"
+  integrity sha512-OfxIeWzd4xdUNxlWhgFazxsA/nl3mS4/jGZI5n00uWOoSSFRhC1b6gl6xvmzUamgmqELraWp0J/qqVlXYPDPyA==
 
 range-parser@~1.2.1:
   version "1.2.1"
@@ -7503,9 +7503,9 @@ swagger-cli@^4.0.2:
     "@apidevtools/swagger-cli" "4.0.4"
 
 swagger-client@^3.18.5:
-  version "3.23.0"
-  resolved "https://registry.yarnpkg.com/swagger-client/-/swagger-client-3.23.0.tgz#bbff11fc5d71a482a88cf8e261b2f34a3b787f45"
-  integrity sha512-n0erqA78BVFiQkb+HDdho4sKxGz+7u3g3BKkoQHy6KArF79TCKpD6GSPJwenknsuA8byjTd+CkgTBtCmJgXRFA==
+  version "3.23.1"
+  resolved "https://registry.yarnpkg.com/swagger-client/-/swagger-client-3.23.1.tgz#22364b76b6f61b7c69f8846563fad59f28891380"
+  integrity sha512-ecRJsoGozhGvEUmim2kIc/pH9BllnPVuajuEXVm49EDbwbwbp7P+i5EW+8w5FLaqmGrx9eio51G9bvJV/XC+YQ==
   dependencies:
     "@babel/runtime-corejs3" "^7.22.15"
     "@swagger-api/apidom-core" ">=0.77.0 <1.0.0"
@@ -7814,7 +7814,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-types-ramda@^0.29.4:
+types-ramda@^0.29.5:
   version "0.29.5"
   resolved "https://registry.yarnpkg.com/types-ramda/-/types-ramda-0.29.5.tgz#1cb0488d39eb72723a8f95af9b6dfe483e4f34a7"
   integrity sha512-u+bAYXHDPJR+amB0qMrMU/NXRB2PG8QqpO2v6j7yK/0mPZhlaaZj++ynYjnVpkPEpCkZEGxNpWY3X7qyLCGE3w==
@@ -7842,9 +7842,9 @@ underscore@^1.12.1:
   integrity sha512-+A5Sja4HP1M08MaXya7p5LvjuM7K6q/2EaC0+iovj/wOcMsTzMvDFbasi/oSapiwOlt252IqsKqPjCl7huKS0A==
 
 undici@^5.24.0:
-  version "5.25.3"
-  resolved "https://registry.yarnpkg.com/undici/-/undici-5.25.3.tgz#568c89a4bd773424f992642a2d6ddae7116dc749"
-  integrity sha512-7lmhlz3K1+IKB6IUjkdzV2l0jKY8/0KguEMdEpzzXCug5pEGIp3DxUg0DEN65DrVoxHiRKpPORC/qzX+UglSkQ==
+  version "5.26.1"
+  resolved "https://registry.yarnpkg.com/undici/-/undici-5.26.1.tgz#e4f36f2e79de7a35b35489327a06d844271b64e5"
+  integrity sha512-M8fZNYGEcUCEp0s3t8my8wx1XnalnJZ0vcB27bZpllicFWdIzrbtWOPCtM8+7vEhPXqzw6y0CJZhXuJqkppe/g==
   dependencies:
     "@fastify/busboy" "^2.0.0"
 
