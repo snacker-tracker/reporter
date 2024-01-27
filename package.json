@@ -34,7 +34,7 @@
     "express-jwt": "^8.4",
     "express-jwt-authz": "^2.3.1",
     "express-openapi": "^12.0.1",
-    "express-prom-bundle": "^6.0.0",
+    "express-prom-bundle": "^7.0.0",
     "jmespath": "^0.16.0",
     "jwks-rsa": "^3.0.0",
     "knex": "^3.0.0",
