@@ -1197,9 +1197,9 @@
     regexp-match-indices "1.0.2"
 
 "@cucumber/cucumber@^10.0.0":
-  version "10.3.1"
-  resolved "https://registry.yarnpkg.com/@cucumber/cucumber/-/cucumber-10.3.1.tgz#5996b0e19886d075b199a255a9d390e569b6ffc8"
-  integrity sha512-0H0NkOXcYTCG1qCh3o0p1HPSMODGJmlHi1rm5yfoiMx5tJbBjxVNI2VVD2xtPWA+D6ehHQD9asewuzjMXrbPIw==
+  version "10.3.2"
+  resolved "https://registry.yarnpkg.com/@cucumber/cucumber/-/cucumber-10.3.2.tgz#059f75c4ace1da35192d4c3a351b9a8f2f388dad"
+  integrity sha512-b5VILjhlrMqceRcQKtO1y6fGMUavJzzzkLKr2l/txM0MALN8HTxe39CE3pE67DG4huhqpQNhYfc2ICvqE72BcQ==
   dependencies:
     "@cucumber/ci-environment" "10.0.0"
     "@cucumber/cucumber-expressions" "17.0.1"
@@ -1236,7 +1236,7 @@
     string-argv "0.3.1"
     strip-ansi "6.0.1"
     supports-color "^8.1.1"
-    tmp "^0.2.1"
+    tmp "0.2.3"
     type-fest "^4.8.3"
     util-arity "^1.1.0"
     xmlbuilder "^15.1.1"
@@ -7755,17 +7755,17 @@ tiny-case@^1.0.3:
   resolved "https://registry.yarnpkg.com/tiny-case/-/tiny-case-1.0.3.tgz#d980d66bc72b5d5a9ca86fb7c9ffdb9c898ddd03"
   integrity sha512-Eet/eeMhkO6TX8mnUteS9zgPbUMQa4I6Kkp5ORiBD5476/m+PIRiumP5tmh5ioJpH7k51Kehawy2UDfsnxxY8Q==
 
+tmp@0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.3.tgz#eb783cc22bc1e8bebd0671476d46ea4eb32a79ae"
+  integrity sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==
+
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
   integrity sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==
   dependencies:
     os-tmpdir "~1.0.2"
-
-tmp@^0.2.1:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.3.tgz#eb783cc22bc1e8bebd0671476d46ea4eb32a79ae"
-  integrity sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==
 
 tmpl@1.0.5:
   version "1.0.5"
