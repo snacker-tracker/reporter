@@ -2946,9 +2946,9 @@ available-typed-arrays@^1.0.7:
     possible-typed-array-names "^1.0.0"
 
 aws-sdk@^2.814.0:
-  version "2.1585.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1585.0.tgz#1275714a3e15e3fcbb4f07411e3c78a10215008d"
-  integrity sha512-zDJ76hivdnBLH2+hXTO0F5y3Sdx5RRSDCf4EqZILZCUkPLTwaVmKmaU6XO3pyhrMTcWk58m7UBgHFyARE5SCkQ==
+  version "2.1587.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1587.0.tgz#c6034b07cf7a60d2754d737676588ad84b3ae58a"
+  integrity sha512-C9RUBgAaKWe7t/DqQlkIVAd98FHtYVzywUGBJh0Wd/XpelX4mjNhb9yjGGPNCchk0lEufcEXIEW/fLZRA44grA==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
