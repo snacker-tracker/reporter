@@ -7652,9 +7652,9 @@ swagger-cli@^4.0.2:
     "@apidevtools/swagger-cli" "4.0.4"
 
 swagger-client@^3.18.5:
-  version "3.26.6"
-  resolved "https://registry.yarnpkg.com/swagger-client/-/swagger-client-3.26.6.tgz#d272ef5aeb3fd278f5c9c4b94ec98a9703cba92c"
-  integrity sha512-PYYca8BsamZaOjlKr5ombOTeDje1ddiYAKGstpmAU3iU+mBKgqHiw5G2J77SC9+chKU5y0aJzmQX4hNu3p2y5A==
+  version "3.26.7"
+  resolved "https://registry.yarnpkg.com/swagger-client/-/swagger-client-3.26.7.tgz#655784b0cec6eeefaad07442219ef2436762a51f"
+  integrity sha512-/5bsjyWh8wAAsx7w3lu5tqPB3hruEf/d3VwJS+LTkUvQ3irSfqoeU3Y3TAXKocpjObCnTIjDxaW6k7uDfa51Fg==
   dependencies:
     "@babel/runtime-corejs3" "^7.22.15"
     "@swagger-api/apidom-core" ">=0.99.0 <1.0.0"
