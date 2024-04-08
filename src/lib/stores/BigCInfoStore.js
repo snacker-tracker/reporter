@@ -6,7 +6,7 @@ class BigCInfoStore extends ProductInfoStore {
       method: 'get',
       url: 'api/common/search/products',
       params: {
-        q: code, // eslint-disable-line    id-length
+        q: code,  
         _store: 2
       },
       headers: {

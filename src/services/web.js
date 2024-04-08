@@ -10,8 +10,6 @@ import ImageRepository from '../lib/ImageRepository'
 
 import Models from '../services/models'
 
-
-// eslint-disable-next-line no-unused-vars
 const web = (config, services) => {
   const kinesis = new AWS.Kinesis(config.kinesis)
   const s3 = new AWS.S3(config.s3)

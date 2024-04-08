@@ -6,7 +6,7 @@ import prometheus from '../services/prometheus'
 const stream = (config) => {
   const kinesis = new AWS.Kinesis(config.kinesis)
 
-  // eslint-disable-next-line   no-unused-vars
+   
   const dependencies = (event, handler) => {
     const logger = new Logger()
 
