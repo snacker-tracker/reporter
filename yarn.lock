@@ -1206,9 +1206,9 @@
     regexp-match-indices "1.0.2"
 
 "@cucumber/cucumber@^10.0.0":
-  version "10.5.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/cucumber/-/cucumber-10.5.0.tgz#31726697a8370f6906fd0871d95dbb3fbd12e573"
-  integrity sha512-f/xf6rhtVyYTEy4VUU8q4KYA66R1HBQzQQBggVpUJUW+LU31fKQWn+bSq7lTuJdS/ciOINAENVKNH+ImPzLaUw==
+  version "10.5.1"
+  resolved "https://registry.yarnpkg.com/@cucumber/cucumber/-/cucumber-10.5.1.tgz#88ecca15f488b6e6f0998a7708d0cffee9ce090c"
+  integrity sha512-10l/nDbCPNs9y/rO1o9hIlVHmMyLqjvsGNqAO5UX7IlPmslgXLxTbFp7MM1DuSbUq5zuNGfgHymlSvIOARYeUA==
   dependencies:
     "@cucumber/ci-environment" "10.0.1"
     "@cucumber/cucumber-expressions" "17.1.0"
