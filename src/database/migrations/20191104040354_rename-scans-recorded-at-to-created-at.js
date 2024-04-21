@@ -1,4 +1,3 @@
-
 exports.up = function(knex) {
   return knex.schema.table('scans', function(table) {
     table.renameColumn('recorded_at', 'created_at')

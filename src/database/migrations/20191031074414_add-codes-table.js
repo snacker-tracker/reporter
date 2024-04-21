@@ -8,7 +8,7 @@ const up = knex => {
     })
 }
 
-const down = (knex, Promise) => {
+const down = (knex) => {
   return knex.schema
     .dropTable('codes')
 }
