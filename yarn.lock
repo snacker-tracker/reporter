@@ -1206,9 +1206,9 @@
     regexp-match-indices "1.0.2"
 
 "@cucumber/cucumber@^10.0.0":
-  version "10.5.1"
-  resolved "https://registry.yarnpkg.com/@cucumber/cucumber/-/cucumber-10.5.1.tgz#88ecca15f488b6e6f0998a7708d0cffee9ce090c"
-  integrity sha512-10l/nDbCPNs9y/rO1o9hIlVHmMyLqjvsGNqAO5UX7IlPmslgXLxTbFp7MM1DuSbUq5zuNGfgHymlSvIOARYeUA==
+  version "10.6.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/cucumber/-/cucumber-10.6.0.tgz#836c912f836ada6c440eb8808c642f192e05b921"
+  integrity sha512-1ui/PDJelSRioZGYZdxeNepnCetbjbv16FUDdWi6WdjAeMqfCsuiJHjN++b7Wjxd1xKhXdSLfMntqpuNcPTIug==
   dependencies:
     "@cucumber/ci-environment" "10.0.1"
     "@cucumber/cucumber-expressions" "17.1.0"
@@ -5822,9 +5822,9 @@ lower-case@^2.0.2:
     tslib "^2.0.3"
 
 lru-cache@^10.2.0:
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-10.2.0.tgz#0bd445ca57363465900f4d1f9bd8db343a4d95c3"
-  integrity sha512-2bIM8x+VAf6JT4bKAljS1qUWgMsqZRPGJS6FSahIMPVvctcNhyVp7AJu7quxOW9jwkryBReKZY5tY5JYv2n/7Q==
+  version "10.2.1"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-10.2.1.tgz#e8d901141f22937968e45a6533d52824070151e4"
+  integrity sha512-tS24spDe/zXhWbNPErCHs/AGOzbKGHT+ybSBqmdLm8WZ1xXLWvH8Qn71QPAlqVhd0qUTWjy+Kl9JmISgDdEjsA==
 
 lru-cache@^5.1.1:
   version "5.1.1"
@@ -7885,9 +7885,9 @@ type-fest@^2.19.0:
   integrity sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==
 
 type-fest@^4.8.3:
-  version "4.15.0"
-  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-4.15.0.tgz#21da206b89c15774cc718c4f2d693e13a1a14a43"
-  integrity sha512-tB9lu0pQpX5KJq54g+oHOLumOx+pMep4RaM6liXh2PKmVRFF+/vAtUP0ZaJ0kOySfVNjF6doBWPHhBhISKdlIA==
+  version "4.17.0"
+  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-4.17.0.tgz#4c1b2c2852d2a40ba8c0236d3afc6fc68229e5bf"
+  integrity sha512-9flrz1zkfLRH3jO3bLflmTxryzKMxVa7841VeMgBaNQGY6vH4RCcpN/sQLB7mQQYh1GZ5utT2deypMuCy4yicw==
 
 type-is@^1.6.4, type-is@~1.6.18:
   version "1.6.18"
